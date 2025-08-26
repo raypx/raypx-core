@@ -1,0 +1,336 @@
+---
+description: Next.js Development Guidelines
+globs: **/*.tsx,**/*.ts,**/next.config.*,**/app/**/*,**/pages/**/*
+alwaysApply: false
+---
+# Next.js Development Guidelines
+
+## Core Principles
+
+- Use Next.js 15 App Router for new features
+- Follow the file-based routing conventions
+- Implement proper SEO and metadata
+- Use server components by default, client components when needed
+- Optimize for performance with built-in features
+- Follow Next.js best practices for data fetching
+- Implement proper error handling and loading states
+
+## App Router Structure
+
+### Directory Organization
+```
+app/
+├── (auth)/           # Route groups
+│   ├── sign-in/
+│   ├── sign-up/
+│   └── layout.tsx
+├── (dashboard)/      # Route groups
+│   ├── dashboard/
+│   ├── settings/
+│   └── layout.tsx
+├── api/              # API routes
+│   └── v1/
+├── globals.css       # Global styles
+├── layout.tsx        # Root layout
+└── page.tsx          # Home page
+```
+
+### Layout Patterns
+```typescript
+// ✅ Good - Nested layouts with proper typing
+interface DashboardLayoutProps {
+  children: React.ReactNode
+  params: { slug: string }
+}
+
+export default function DashboardLayout({ 
+  children, 
+  params 
+}: DashboardLayoutProps) {
+  return (
+    <div className="dashboard-layout">
+      <Sidebar />
+      <main className="dashboard-main">
+        <Breadcrumbs slug={params.slug} />
+        {children}
+      </main>
+    </div>
+  )
+}
+```
+
+## Server vs Client Components
+
+### Server Components (Default)
+```typescript
+// ✅ Good - Server component for data fetching
+async function UserProfile({ userId }: { userId: string }) {
+  const user = await getUser(userId)
+  
+  return (
+    <div className="user-profile">
+      <h1>{user.name}</h1>
+      <p>{user.email}</p>
+      <UserActions userId={userId} />
+    </div>
+  )
+}
+
+// ✅ Good - Server component with metadata
+export async function generateMetadata({ 
+  params 
+}: { params: { userId: string } }): Promise<Metadata> {
+  const user = await getUser(params.userId)
+  
+  return {
+    title: `${user.name} - Profile`,
+    description: `Profile page for ${user.name}`,
+    openGraph: {
+      title: user.name,
+      description: `View ${user.name}'s profile`
+    }
+  }
+}
+```
+
+### Client Components
+```typescript
+// ✅ Good - Client component for interactivity
+'use client'
+
+import { useState, useCallback } from 'react'
+
+interface UserActionsProps {
+  userId: string
+}
+
+export function UserActions({ userId }: UserActionsProps) {
+  const [isEditing, setIsEditing] = useState(false)
+  
+  const handleEdit = useCallback(() => {
+    setIsEditing(true)
+  }, [])
+
+  return (
+    <div className="user-actions">
+      <button onClick={handleEdit}>Edit Profile</button>
+      {isEditing && <EditProfileForm userId={userId} />}
+    </div>
+  )
+}
+```
+
+## Data Fetching
+
+### Server-Side Data Fetching
+```typescript
+// ✅ Good - Server component with data fetching
+async function DashboardPage() {
+  const [users, posts, analytics] = await Promise.all([
+    getUsers(),
+    getPosts(),
+    getAnalytics()
+  ])
+
+  return (
+    <div className="dashboard">
+      <UserStats users={users} />
+      <RecentPosts posts={posts} />
+      <AnalyticsChart data={analytics} />
+    </div>
+  )
+}
+```
+
+### API Routes
+```typescript
+// ✅ Good - API route with proper error handling
+import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
+
+const createUserSchema = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+  role: z.enum(['user', 'admin'])
+})
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const validatedData = createUserSchema.parse(body)
+    
+    const user = await createUser(validatedData)
+    
+    return NextResponse.json(user, { status: 201 })
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: 'Validation failed', details: error.errors },
+        { status: 400 }
+      )
+    }
+    
+    console.error('User creation error:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
+```
+
+## Performance Optimization
+
+### Image Optimization
+```typescript
+// ✅ Good - Optimized image with proper sizing
+import Image from 'next/image'
+
+function UserAvatar({ user, size = 64 }: UserAvatarProps) {
+  return (
+    <Image
+      src={user.avatarUrl}
+      alt={`${user.name}'s avatar`}
+      width={size}
+      height={size}
+      className="rounded-full"
+      priority={size > 100}
+    />
+  )
+}
+```
+
+### Dynamic Imports
+```typescript
+// ✅ Good - Dynamic imports for code splitting
+import dynamic from 'next/dynamic'
+
+const HeavyChart = dynamic(() => import('./HeavyChart'), {
+  loading: () => <ChartSkeleton />,
+  ssr: false
+})
+
+function Dashboard() {
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      <HeavyChart />
+    </div>
+  )
+}
+```
+
+## SEO and Metadata
+
+### Dynamic Metadata
+```typescript
+// ✅ Good - Dynamic metadata generation
+export async function generateMetadata({ 
+  params 
+}: { params: { slug: string } }): Promise<Metadata> {
+  const post = await getPost(params.slug)
+  
+  if (!post) {
+    return {
+      title: 'Post Not Found',
+      description: 'The requested post could not be found'
+    }
+  }
+  
+  return {
+    title: post.title,
+    description: post.excerpt,
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      images: post.featuredImage ? [post.featuredImage] : [],
+      type: 'article',
+      publishedTime: post.publishedAt,
+      authors: [post.author.name]
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.excerpt,
+      images: post.featuredImage ? [post.featuredImage] : []
+    }
+  }
+}
+```
+
+## Error Handling
+
+### Error Boundaries
+```typescript
+// ✅ Good - Error page for route segments
+export default function Error({
+  error,
+  reset
+}: {
+  error: Error & { digest?: string }
+  reset: () => void
+}) {
+  return (
+    <div className="error-page">
+      <h2>Something went wrong!</h2>
+      <p>{error.message}</p>
+      <button onClick={reset}>Try again</button>
+    </div>
+  )
+}
+```
+
+### Loading States
+```typescript
+// ✅ Good - Loading component for route segments
+export default function Loading() {
+  return (
+    <div className="loading-container">
+      <div className="loading-spinner" />
+      <p>Loading...</p>
+    </div>
+  )
+}
+```
+
+## Configuration
+
+### Next.js Config
+```typescript
+// ✅ Good - Next.js configuration
+import type { NextConfig } from 'next'
+
+const nextConfig: NextConfig = {
+  experimental: {
+    serverComponentsExternalPackages: ['@raypx/ui']
+  },
+  images: {
+    domains: ['images.unsplash.com', 'cdn.example.com'],
+    formats: ['image/webp', 'image/avif']
+  },
+  headers: async () => [
+    {
+      source: '/api/:path*',
+      headers: [
+        { key: 'X-Frame-Options', value: 'DENY' },
+        { key: 'X-Content-Type-Options', value: 'nosniff' }
+      ]
+    }
+  ]
+}
+
+export default nextConfig
+```
+
+## Best Practices
+
+- Use server components by default for better performance
+- Implement proper loading and error states
+- Use Next.js Image component for image optimization
+- Implement proper metadata for SEO
+- Use route groups for better organization
+- Implement proper error boundaries
+- Use dynamic imports for code splitting
+- Follow the App Router conventions
+- Implement proper TypeScript types
+- Use middleware for authentication and routing

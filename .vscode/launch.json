@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Dev Web App",
+      "type": "node",
+      "request": "launch",
+      "program": "bun",
+      "args": ["run", "dev"],
+      "cwd": "${workspaceFolder}/apps/web",
+      "console": "integratedTerminal"
+    }
+  ]
+}

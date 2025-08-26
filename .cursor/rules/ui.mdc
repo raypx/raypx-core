@@ -1,0 +1,272 @@
+---
+description: UI Components API reference and guidelines
+globs: **/*.tsx
+alwaysApply: false
+---
+# UI Components
+
+- Reusable UI components are defined in the "packages/ui" package named "@raypx/ui"
+- Components are built with Radix UI primitives, Tailwind CSS, and TypeScript
+- Import using: `@raypx/ui/components/{component-name}` format
+- All components follow accessibility-first design principles
+
+## Package Overview
+shadcn/ui-based component library with Radix UI primitives, Tailwind CSS, and TypeScript.
+
+## Available Components
+
+| Component | Description | Import Path |
+|-----------|-------------|-------------|
+| **Button** | Interactive buttons with variants | `@raypx/ui/components/button` |
+| **Card** | Content containers | `@raypx/ui/components/card` |
+| **Form** | Form components with validation | `@raypx/ui/components/form` |
+| **Dialog** | Modal dialogs | `@raypx/ui/components/dialog` |
+| **Input** | Text input fields | `@raypx/ui/components/input` |
+| **Label** | Form labels | `@raypx/ui/components/label` |
+| **Select** | Dropdown select | `@raypx/ui/components/select` |
+| **Textarea** | Multi-line inputs | `@raypx/ui/components/textarea` |
+| **Checkbox** | Form checkboxes | `@raypx/ui/components/checkbox` |
+| **RadioGroup** | Radio buttons | `@raypx/ui/components/radio-group` |
+| **Switch** | Toggle switches | `@raypx/ui/components/switch` |
+| **Slider** | Range sliders | `@raypx/ui/components/slider` |
+| **Progress** | Progress indicators | `@raypx/ui/components/progress` |
+| **Badge** | Status indicators | `@raypx/ui/components/badge` |
+| **Avatar** | User profiles | `@raypx/ui/components/avatar` |
+| **Alert** | Notifications | `@raypx/ui/components/alert` |
+| **AlertDialog** | Destructive actions | `@raypx/ui/components/alert-dialog` |
+| **DropdownMenu** | Dropdown menus | `@raypx/ui/components/dropdown-menu` |
+| **Popover** | Floating panels | `@raypx/ui/components/popover` |
+| **Tooltip** | Hover tooltips | `@raypx/ui/components/tooltip` |
+| **Tabs** | Tabbed content | `@raypx/ui/components/tabs` |
+| **Accordion** | Collapsible sections | `@raypx/ui/components/accordion` |
+| **Table** | Data tables | `@raypx/ui/components/table` |
+| **Calendar** | Date picker | `@raypx/ui/components/calendar` |
+| **NavigationMenu** | Navigation | `@raypx/ui/components/navigation-menu` |
+| **Breadcrumb** | Navigation breadcrumbs | `@raypx/ui/components/breadcrumb` |
+| **Pagination** | Page navigation | `@raypx/ui/components/pagination` |
+| **Sheet** | Slide-out sheets | `@raypx/ui/components/sheet` |
+| **Drawer** | Slide-out drawers | `@raypx/ui/components/drawer` |
+| **Sidebar** | Application sidebars | `@raypx/ui/components/sidebar` |
+| **Skeleton** | Loading placeholders | `@raypx/ui/components/skeleton` |
+| **Separator** | Visual separators | `@raypx/ui/components/separator` |
+| **AspectRatio** | Media aspect ratio | `@raypx/ui/components/aspect-ratio` |
+| **ScrollArea** | Custom scroll areas | `@raypx/ui/components/scroll-area` |
+| **Resizable** | Resizable panels | `@raypx/ui/components/resizable` |
+| **Command** | Command palette | `@raypx/ui/components/command` |
+| **ContextMenu** | Right-click menus | `@raypx/ui/components/context-menu` |
+| **Menubar** | Application menus | `@raypx/ui/components/menubar` |
+| **HoverCard** | Hover cards | `@raypx/ui/components/hover-card` |
+| **Carousel** | Image carousel | `@raypx/ui/components/carousel` |
+| **Toggle** | Toggle buttons | `@raypx/ui/components/toggle` |
+| **ToggleGroup** | Grouped toggles | `@raypx/ui/components/toggle-group` |
+| **InputOTP** | OTP input | `@raypx/ui/components/input-otp` |
+| **Sonner** | Toast notifications | `@raypx/ui/components/sonner` |
+| **Chart** | Data visualization | `@raypx/ui/components/chart` |
+
+## Component Architecture
+
+### Core Principles
+- **Accessibility First**: Built on Radix UI primitives
+- **Composable Design**: Components designed to work together
+- **Type Safety**: Full TypeScript support
+- **Customizable**: Uses class-variance-authority (CVA)
+- **Consistent Styling**: Tailwind CSS with CSS variables
+
+### Component Structure
+```typescript
+import type * as React from "react"
+import { cva, type VariantProps } from "class-variance-authority"
+import { cn } from "@raypx/ui/lib/utils"
+
+const componentVariants = cva(
+  "base-classes",
+  {
+    variants: {
+      variant: {
+        default: "default-classes",
+        destructive: "destructive-classes",
+        outline: "outline-classes",
+        secondary: "secondary-classes",
+        ghost: "ghost-classes",
+        link: "link-classes",
+      },
+      size: {
+        default: "h-9 px-4 py-2",
+        sm: "h-8 px-3 text-sm",
+        lg: "h-10 px-6",
+        icon: "size-9",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  },
+)
+
+interface ComponentProps extends React.ComponentProps<"element">, VariantProps<typeof componentVariants> {
+  asChild?: boolean
+}
+
+function Component({ className, variant, size, asChild = false, ...props }: ComponentProps) {
+  const Comp = asChild ? Slot : "element"
+  return <Comp className={cn(componentVariants({ variant, size, className }))} {...props} />
+}
+
+export { Component, componentVariants }
+```
+
+## Auto-Import Guidelines
+
+### Component Usage Triggers
+- `<Button` → `import { Button } from "@raypx/ui/components/button"`
+- `<Card` → `import { Card, CardContent, CardHeader, CardTitle } from "@raypx/ui/components/card"`
+- `<Form` → `import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@raypx/ui/components/form"`
+- `<Dialog` → `import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@raypx/ui/components/dialog"`
+- `cn(` → `import { cn } from "@raypx/ui/lib/utils"`
+- `<Plus` → `import { Plus } from "lucide-react"`
+
+### Common Patterns
+
+#### Form with Validation
+```typescript
+<Form {...form}>
+  <form onSubmit={form.handleSubmit(onSubmit)}>
+    <FormField
+      control={form.control}
+      name="email"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Email</FormLabel>
+          <FormControl>
+            <Input {...field} />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  </form>
+</Form>
+```
+
+#### Card with Actions
+```typescript
+<Card>
+  <CardHeader>
+    <CardTitle>Title</CardTitle>
+    <CardDescription>Description</CardDescription>
+  </CardHeader>
+  <CardContent>Content</CardContent>
+  <CardFooter>
+    <Button>Action</Button>
+  </CardFooter>
+</Card>
+```
+
+#### Dialog with Form
+```typescript
+<Dialog>
+  <DialogTrigger asChild>
+    <Button>Open</Button>
+  </DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Edit</DialogTitle>
+    </DialogHeader>
+    <Form {...form}>
+      <FormField name="name" render={({ field }) => (
+        <FormItem>
+          <FormLabel>Name</FormLabel>
+          <FormControl>
+            <Input {...field} />
+          </FormControl>
+        </FormItem>
+      )} />
+    </Form>
+  </DialogContent>
+</Dialog>
+```
+
+## Styling Conventions
+
+### CSS Classes
+- Use `cn()` for class merging: `cn(baseClasses, conditionalClasses, className)`
+- Use CSS variables: `bg-primary`, `text-primary-foreground`
+- Include focus states: `focus-visible:ring-ring/50 focus-visible:ring-[3px]`
+- Add disabled states: `disabled:pointer-events-none disabled:opacity-50`
+
+### Data Attributes
+- Use `data-slot` for identification: `data-slot="button"`
+- Use `data-error` for error states: `data-error={!!error}`
+- Use `aria-*` for accessibility: `aria-invalid={!!error}`
+
+## Accessibility Guidelines
+
+### ARIA Attributes
+- Always include proper `aria-*` attributes
+- Use `aria-describedby` for descriptions
+- Use `aria-invalid` for error states
+- Include `aria-label` for icon-only buttons
+
+### Focus Management
+- Implement proper focus states: `focus-visible:ring-ring/50`
+- Use `focus-visible:ring-[3px]` for consistent focus indicators
+- Ensure keyboard navigation works correctly
+
+## Best Practices
+
+### Naming Conventions
+- Use PascalCase for component names
+- Use camelCase for props and variables
+- Use kebab-case for CSS classes
+- Use descriptive names for variants
+
+### Code Quality
+- Use TypeScript strict mode
+- Include proper JSDoc comments
+- Follow consistent formatting
+- Use meaningful variable names
+
+### Accessibility Checklist
+- [ ] Proper ARIA attributes
+- [ ] Keyboard navigation
+- [ ] Screen reader support
+- [ ] Focus management
+- [ ] Color contrast
+- [ ] Error handling
+
+## Common Issues & Solutions
+
+### Form Validation
+```typescript
+// Problem: Form not validating
+const form = useForm({
+  resolver: zodResolver(schema),
+  mode: "onChange"
+})
+```
+
+### Styling Issues
+```typescript
+// Problem: Custom styles not applying
+const className = cn(
+  baseClasses,
+  variantClasses,
+  customClasses,
+  className
+)
+```
+
+### Performance
+```typescript
+// Problem: Unnecessary re-renders
+const ExpensiveComponent = React.memo(({ data }: Props) => {
+  const handleClick = useCallback(() => {
+    // handle click
+  }, [])
+  
+  return <div onClick={handleClick}>{data}</div>
+})
+```
+
+Remember to prioritize accessibility, maintain consistency with the design system, and follow established patterns.

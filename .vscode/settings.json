@@ -1,0 +1,17 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit"
+  },
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.formatOnSave": true,
+  "npm.packageManager": "bun",
+  "npm.scriptRunner": "bun",
+  "search.exclude": {
+    "**/.next": true,
+    "**/.turbo": true,
+    "**/bun.lockb": true,
+    "**/bun.lock": true,
+    "**/dist": true,
+    "**/node_modules": true
+  }
+}

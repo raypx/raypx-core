@@ -1,0 +1,29 @@
+{
+  "name": "@raypx/shared",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./config": "./src/config/index.ts",
+    "./utils": "./src/utils/index.ts",
+    "./logger": "./src/logger/index.ts",
+    "./server": "./src/server.ts"
+  },
+  "scripts": {
+    "clean": "rimraf dist .turbo",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@t3-oss/env-nextjs": "^0.13.8",
+    "lodash-es": "^4.17.21",
+    "ua-parser-js": "^2.0.4",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@raypx/tsconfig": "workspace:*",
+    "@types/lodash-es": "^4.17.12",
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
+  }
+}

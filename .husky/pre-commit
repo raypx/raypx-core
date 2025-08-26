@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Exit on error
+set -e
+
+echo "Running pre-commit checks..."
+echo "🔧 Auto-fixing code issues..."
+bun format
+
+echo "📝 Adding formatted files to git..."
+git add .
+
+echo "🔍 Final code check..."
+bun check || {
+  echo "❌ Code issues found that cannot be auto-fixed. Please review and fix manually:"
+  echo "   Run 'bun check' to see the issues"
+  echo "   Run 'bun format' to auto-fix formatting issues"
+  exit 1
+}
+
+echo "✅ All pre-commit checks passed!"

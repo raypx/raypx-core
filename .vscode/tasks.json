@@ -1,0 +1,30 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "Dev",
+      "command": "bun",
+      "args": ["run", "dev"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "isBackground": true
+    },
+    {
+      "type": "shell",
+      "label": "Build",
+      "command": "bun",
+      "args": ["run", "build"],
+      "group": "build"
+    },
+    {
+      "type": "shell",
+      "label": "Test",
+      "command": "bun",
+      "args": ["test"],
+      "group": "test"
+    }
+  ]
+}

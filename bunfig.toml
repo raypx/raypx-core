@@ -1,0 +1,15 @@
+[install]
+# Use exact versions for more predictable builds
+exact = false
+auto = "force"
+
+[install.lockfile]
+save = true
+
+[workspaces]
+# Enable workspace support
+enabled = true
+
+[build]
+# Build configuration
+minify = true

@@ -1,0 +1,378 @@
+---
+description: TypeScript Guidelines
+globs: **/*.ts,**/*.tsx
+alwaysApply: false
+---
+# Typescript
+
+## Core Principles
+
+- Write clean, clear, well-designed, explicit TypeScript
+- Make sure types are validated strictly
+- Use implicit type inference when possible, explicit when necessary
+- Follow the Single Responsibility Principle (SRP)
+- Favor composition over inheritance
+- Handle errors gracefully with appropriate error types
+- Keep functions short and focused
+- Use descriptive names for variables, functions, and classes
+- Avoid unnecessary complexity
+- Avoid using `any` type - prefer `unknown` when needed
+- Use enums sparingly - consider union types of string literals
+- Be aware of performance implications
+
+## Type Safety
+
+### Strict Type Usage
+```typescript
+// ✅ Good - Explicit types
+interface User {
+  id: number
+  name: string
+  email: string
+  isActive: boolean
+}
+
+// ✅ Good - Type inference
+const users: User[] = []
+const activeUsers = users.filter(user => user.isActive)
+
+// ❌ Bad - Using any
+const data: any = fetchData()
+
+// ✅ Good - Using unknown
+const data: unknown = fetchData()
+if (isUserData(data)) {
+  // data is now typed as User
+}
+```
+
+### Union Types vs Enums
+```typescript
+// ✅ Prefer union types
+type Status = 'pending' | 'active' | 'inactive' | 'deleted'
+
+// ❌ Avoid enums when possible
+enum Status {
+  Pending = 'pending',
+  Active = 'active',
+  Inactive = 'inactive',
+  Deleted = 'deleted'
+}
+```
+
+## Function Design
+
+### Service Pattern
+```typescript
+// ✅ Good - Export functions instead of classes
+class UserService {
+  private db: Database
+
+  constructor(db: Database) {
+    this.db = db
+  }
+
+  async getUser(id: number): Promise<User | null> {
+    return this.db.users.find(user => user.id === id) || null
+  }
+
+  async createUser(userData: Omit<User, 'id'>): Promise<User> {
+    const newUser = { ...userData, id: Date.now() }
+    this.db.users.push(newUser)
+    return newUser
+  }
+}
+
+// Export factory function
+export function createUserService(db: Database): UserService {
+  return new UserService(db)
+}
+```
+
+### Function Composition
+```typescript
+// ✅ Good - Small, focused functions
+const validateEmail = (email: string): boolean => {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
+
+const validateUser = (user: Partial<User>): ValidationResult => {
+  const errors: string[] = []
+  
+  if (!user.name?.trim()) {
+    errors.push('Name is required')
+  }
+  
+  if (!validateEmail(user.email || '')) {
+    errors.push('Invalid email format')
+  }
+  
+  return { isValid: errors.length === 0, errors }
+}
+```
+
+## Error Handling
+
+### Custom Error Types
+```typescript
+// ✅ Good - Custom error classes
+class ValidationError extends Error {
+  constructor(
+    message: string,
+    public field: string,
+    public value: unknown
+  ) {
+    super(message)
+    this.name = 'ValidationError'
+  }
+}
+
+class DatabaseError extends Error {
+  constructor(
+    message: string,
+    public operation: string,
+    public table: string
+  ) {
+    super(message)
+    this.name = 'DatabaseError'
+  }
+}
+```
+
+### Error Handling Patterns
+```typescript
+// ✅ Good - Proper error handling
+async function fetchUser(id: number): Promise<User> {
+  try {
+    const response = await fetch(`/api/users/${id}`)
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    }
+    
+    const user = await response.json()
+    return validateUser(user) // Ensure type safety
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new DatabaseError(error.message, 'fetch', 'users')
+    }
+    throw new DatabaseError('Unknown error', 'fetch', 'users')
+  }
+}
+```
+
+## Type Utilities
+
+### Common Utility Types
+```typescript
+// ✅ Good - Use utility types
+type UserInput = Omit<User, 'id' | 'createdAt'>
+type UserUpdate = Partial<Pick<User, 'name' | 'email'>>
+type UserResponse = User & { permissions: string[] }
+
+// Conditional types
+type ApiResponse<T> = {
+  data: T
+  success: true
+} | {
+  error: string
+  success: false
+}
+
+// Generic constraints
+function sortBy<T, K extends keyof T>(array: T[], key: K): T[] {
+  return [...array].sort((a, b) => {
+    if (a[key] < b[key]) return -1
+    if (a[key] > b[key]) return 1
+    return 0
+  })
+}
+```
+
+## React Patterns
+
+### Component Props
+```typescript
+// ✅ Good - Proper component typing
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary' | 'danger'
+  size?: 'sm' | 'md' | 'lg'
+  loading?: boolean
+  children: React.ReactNode
+}
+
+const Button: React.FC<ButtonProps> = ({
+  variant = 'primary',
+  size = 'md',
+  loading = false,
+  children,
+  ...props
+}) => {
+  return (
+    <button
+      className={`btn btn-${variant} btn-${size}`}
+      disabled={loading}
+      {...props}
+    >
+      {loading ? 'Loading...' : children}
+    </button>
+  )
+}
+```
+
+### Custom Hooks
+```typescript
+// ✅ Good - Typed custom hooks
+interface UseCounterOptions {
+  initialValue?: number
+  min?: number
+  max?: number
+}
+
+interface UseCounterReturn {
+  count: number
+  increment: () => void
+  decrement: () => void
+  reset: () => void
+  setCount: (value: number) => void
+}
+
+function useCounter(options: UseCounterOptions = {}): UseCounterReturn {
+  const { initialValue = 0, min, max } = options
+  const [count, setCount] = useState(initialValue)
+
+  const increment = useCallback(() => {
+    setCount(prev => {
+      const newValue = prev + 1
+      return max !== undefined ? Math.min(newValue, max) : newValue
+    })
+  }, [max])
+
+  const decrement = useCallback(() => {
+    setCount(prev => {
+      const newValue = prev - 1
+      return min !== undefined ? Math.max(newValue, min) : newValue
+    })
+  }, [min])
+
+  const reset = useCallback(() => {
+    setCount(initialValue)
+  }, [initialValue])
+
+  return { count, increment, decrement, reset, setCount }
+}
+```
+
+## Performance Considerations
+
+### Memoization
+```typescript
+// ✅ Good - Memoize expensive computations
+const ExpensiveComponent = React.memo<{ data: User[] }>(({ data }) => {
+  const processedData = useMemo(() => {
+    return data
+      .filter(user => user.isActive)
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map(user => ({ ...user, displayName: `${user.name} (${user.email})` }))
+  }, [data])
+
+  return (
+    <div>
+      {processedData.map(user => (
+        <UserCard key={user.id} user={user} />
+      ))}
+    </div>
+  )
+})
+```
+
+### Lazy Loading
+```typescript
+// ✅ Good - Lazy load components
+const HeavyChart = lazy(() => import('./HeavyChart'))
+
+function Dashboard() {
+  return (
+    <Suspense fallback={<Skeleton />}>
+      <HeavyChart />
+    </Suspense>
+  )
+}
+```
+
+## Code Organization
+
+### File Structure
+```typescript
+// ✅ Good - Organized imports
+import type { FC, ReactNode } from 'react'
+import { useState, useCallback, useMemo } from 'react'
+import { z } from 'zod'
+
+// Local imports
+import { Button } from '@/components/ui/button'
+import { useUser } from '@/hooks/useUser'
+import type { User, UserInput } from '@/types/user'
+```
+
+### Type Definitions
+```typescript
+// ✅ Good - Centralized types
+// types/user.ts
+export interface User {
+  id: number
+  name: string
+  email: string
+  isActive: boolean
+  createdAt: Date
+  updatedAt: Date
+}
+
+export type UserInput = Omit<User, 'id' | 'createdAt' | 'updatedAt'>
+export type UserUpdate = Partial<Pick<User, 'name' | 'email' | 'isActive'>>
+
+// types/api.ts
+export type ApiResponse<T> = {
+  data: T
+  success: true
+} | {
+  error: string
+  success: false
+}
+```
+
+## Best Practices Checklist
+
+### Code Quality
+- [ ] Use strict TypeScript configuration
+- [ ] Avoid `any` type - use `unknown` when needed
+- [ ] Prefer union types over enums
+- [ ] Use descriptive variable and function names
+- [ ] Keep functions small and focused
+- [ ] Handle errors gracefully
+- [ ] Use proper error types
+
+### Performance
+- [ ] Memoize expensive computations with `useMemo`
+- [ ] Use `useCallback` for event handlers
+- [ ] Implement proper key props for lists
+- [ ] Lazy load heavy components
+- [ ] Avoid unnecessary re-renders
+
+### Type Safety
+- [ ] Use explicit types when inference is unclear
+- [ ] Leverage utility types (`Partial`, `Pick`, `Omit`)
+- [ ] Use generic constraints appropriately
+- [ ] Validate external data with type guards
+- [ ] Use branded types for domain-specific values
+
+### React Patterns
+- [ ] Use `React.FC` for functional components
+- [ ] Extend HTML element props when appropriate
+- [ ] Use proper typing for custom hooks
+- [ ] Implement proper prop validation
+- [ ] Use `React.memo` for expensive components
+
+Remember: TypeScript is a tool to help you write better code. Use it to catch errors early and make your code more maintainable.
+- Be aware of performance implications of your code.
+

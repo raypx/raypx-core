@@ -1,0 +1,298 @@
+---
+description: React Development Guidelines
+globs: **/*.tsx,**/*.jsx
+alwaysApply: false
+---
+# React Development Guidelines
+
+## Core Principles
+
+- Use React 19 features and modern patterns
+- Prefer functional components with hooks over class components
+- Follow the Single Responsibility Principle for components
+- Use TypeScript for all React components
+- Implement proper error boundaries and error handling
+- Optimize performance with React.memo, useCallback, and useMemo
+- Follow accessibility-first design principles
+
+## Component Design
+
+### Component Structure
+```typescript
+// ✅ Good - Functional component with proper typing
+interface ButtonProps {
+  children: React.ReactNode
+  variant?: 'primary' | 'secondary' | 'destructive'
+  size?: 'sm' | 'md' | 'lg'
+  onClick?: () => void
+  disabled?: boolean
+}
+
+export function Button({ 
+  children, 
+  variant = 'primary', 
+  size = 'md', 
+  onClick, 
+  disabled = false 
+}: ButtonProps) {
+  return (
+    <button
+      className={cn(buttonVariants({ variant, size }))}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      {children}
+    </button>
+  )
+}
+```
+
+### Hooks Usage
+```typescript
+// ✅ Good - Custom hook with proper dependencies
+function useUserData(userId: string) {
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    
+    async function fetchUser() {
+      try {
+        setLoading(true)
+        const userData = await api.getUser(userId)
+        if (!cancelled) {
+          setUser(userData)
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(err as Error)
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false)
+        }
+      }
+    }
+
+    fetchUser()
+    return () => { cancelled = true }
+  }, [userId])
+
+  return { user, loading, error }
+}
+```
+
+## Performance Optimization
+
+### Memoization
+```typescript
+// ✅ Good - Use React.memo for expensive components
+export const ExpensiveComponent = React.memo(function ExpensiveComponent({ 
+  data, 
+  onUpdate 
+}: ExpensiveComponentProps) {
+  const processedData = useMemo(() => {
+    return processLargeDataset(data)
+  }, [data])
+
+  const handleUpdate = useCallback((id: string) => {
+    onUpdate(id)
+  }, [onUpdate])
+
+  return (
+    <div>
+      {processedData.map(item => (
+        <DataItem key={item.id} item={item} onUpdate={handleUpdate} />
+      ))}
+    </div>
+  )
+})
+```
+
+### Lazy Loading
+```typescript
+// ✅ Good - Lazy load components
+const LazyComponent = lazy(() => import('./LazyComponent'))
+
+function App() {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <LazyComponent />
+    </Suspense>
+  )
+}
+```
+
+## State Management
+
+### Local State
+```typescript
+// ✅ Good - Use useState for simple state
+function Counter() {
+  const [count, setCount] = useState(0)
+  
+  const increment = useCallback(() => {
+    setCount(prev => prev + 1)
+  }, [])
+
+  return (
+    <div>
+      <span>Count: {count}</span>
+      <button onClick={increment}>Increment</button>
+    </div>
+  )
+}
+```
+
+### Complex State
+```typescript
+// ✅ Good - Use useReducer for complex state
+interface FormState {
+  values: Record<string, any>
+  errors: Record<string, string>
+  touched: Record<string, boolean>
+  isValid: boolean
+}
+
+type FormAction = 
+  | { type: 'SET_FIELD'; field: string; value: any }
+  | { type: 'SET_ERROR'; field: string; error: string }
+  | { type: 'TOUCH_FIELD'; field: string }
+  | { type: 'RESET' }
+
+function formReducer(state: FormState, action: FormAction): FormState {
+  switch (action.type) {
+    case 'SET_FIELD':
+      return {
+        ...state,
+        values: { ...state.values, [action.field]: action.value }
+      }
+    case 'SET_ERROR':
+      return {
+        ...state,
+        errors: { ...state.errors, [action.field]: action.error }
+      }
+    case 'TOUCH_FIELD':
+      return {
+        ...state,
+        touched: { ...state.touched, [action.field]: true }
+      }
+    case 'RESET':
+      return initialState
+    default:
+      return state
+  }
+}
+```
+
+## Error Handling
+
+### Error Boundaries
+```typescript
+// ✅ Good - Error boundary component
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error?: Error }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props)
+    this.state = { hasError: false }
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error }
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('Error caught by boundary:', error, errorInfo)
+    // Log to error reporting service
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="error-boundary">
+          <h2>Something went wrong</h2>
+          <button onClick={() => this.setState({ hasError: false })}>
+            Try again
+          </button>
+        </div>
+      )
+    }
+
+    return this.props.children
+  }
+}
+```
+
+## Testing
+
+### Component Testing
+```typescript
+// ✅ Good - Component test with Testing Library
+import { render, screen, fireEvent } from '@testing-library/react'
+import { Button } from './Button'
+
+describe('Button', () => {
+  it('renders with correct text', () => {
+    render(<Button>Click me</Button>)
+    expect(screen.getByRole('button', { name: 'Click me' })).toBeInTheDocument()
+  })
+
+  it('calls onClick when clicked', () => {
+    const handleClick = jest.fn()
+    render(<Button onClick={handleClick}>Click me</Button>)
+    
+    fireEvent.click(screen.getByRole('button'))
+    expect(handleClick).toHaveBeenCalledTimes(1)
+  })
+})
+```
+
+## Accessibility
+
+### ARIA Attributes
+```typescript
+// ✅ Good - Accessible component
+function Modal({ isOpen, onClose, title, children }: ModalProps) {
+  if (!isOpen) return null
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+      className="modal"
+    >
+      <div className="modal-header">
+        <h2 id="modal-title">{title}</h2>
+        <button
+          aria-label="Close modal"
+          onClick={onClose}
+          className="close-button"
+        >
+          ×
+        </button>
+      </div>
+      <div className="modal-content">
+        {children}
+      </div>
+    </div>
+  )
+}
+```
+
+## Best Practices
+
+- Always use TypeScript for type safety
+- Implement proper prop validation
+- Use semantic HTML elements
+- Handle loading and error states gracefully
+- Implement proper keyboard navigation
+- Use React DevTools for debugging
+- Follow the React team's recommendations
+- Keep components small and focused
+- Use composition over inheritance
+- Implement proper cleanup in useEffect

@@ -1,0 +1,44 @@
+{
+  "name": "@raypx/docs",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "analyze": "cross-env ANALYZE=true bun with-env next build",
+    "build": "bun with-env next build",
+    "clean": "rimraf .next .source",
+    "dev": "bun with-env next dev --turbo --port 3001",
+    "postinstall": "fumadocs-mdx",
+    "start": "bun with-env next start",
+    "with-env": "dotenv -e ../../.env --"
+  },
+  "dependencies": {
+    "@raypx/analytics": "workspace:*",
+    "@raypx/auth": "workspace:*",
+    "@raypx/db": "workspace:*",
+    "@raypx/redis": "workspace:*",
+    "@raypx/shared": "workspace:*",
+    "@raypx/ui": "workspace:*",
+    "fumadocs-core": "^15.7.2",
+    "fumadocs-mdx": "^11.8.0",
+    "fumadocs-ui": "^15.7.2",
+    "lucide-react": "catalog:",
+    "next": "catalog:",
+    "react": "catalog:react19",
+    "react-dom": "catalog:react19",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@raypx/next-config": "workspace:*",
+    "@tailwindcss/postcss": "^4.1.12",
+    "@types/mdx": "^2.0.13",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:react19",
+    "@types/react-dom": "catalog:react19",
+    "cross-env": "^10.0.0",
+    "dotenv-cli": "^10.0.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.12",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}

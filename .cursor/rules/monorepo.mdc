@@ -1,0 +1,318 @@
+---
+description: Monorepo Development Guidelines
+globs: **/*.ts,**/*.tsx,**/*.json,**/turbo.json,**/package.json
+alwaysApply: false
+---
+# Monorepo Development Guidelines
+
+## Core Principles
+
+- Use Turbo for build orchestration and caching
+- Maintain clear package boundaries and dependencies
+- Follow consistent naming conventions across packages
+- Implement proper workspace management with Bun
+- Use shared tooling and configurations
+- Maintain consistent code quality standards
+- Implement proper version management
+
+## Package Structure
+
+### Workspace Organization
+```
+raypx/
+├── apps/                    # Application packages
+│   ├── web/                # Main web application
+│   └── docs/               # Documentation site
+├── packages/                # Shared packages
+│   ├── ui/                 # UI component library
+│   ├── auth/               # Authentication package
+│   ├── db/                 # Database package
+│   └── shared/             # Shared utilities
+├── tooling/                 # Development tools
+│   ├── tsconfig/           # TypeScript configurations
+│   └── next-config/        # Next.js configurations
+└── scripts/                 # Build and utility scripts
+```
+
+### Package Naming Conventions
+```json
+// ✅ Good - Consistent package naming
+{
+  "name": "@raypx/ui",
+  "name": "@raypx/auth",
+  "name": "@raypx/db",
+  "name": "@raypx/shared"
+}
+```
+
+## Dependencies Management
+
+### Workspace Dependencies
+```json
+// ✅ Good - Use workspace protocol for internal packages
+{
+  "dependencies": {
+    "@raypx/ui": "workspace:*",
+    "@raypx/auth": "workspace:*",
+    "@raypx/db": "workspace:*"
+  }
+}
+```
+
+### Version Management
+```json
+// ✅ Good - Use catalog for shared versions
+{
+  "workspaces": {
+    "catalog": {
+      "react": "^19.1.1",
+      "typescript": "^5.9.2",
+      "next": "^15.5.0"
+    }
+  }
+}
+```
+
+## Turbo Configuration
+
+### Task Definitions
+```json
+// ✅ Good - Turbo task configuration
+{
+  "tasks": {
+    "build": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env",
+        "next.config.*",
+        "tailwind.config.*"
+      ],
+      "outputs": [".next/**", "dist/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "inputs": ["$TURBO_DEFAULT$", ".env"]
+    },
+    "test": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "vitest.config.*"]
+    }
+  }
+}
+```
+
+### Build Dependencies
+```json
+// ✅ Good - Proper build dependency chain
+{
+  "build": {
+    "dependsOn": ["^build"],
+    "outputs": [".next/**", "dist/**"]
+  }
+}
+```
+
+## Package Exports
+
+### Export Patterns
+```json
+// ✅ Good - Clear export structure
+{
+  "exports": {
+    ".": "./src/index.ts",
+    "./components/*": "./src/components/*.tsx",
+    "./hooks/*": "./src/hooks/*.ts",
+    "./lib/*": "./src/lib/*.ts"
+  }
+}
+```
+
+### Type Exports
+```json
+// ✅ Good - TypeScript type exports
+{
+  "typesVersions": {
+    "*": {
+      "components/*": ["./src/components/*.tsx"],
+      "hooks/*": ["./src/hooks/*.ts"]
+    }
+  }
+}
+```
+
+## Development Workflow
+
+### Package Development
+```bash
+# ✅ Good - Development workflow
+# Start all packages in development mode
+bun dev
+
+# Build specific package
+bun --filter @raypx/ui build
+
+# Test specific package
+bun --filter @raypx/auth test
+
+# Clean all packages
+bun clean
+```
+
+### Cross-Package Dependencies
+```typescript
+// ✅ Good - Import from other packages
+import { Button } from '@raypx/ui/components/button'
+import { useAuth } from '@raypx/auth'
+import { db } from '@raypx/db'
+
+// ❌ Bad - Direct file imports
+import { Button } from '../../../packages/ui/src/components/button'
+```
+
+## TypeScript Configuration
+
+### Base Configuration
+```json
+// ✅ Good - Shared TypeScript configuration
+{
+  "extends": "@raypx/tsconfig/base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@raypx/*": ["packages/*/src"]
+    }
+  }
+}
+```
+
+### Package-Specific Configuration
+```json
+// ✅ Good - Package-specific TypeScript config
+{
+  "extends": "@raypx/tsconfig/nextjs.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "include": ["src/**/*", "next.config.*"],
+  "exclude": ["node_modules", "dist", ".next"]
+}
+```
+
+## Testing Strategy
+
+### Test Configuration
+```typescript
+// ✅ Good - Shared test configuration
+import { defineConfig } from 'vitest/config'
+import { resolve } from 'path'
+
+export default defineConfig({
+  test: {
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
+    globals: true
+  },
+  resolve: {
+    alias: {
+      '@raypx': resolve(__dirname, '../../packages')
+    }
+  }
+})
+```
+
+### Cross-Package Testing
+```typescript
+// ✅ Good - Test utilities from shared package
+import { render, screen } from '@raypx/testing'
+import { Button } from '@raypx/ui/components/button'
+
+describe('Button Component', () => {
+  it('renders correctly', () => {
+    render(<Button>Click me</Button>)
+    expect(screen.getByRole('button')).toBeInTheDocument()
+  })
+})
+```
+
+## Build and Deployment
+
+### Build Pipeline
+```json
+// ✅ Good - Build pipeline configuration
+{
+  "scripts": {
+    "build": "turbo build",
+    "build:web": "bun --filter @raypx/web build",
+    "build:ui": "bun --filter @raypx/ui build",
+    "deploy": "turbo build && vercel --prod"
+  }
+}
+```
+
+### Environment Management
+```typescript
+// ✅ Good - Environment configuration
+import { z } from 'zod'
+
+const envSchema = z.object({
+  DATABASE_URL: z.string().url(),
+  REDIS_URL: z.string().url(),
+  NODE_ENV: z.enum(['development', 'production', 'test'])
+})
+
+export const env = envSchema.parse(process.env)
+```
+
+## Code Quality
+
+### Linting Configuration
+```json
+// ✅ Good - Shared linting configuration
+{
+  "biome": {
+    "extends": ["../../biome.jsonc"],
+    "files": {
+      "includes": ["src/**/*"]
+    }
+  }
+}
+```
+
+### Pre-commit Hooks
+```json
+// ✅ Good - Pre-commit configuration
+{
+  "husky": {
+    "hooks": {
+      "pre-commit": "bun lint-staged",
+      "commit-msg": "bun commitlint --edit $1"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "biome check --write",
+      "biome format --write"
+    ]
+  }
+}
+```
+
+## Best Practices
+
+- Keep packages focused and single-purpose
+- Use workspace protocol for internal dependencies
+- Implement proper build dependency chains
+- Share common tooling and configurations
+- Maintain consistent naming conventions
+- Use Turbo for build orchestration
+- Implement proper TypeScript project references
+- Test cross-package integrations
+- Document package APIs and usage
+- Use changesets for version management
+- Implement proper CI/CD pipelines
+- Monitor package dependencies and updates

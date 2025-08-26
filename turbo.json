@@ -1,0 +1,55 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "envMode": "loose",
+  "globalDependencies": ["**/.env.*local", ".env.example"],
+  "tasks": {
+    "build": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env",
+        "next.config.*",
+        "tailwind.config.*",
+        "postcss.config.*"
+      ],
+      "outputs": ["dist/**", ".output/**", ".vercel/*", ".next/**"]
+    },
+    "clean": {
+      "cache": false,
+      "outputLogs": "none"
+    },
+    "dev": {
+      "cache": false,
+      "inputs": ["$TURBO_DEFAULT$", ".env", "**/*.env.*"],
+      "persistent": true
+    },
+    "generate": {
+      "cache": true,
+      "outputLogs": "new-only",
+      "outputs": ["generated/**", "**/*.generated.*"]
+    },
+    "lint": {
+      "cache": true,
+      "inputs": ["$TURBO_DEFAULT$", "biome.jsonc"],
+      "outputs": []
+    },
+    "start": {
+      "cache": false,
+      "dependsOn": ["build"]
+    },
+    "test": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "vitest.config.*",
+        "jest.config.*",
+        "**/*.test.*",
+        "**/*.spec.*"
+      ],
+      "outputs": ["coverage/**", "test-results/**"]
+    }
+  },
+  "ui": "stream"
+}

@@ -1,0 +1,55 @@
+{
+  "name": "@raypx/auth",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/client.ts",
+    "./envs": "./src/envs.ts",
+    "./server": "./src/server.ts",
+    "./core": "./src/core/index.ts",
+    "./types": "./src/types/index.ts",
+    "./account": "./src/account/index.ts",
+    "./settings": "./src/settings/index.ts",
+    "./organization": "./src/organization/index.ts",
+    "./localization/*": "./src/localization/*/index.ts"
+  },
+  "scripts": {
+    "clean": "rimraf dist .turbo",
+    "generate": "dotenv -e ../../.env -- pnpx @better-auth/cli generate --output ../db/src/auth-schema.ts",
+    "test": "vitest",
+    "test:watch": "vitest --watch"
+  },
+  "dependencies": {
+    "@better-fetch/fetch": "^1.1.18",
+    "@hcaptcha/react-hcaptcha": "^1.12.1",
+    "@hookform/resolvers": "^5.2.1",
+    "@marsidev/react-turnstile": "^1.3.0",
+    "@noble/hashes": "^2.0.0",
+    "@raypx/db": "workspace:*",
+    "@raypx/email": "workspace:*",
+    "@raypx/redis": "workspace:*",
+    "@raypx/shared": "workspace:*",
+    "@raypx/ui": "workspace:*",
+    "@wojtekmaj/react-recaptcha-v3": "^0.1.4",
+    "better-auth": "^1.3.7",
+    "next-intl": "^4.3.5",
+    "react": "catalog:react19",
+    "react-google-recaptcha": "^3.1.0",
+    "react-hook-form": "^7.62.0",
+    "react-qr-code": "^2.0.18"
+  },
+  "devDependencies": {
+    "@raypx/testing": "workspace:*",
+    "@raypx/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:react19",
+    "@types/react-google-recaptcha": "^2.1.9",
+    "dotenv-cli": "^10.0.0",
+    "next": "catalog:",
+    "type-fest": "^4.41.0",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

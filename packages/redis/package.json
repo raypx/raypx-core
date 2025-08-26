@@ -1,0 +1,23 @@
+{
+  "name": "@raypx/redis",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./envs": "./src/envs.ts"
+  },
+  "scripts": {
+    "clean": "rimraf dist .turbo",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@raypx/shared": "workspace:*",
+    "redis": "^5.8.2"
+  },
+  "devDependencies": {
+    "@raypx/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
+  }
+}

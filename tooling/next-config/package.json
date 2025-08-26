@@ -1,0 +1,27 @@
+{
+  "name": "@raypx/next-config",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "clean": "rimraf dist .turbo",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@next/bundle-analyzer": "^15.5.2",
+    "next-intl": "^4.3.5"
+  },
+  "devDependencies": {
+    "@raypx/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "next": "catalog:",
+    "type-fest": "^4.41.0",
+    "typescript": "catalog:"
+  },
+  "peerDependencies": {
+    "next": "catalog:"
+  }
+}

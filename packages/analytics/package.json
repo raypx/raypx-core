@@ -1,0 +1,25 @@
+{
+  "name": "@raypx/analytics",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./envs": "./src/envs.ts"
+  },
+  "scripts": {
+    "clean": "rimraf dist .turbo",
+    "test": "vitest",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@raypx/shared": "workspace:*",
+    "@vercel/analytics": "^1.5.0"
+  },
+  "devDependencies": {
+    "@raypx/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:react19",
+    "typescript": "catalog:"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "forgotPassword": "Forgot Password",
+    "resetPassword": "Reset Password",
+    "recoverAccount": "Recover Account"
+  },
+  "navigation": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "console": "Console",
+    "account": "Account",
+    "settings": "Settings",
+    "organizations": "Organizations",
+    "members": "Members",
+    "apiKeys": "API Keys",
+    "security": "Security"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "update": "Update",
+    "switchLanguage": "Switch Language",
+    "language": "Language",
+    "english": "English",
+    "chinese": "Chinese"
+  },
+  "pages": {
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "notFound": "Page Not Found",
+    "404": {
+      "title": "Page Not Found",
+      "description": "Sorry, the page you are looking for could not be found or has been moved.",
+      "backToHome": "Back to Home",
+      "goToDashboard": "Go to Dashboard"
+    }
+  }
+}
