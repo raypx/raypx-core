@@ -1,5 +1,6 @@
 "use client"
 
+import { AnalyticsProvider } from "@raypx/analytics"
 import { AuthProvider } from "@raypx/auth"
 import { client } from "@raypx/auth/client"
 import { Provider } from "@raypx/ui/components/provider"
@@ -15,32 +16,34 @@ export function Providers({ children }: ProvidersProps) {
 
   return (
     <Provider>
-      <AuthProvider
-        authClient={client}
-        social={{
-          providers: ["google", "github"],
-        }}
-        basePath="/"
-        navigate={router.push}
-        replace={router.replace}
-        viewPaths={authPages}
-        credentials={{
-          username: true,
-          rememberMe: true,
-        }}
-        signUp={true}
-        organization={{
-          pathMode: "slug",
-          basePath: "/orgs",
-          apiKey: true,
-          logo: true,
-        }}
-        onSessionChange={() => {
-          router.refresh()
-        }}
-      >
-        {children}
-      </AuthProvider>
+      <AnalyticsProvider>
+        <AuthProvider
+          authClient={client}
+          social={{
+            providers: ["google", "github"],
+          }}
+          basePath="/"
+          navigate={router.push}
+          replace={router.replace}
+          viewPaths={authPages}
+          credentials={{
+            username: true,
+            rememberMe: true,
+          }}
+          signUp={true}
+          organization={{
+            pathMode: "slug",
+            basePath: "/orgs",
+            apiKey: true,
+            logo: true,
+          }}
+          onSessionChange={() => {
+            router.refresh()
+          }}
+        >
+          {children}
+        </AuthProvider>
+      </AnalyticsProvider>
     </Provider>
   )
 }

@@ -1,5 +1,6 @@
 "use client"
 
+import { useAnalytics } from "@raypx/analytics"
 import { useAuth } from "@raypx/auth/core"
 import { Badge } from "@raypx/ui/components/badge"
 import { Button } from "@raypx/ui/components/button"
@@ -7,11 +8,32 @@ import { ArrowRight, Shield, Sparkles, Zap } from "lucide-react"
 import Link from "next/link"
 
 export function HeroSection() {
+  const { track } = useAnalytics()
   const {
     viewPaths: pages,
     hooks: { useSession },
   } = useAuth()
   const { data: session } = useSession()
+
+  const handleGetStartedClick = () => {
+    track("hero_get_started_clicked", {
+      section: "hero",
+      user_authenticated: !!session?.session,
+    })
+  }
+
+  const handleSignInClick = () => {
+    track("hero_sign_in_clicked", {
+      section: "hero",
+    })
+  }
+
+  const handleConsoleClick = () => {
+    track("hero_console_clicked", {
+      section: "hero",
+      user_id: session?.session?.userId,
+    })
+  }
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
@@ -43,7 +65,7 @@ export function HeroSection() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             {session?.session ? (
-              <Link href="/console">
+              <Link href="/console" onClick={handleConsoleClick}>
                 <Button size="lg" className="min-w-48 gap-2">
                   Go to Console
                   <ArrowRight className="h-5 w-5" />
@@ -51,13 +73,13 @@ export function HeroSection() {
               </Link>
             ) : (
               <>
-                <Link href={pages.SIGN_UP}>
+                <Link href={pages.SIGN_UP} onClick={handleGetStartedClick}>
                   <Button size="lg" className="min-w-48 gap-2">
                     Get Started Free
                     <ArrowRight className="h-5 w-5" />
                   </Button>
                 </Link>
-                <Link href={pages.SIGN_IN}>
+                <Link href={pages.SIGN_IN} onClick={handleSignInClick}>
                   <Button variant="outline" size="lg" className="min-w-48">
                     Sign In
                   </Button>
