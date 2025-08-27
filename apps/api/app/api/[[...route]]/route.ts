@@ -1,7 +1,7 @@
 import { createApp, vercel } from "@raypx/server"
 
 const app = createApp({
-  prefix: "/api/v1",
+  prefix: "/api",
 })
 
 const handler = vercel(app)

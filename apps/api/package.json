@@ -6,11 +6,8 @@
     "build": "bun with-env next build",
     "dev": "bun with-env next dev --turbopack",
     "start": "bun with-env next start",
-    "test": "vitest",
-    "lint": "next lint",
-    "clean": "rimraf .next",
     "with-env": "dotenv -e ../../.env --",
-    "format": "biome check --write"
+    "clean": "rimraf .next"
   },
   "dependencies": {
     "@raypx/auth": "workspace:*",

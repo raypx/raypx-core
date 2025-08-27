@@ -15,7 +15,10 @@ export async function GET() {
       users: "/api/v1/users",
       health: "/api/v1/health",
     },
+    isBun: process.env.BUN_ENV === "true",
+    isNode: process.env.NODE_ENV === "production",
+    isVercel: process.env.VERCEL === "true",
   })
 }
 
-export const runtime = "nodejs"
+// export const runtime = "nodejs"
