@@ -1,0 +1,31 @@
+{
+  "name": "app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "bun with-env next build",
+    "dev": "bun with-env next dev --turbopack --port 3002",
+    "start": "bun with-env next start",
+    "with-env": "dotenv -e ../../.env --",
+    "clean": "rimraf .next"
+  },
+  "dependencies": {
+    "@raypx/auth": "workspace:*",
+    "@raypx/db": "workspace:*",
+    "@raypx/shared": "workspace:*",
+    "next": "catalog:",
+    "react": "catalog:react19",
+    "react-dom": "catalog:react19",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@raypx/next-config": "workspace:*",
+    "@raypx/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:react19",
+    "@types/react-dom": "catalog:react19",
+    "dotenv-cli": "^10.0.0",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

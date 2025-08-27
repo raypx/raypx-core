@@ -13,17 +13,6 @@ export async function GET() {
       },
     }
 
-    // Optional: Add database health check
-    // if (db) {
-    //   try {
-    //     await db.$queryRaw`SELECT 1`;
-    //     health.services.database = 'healthy';
-    //   } catch (error) {
-    //     health.services.database = 'unhealthy';
-    //     health.status = 'degraded';
-    //   }
-    // }
-
     return NextResponse.json(health, {
       status: health.status === "ok" ? 200 : 503,
     })
@@ -32,7 +21,7 @@ export async function GET() {
       {
         status: "error",
         timestamp: new Date().toISOString(),
-        error: "Health check failed",
+        error: error || "Health check failed",
       },
       { status: 500 },
     )
