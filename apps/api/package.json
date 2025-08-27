@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "bun with-env next build",
-    "dev": "bun with-env next dev --turbopack",
+    "dev": "bun with-env next dev --turbopack --port 3001",
     "start": "bun with-env next start",
     "with-env": "dotenv -e ../../.env --",
     "clean": "rimraf .next"
