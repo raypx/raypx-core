@@ -21,8 +21,32 @@
         "zod": "catalog:",
       },
     },
+    "apps/api": {
+      "name": "@raypx/api",
+      "version": "0.1.0",
+      "dependencies": {
+        "@raypx/auth": "workspace:*",
+        "@raypx/db": "workspace:*",
+        "@raypx/server": "workspace:*",
+        "@raypx/shared": "workspace:*",
+        "next": "catalog:",
+        "react": "catalog:react19",
+        "react-dom": "catalog:react19",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@raypx/next-config": "workspace:*",
+        "@raypx/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "@types/react": "catalog:react19",
+        "@types/react-dom": "catalog:react19",
+        "dotenv-cli": "^10.0.0",
+        "typescript": "catalog:",
+        "vitest": "catalog:",
+      },
+    },
     "apps/docs": {
-      "name": "@raypx/docs",
+      "name": "docs",
       "version": "0.0.0",
       "dependencies": {
         "@raypx/analytics": "workspace:*",
@@ -56,7 +80,7 @@
       },
     },
     "apps/web": {
-      "name": "@raypx/web",
+      "name": "web",
       "version": "0.1.0",
       "dependencies": {
         "@hookform/resolvers": "^5.2.1",
@@ -630,6 +654,10 @@
 
     "@drizzle-team/brocli": ["@drizzle-team/brocli@0.10.2", "", {}, "sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w=="],
 
+    "@edge-runtime/primitives": ["@edge-runtime/primitives@4.1.0", "", {}, "sha512-Vw0lbJ2lvRUqc7/soqygUX216Xb8T3WBZ987oywz6aJqRxcwSVWwr9e+Nqo2m9bxobA9mdbWNNoRY6S9eko1EQ=="],
+
+    "@edge-runtime/vm": ["@edge-runtime/vm@3.2.0", "", { "dependencies": { "@edge-runtime/primitives": "4.1.0" } }, "sha512-0dEVyRLM/lG4gp1R/Ik5bfPl/1wX00xFwd5KcNH602tzBa09oF7pbTKETEhR1GjZ75K6OJnYFu8II2dyMhONMw=="],
+
     "@emnapi/runtime": ["@emnapi/runtime@1.4.5", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-++LApOtY0pEEz1zrd9vy1/zXVaVJJ/EbAF3u0fXIzPJEDtnITsBGbbK0EkM72amhl/R5b+5xx0Y/QhcVOpuulg=="],
 
     "@epic-web/invariant": ["@epic-web/invariant@1.0.0", "", {}, "sha512-lrTPqgvfFQtR/eY/qkIzp98OGdNJu0m5ji3q/nJI8v3SXkRKEnWiOxMmbvcSoAIzv/cGiuvRy57k4suKQSAdwA=="],
@@ -954,6 +982,8 @@
 
     "@raypx/analytics": ["@raypx/analytics@workspace:packages/analytics"],
 
+    "@raypx/api": ["@raypx/api@workspace:apps/api"],
+
     "@raypx/auth": ["@raypx/auth@workspace:packages/auth"],
 
     "@raypx/billing": ["@raypx/billing@workspace:packages/billing"],
@@ -961,8 +991,6 @@
     "@raypx/cli": ["@raypx/cli@workspace:packages/cli"],
 
     "@raypx/db": ["@raypx/db@workspace:packages/db"],
-
-    "@raypx/docs": ["@raypx/docs@workspace:apps/docs"],
 
     "@raypx/email": ["@raypx/email@workspace:packages/email"],
 
@@ -985,8 +1013,6 @@
     "@raypx/tsconfig": ["@raypx/tsconfig@workspace:tooling/tsconfig"],
 
     "@raypx/ui": ["@raypx/ui@workspace:packages/ui"],
-
-    "@raypx/web": ["@raypx/web@workspace:apps/web"],
 
     "@react-email/body": ["@react-email/body@0.1.0", "", { "peerDependencies": { "react": "^18.0 || ^19.0 || ^19.0.0-rc" } }, "sha512-o1bcSAmDYNNHECbkeyceCVPGmVsYvT+O3sSO/Ct7apKUu3JphTi31hu+0Nwqr/pgV5QFqdoT5vdS3SW5DJFHgQ=="],
 
@@ -1613,6 +1639,8 @@
     "diff": ["diff@4.0.2", "", {}, "sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A=="],
 
     "dir-glob": ["dir-glob@3.0.1", "", { "dependencies": { "path-type": "^4.0.0" } }, "sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA=="],
+
+    "docs": ["docs@workspace:apps/docs"],
 
     "dom-accessibility-api": ["dom-accessibility-api@0.6.3", "", {}, "sha512-7ZgogeTnjuHbo+ct10G9Ffp0mif17idi0IyWNVA/wcwcm7NPOD/WEHVP3n7n3MhXqxoIYm8d6MuZohYWIZ4T3w=="],
 
@@ -2701,6 +2729,8 @@
     "warning": ["warning@4.0.3", "", { "dependencies": { "loose-envify": "^1.0.0" } }, "sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w=="],
 
     "wcwidth": ["wcwidth@1.0.1", "", { "dependencies": { "defaults": "^1.0.3" } }, "sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg=="],
+
+    "web": ["web@workspace:apps/web"],
 
     "webidl-conversions": ["webidl-conversions@7.0.0", "", {}, "sha512-VwddBukDzu71offAQR975unBIGqfKZpM+8ZX6ySk8nYhVoo5CYaZyzt3YBvYtRtO+aoGlqxPg/B87NGVZ/fu6g=="],
 

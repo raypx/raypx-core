@@ -61,7 +61,8 @@ The build process verifies TypeScript compilation, dependency resolution, and en
 
 - Use clear, descriptive English comments for code documentation
 - This ensures consistency and readability across the entire codebase
-- Applies to all files: TypeScript, JavaScript, JSX, TSX, and configuration files
+- Applies to all files: TypeScript, JavaScript, JSX, TSX, configuration files, and database schemas
+- Database schema comments, index names, and migration comments should also be in English
 
 ## Git Commit Guidelines
 

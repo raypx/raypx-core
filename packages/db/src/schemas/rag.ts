@@ -1,4 +1,5 @@
 import {
+  index,
   integer,
   jsonb,
   text,
@@ -16,20 +17,27 @@ export const timestamptz = (name: string) =>
     withTimezone: true,
   })
 
-export const knowledges = pgTable("knowledges", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  name: varchar("name", { length: 255 }).notNull(),
-  description: text("description"),
-  status: varchar("status", { length: 50 }).notNull().default("active"),
-  settings: jsonb("settings"),
-  userId: uuid("user_id")
-    .references(() => user.id, {
-      onDelete: "cascade",
-    })
-    .notNull(),
-  createdAt: timestamptz("created_at").notNull().defaultNow(),
-  updatedAt: timestamptz("updated_at").notNull().defaultNow(),
-})
+export const knowledges = pgTable(
+  "knowledges",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    name: varchar("name", { length: 255 }).notNull(),
+    description: text("description"),
+    status: varchar("status", { length: 50 }).notNull().default("active"),
+    settings: jsonb("settings"),
+    userId: uuid("user_id")
+      .references(() => user.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    createdAt: timestamptz("created_at").notNull().defaultNow(),
+    updatedAt: timestamptz("updated_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    userIdIdx: index("idx_knowledge_user_id").on(table.userId),
+    statusIdx: index("idx_knowledge_status").on(table.status),
+  }),
+)
 
 export const chunks = pgTable(
   "chunks",
@@ -51,7 +59,18 @@ export const chunks = pgTable(
     updatedAt: timestamptz("updated_at").notNull().defaultNow(),
     accessedAt: timestamptz("accessed_at").notNull().defaultNow(),
   },
-  (t) => [unique("chunks_client_id_user_id_unique").on(t.clientId, t.userId)],
+  (t) => ({
+    clientIdUserIdUnique: unique("chunks_client_id_user_id_unique").on(
+      t.clientId,
+      t.userId,
+    ),
+    knowledgeBaseIdx: index("idx_chunks_knowledge_base").on(t.knowledgeBaseId),
+    userIdIdx: index("idx_chunks_user_id").on(t.userId),
+    knowledgeUserIdx: index("idx_chunks_knowledge_user").on(
+      t.knowledgeBaseId,
+      t.userId,
+    ),
+  }),
 )
 
 export const embeddings = pgTable(
@@ -72,7 +91,12 @@ export const embeddings = pgTable(
       onDelete: "cascade",
     }),
   },
-  (t) => [
-    unique("embeddings_client_id_user_id_unique").on(t.clientId, t.userId),
-  ],
+  (t) => ({
+    clientIdUserIdUnique: unique("embeddings_client_id_user_id_unique").on(
+      t.clientId,
+      t.userId,
+    ),
+    chunkIdIdx: index("idx_embeddings_chunk_id").on(t.chunkId),
+    userIdIdx: index("idx_embeddings_user_id").on(t.userId),
+  }),
 )
