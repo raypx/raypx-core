@@ -1,12 +1,9 @@
 import crypto from "node:crypto"
 import { db, emails } from "@raypx/db"
 import { eq } from "drizzle-orm"
-import { envs } from "./envs"
 import { trackEmailEvent } from "./server"
 import type { ResendWebhookEvent, WebhookEvent } from "./types"
 import { EmailEventType, ResendWebhookEventType } from "./types"
-
-const env = envs()
 
 // Event type mapping
 const EVENT_TYPE_MAP: Record<ResendWebhookEventType, EmailEventType> = {

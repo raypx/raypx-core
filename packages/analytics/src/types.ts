@@ -53,7 +53,7 @@ export interface PostHogProviderProps {
 
 export type PostHogProvider = (
   props: PostHogProviderProps,
-) => JSX.Element | null
+) => React.ReactElement | null
 
 // Window interface extensions
 declare global {

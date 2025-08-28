@@ -48,14 +48,14 @@ export const getEventTypeValue = (eventType: EmailEventType): string =>
 export const isValidStatus = (
   status: string,
 ): status is keyof typeof STATUS_MAP =>
-  Object.values(STATUS_MAP).includes(status as any)
+  Object.values(STATUS_MAP).includes(status as EmailStatus)
 
 export const isValidProvider = (
   provider: string,
 ): provider is keyof typeof PROVIDER_MAP =>
-  Object.values(PROVIDER_MAP).includes(provider as any)
+  Object.values(PROVIDER_MAP).includes(provider as EmailProvider)
 
 export const isValidEventType = (
   eventType: string,
 ): eventType is keyof typeof EVENT_TYPE_MAP =>
-  Object.values(EVENT_TYPE_MAP).includes(eventType as any)
+  Object.values(EVENT_TYPE_MAP).includes(eventType as EmailEventType)

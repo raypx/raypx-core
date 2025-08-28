@@ -36,7 +36,17 @@ export function useAnalytics() {
   }
 
   const track = (event: string, properties?: Record<string, unknown>) => {
-    if (process.env.NODE_ENV !== "production") return
+    if (
+      envs.NEXT_PUBLIC_ANALYTICS_DISABLED ||
+      (process.env.NODE_ENV !== "production" &&
+        !envs.NEXT_PUBLIC_ANALYTICS_DEBUG)
+    ) {
+      return
+    }
+
+    if (envs.NEXT_PUBLIC_ANALYTICS_DEBUG) {
+      console.log("[Analytics] Track:", event, properties)
+    }
 
     // PostHog
     if (posthog?.capture) {
@@ -131,18 +141,76 @@ export function useAnalytics() {
     }
   }
 
+  // AI-specific tracking helpers
+  const trackAIInteraction = (
+    action: string,
+    metadata?: {
+      model?: string
+      tokens?: number
+      latency?: number
+      success?: boolean
+      error?: string
+    },
+  ) => {
+    track("ai_interaction", {
+      action,
+      ...metadata,
+    })
+  }
+
+  const trackFeatureUsage = (
+    feature: string,
+    properties?: Record<string, unknown>,
+  ) => {
+    track("feature_usage", {
+      feature,
+      ...properties,
+    })
+  }
+
+  const trackUserAction = (
+    action: string,
+    context?: string,
+    properties?: Record<string, unknown>,
+  ) => {
+    track("user_action", {
+      action,
+      context,
+      ...properties,
+    })
+  }
+
   return {
+    // Core analytics functions
     track,
     identify,
     reset,
     setPersonProperties,
     group,
     pageView,
+
+    // AI-specific helpers
+    trackAIInteraction,
+    trackFeatureUsage,
+    trackUserAction,
+
     // Raw instances for advanced usage
-    posthog: process.env.NODE_ENV === "production" ? posthog : null,
+    posthog:
+      process.env.NODE_ENV === "production" || envs.NEXT_PUBLIC_ANALYTICS_DEBUG
+        ? posthog
+        : null,
     gtag:
-      process.env.NODE_ENV === "production" && typeof window !== "undefined"
+      (process.env.NODE_ENV === "production" ||
+        envs.NEXT_PUBLIC_ANALYTICS_DEBUG) &&
+      typeof window !== "undefined"
         ? window.gtag
         : null,
+
+    // Utility functions
+    isEnabled:
+      !envs.NEXT_PUBLIC_ANALYTICS_DISABLED &&
+      (process.env.NODE_ENV === "production" ||
+        envs.NEXT_PUBLIC_ANALYTICS_DEBUG),
+    isDebug: envs.NEXT_PUBLIC_ANALYTICS_DEBUG || false,
   }
 }

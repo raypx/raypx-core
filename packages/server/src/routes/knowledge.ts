@@ -39,6 +39,16 @@ const chunksQuerySchema = z.object({
   offset: z.coerce.number().min(0).default(0),
 })
 
+const documentsQuerySchema = z.object({
+  limit: z.coerce.number().min(1).max(100).default(20),
+  offset: z.coerce.number().min(0).default(0),
+})
+
+const uploadDocumentSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  content: z.string().min(1, "Content is required"),
+})
+
 // Middleware to ensure user is authenticated
 const authMiddleware: MiddlewareHandler<{ Variables: Variables }> = async (
   c,
@@ -232,3 +242,145 @@ knowledgeRoutes.get(
     }
   },
 )
+
+// GET /knowledges/:id/documents - Get documents for knowledge base
+knowledgeRoutes.get(
+  "/:id/documents",
+  zValidator("query", documentsQuerySchema),
+  async (c) => {
+    try {
+      const user = c.get("user")
+      if (!user) {
+        return c.json({ error: "Unauthorized" }, 401)
+      }
+      const id = c.req.param("id")
+      const options = c.req.valid("query")
+
+      const documents = await knowledgeService.getDocuments(
+        id,
+        user.id,
+        options,
+      )
+
+      return c.json({
+        status: "ok",
+        data: documents,
+      })
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message === "Knowledge base not found"
+      ) {
+        return c.json({ error: "Knowledge base not found" }, 404)
+      }
+      console.error("Error fetching knowledge base documents:", error)
+      return c.json({ error: "Internal server error" }, 500)
+    }
+  },
+)
+
+// POST /knowledges/:id/documents - Upload document to knowledge base
+knowledgeRoutes.post(
+  "/:id/documents",
+  zValidator("json", uploadDocumentSchema),
+  async (c) => {
+    try {
+      const user = c.get("user")
+      if (!user) {
+        return c.json({ error: "Unauthorized" }, 401)
+      }
+      const knowledgeBaseId = c.req.param("id")
+      const { name, content } = c.req.valid("json")
+
+      // Create document record
+      const document = await knowledgeService.createDocument(
+        knowledgeBaseId,
+        user.id,
+        {
+          name,
+          originalName: name,
+          mimeType: "text/plain",
+          size: content.length,
+          metadata: {
+            source: "text_input",
+          },
+        },
+      )
+
+      // Process document and create chunks
+      const chunks = await knowledgeService.processDocument(
+        document.id,
+        user.id,
+        content,
+      )
+
+      return c.json(
+        {
+          status: "ok",
+          data: {
+            document,
+            chunks: chunks.length,
+          },
+        },
+        201,
+      )
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message === "Knowledge base not found"
+      ) {
+        return c.json({ error: "Knowledge base not found" }, 404)
+      }
+      console.error("Error uploading document:", error)
+      return c.json({ error: "Internal server error" }, 500)
+    }
+  },
+)
+
+// GET /knowledges/:id/documents/:documentId - Get specific document
+knowledgeRoutes.get("/:id/documents/:documentId", async (c) => {
+  try {
+    const user = c.get("user")
+    if (!user) {
+      return c.json({ error: "Unauthorized" }, 401)
+    }
+    const documentId = c.req.param("documentId")
+
+    const document = await knowledgeService.getDocument(documentId, user.id)
+
+    return c.json({
+      status: "ok",
+      data: document,
+    })
+  } catch (error) {
+    if (error instanceof Error && error.message === "Document not found") {
+      return c.json({ error: "Document not found" }, 404)
+    }
+    console.error("Error fetching document:", error)
+    return c.json({ error: "Internal server error" }, 500)
+  }
+})
+
+// DELETE /knowledges/:id/documents/:documentId - Delete document
+knowledgeRoutes.delete("/:id/documents/:documentId", async (c) => {
+  try {
+    const user = c.get("user")
+    if (!user) {
+      return c.json({ error: "Unauthorized" }, 401)
+    }
+    const documentId = c.req.param("documentId")
+
+    await knowledgeService.deleteDocument(documentId, user.id)
+
+    return c.json({
+      status: "ok",
+      message: "Document deleted successfully",
+    })
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("not found")) {
+      return c.json({ error: "Document not found" }, 404)
+    }
+    console.error("Error deleting document:", error)
+    return c.json({ error: "Internal server error" }, 500)
+  }
+})

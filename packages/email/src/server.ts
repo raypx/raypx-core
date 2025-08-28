@@ -5,7 +5,7 @@ import * as nodemailer from "nodemailer"
 import { Resend } from "resend"
 import { envs } from "./envs"
 import type { EmailEventData, SendEmailOptions, SendEmailResult } from "./types"
-import { EmailEventType, EmailProvider, EmailStatus } from "./types"
+import { EmailEventType, EmailProvider } from "./types"
 
 const env = envs()
 const resend = new Resend(env.RESEND_TOKEN)
@@ -49,21 +49,6 @@ const emailProviders = {
     })
     return { providerId: result.messageId, result }
   },
-}
-
-// Status update mapping
-const statusUpdateMap: Record<
-  EmailEventType,
-  Partial<typeof emails.$inferInsert>
-> = {
-  [EmailEventType.OPENED]: { openedAt: new Date() },
-  [EmailEventType.DELIVERED]: { deliveredAt: new Date() },
-  [EmailEventType.SENT]: {},
-  [EmailEventType.CLICKED]: {},
-  [EmailEventType.BOUNCED]: {},
-  [EmailEventType.COMPLAINED]: {},
-  [EmailEventType.UNSUBSCRIBED]: {},
-  [EmailEventType.DELIVERY_DELAYED]: {},
 }
 
 export const sendEmail = async (

@@ -72,15 +72,35 @@ export const PostHogAnalyticsProvider: FC<{ children: ReactNode }> = ({
       typeof window !== "undefined" &&
       envs.NEXT_PUBLIC_POSTHOG_KEY &&
       envs.NEXT_PUBLIC_POSTHOG_HOST &&
-      process.env.NODE_ENV === "production"
+      !envs.NEXT_PUBLIC_ANALYTICS_DISABLED &&
+      (process.env.NODE_ENV === "production" ||
+        envs.NEXT_PUBLIC_ANALYTICS_DEBUG)
     ) {
       loadPostHog().then(({ posthog, PostHogProvider: PHProvider }) => {
         if (posthog && PHProvider && envs.NEXT_PUBLIC_POSTHOG_KEY) {
           posthog.init(envs.NEXT_PUBLIC_POSTHOG_KEY, {
             api_host: envs.NEXT_PUBLIC_POSTHOG_HOST,
+            ui_host: envs.NEXT_PUBLIC_POSTHOG_HOST,
             person_profiles: "identified_only",
             capture_pageview: false,
             capture_pageleave: true,
+            capture_heatmaps: true,
+            capture_performance: true,
+            disable_session_recording: false,
+            session_recording: {
+              maskAllInputs: true,
+              maskInputOptions: {
+                password: true,
+                email: false,
+              },
+            },
+            autocapture: true,
+            debug: envs.NEXT_PUBLIC_ANALYTICS_DEBUG || false,
+            loaded: (posthog: PostHogInstance) => {
+              if (envs.NEXT_PUBLIC_ANALYTICS_DEBUG) {
+                console.log("PostHog loaded successfully", posthog)
+              }
+            },
           })
           setProvider(() => PHProvider)
         }

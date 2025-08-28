@@ -55,6 +55,7 @@ import {
   Search,
   Trash2,
 } from "lucide-react"
+import Link from "next/link"
 import { useState } from "react"
 
 interface KnowledgeBase {
@@ -396,7 +397,12 @@ export default function KnowledgeBasesPage() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <CardTitle className="text-lg line-clamp-1">
-                        {kb.name}
+                        <Link
+                          href={`/dashboard/knowledge/${kb.id}`}
+                          className="hover:underline"
+                        >
+                          {kb.name}
+                        </Link>
                       </CardTitle>
                       <div className="flex items-center gap-2 mt-2">
                         <Badge

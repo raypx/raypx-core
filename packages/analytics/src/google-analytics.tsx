@@ -12,18 +12,7 @@ let gtagInstance: Gtag | null = null
 async function loadGtag(): Promise<Gtag | null> {
   if (gtagInstance) return gtagInstance
 
-  try {
-    // Try to load gtag module if available
-    const gtagModule = await import("gtag").catch(() => null)
-    if (gtagModule) {
-      gtagInstance = (gtagModule.default || gtagModule) as Gtag
-      return gtagInstance
-    }
-  } catch (_error) {
-    // Silent fail
-  }
-
-  // Fallback to global gtag if module not available
+  // Use global gtag if available (loaded via script)
   if (typeof window !== "undefined" && window.gtag) {
     gtagInstance = window.gtag
     return gtagInstance

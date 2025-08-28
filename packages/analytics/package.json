@@ -1,11 +1,12 @@
 {
   "name": "@raypx/analytics",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./envs": "./src/envs.ts"
+    "./envs": "./src/envs.ts",
+    "./server": "./src/server/index.ts"
   },
   "scripts": {
     "clean": "rimraf dist .turbo",
@@ -14,24 +15,21 @@
   },
   "dependencies": {
     "@raypx/shared": "workspace:*",
-    "@vercel/analytics": "^1.5.0"
+    "@vercel/analytics": "^1.5.0",
+    "posthog-node": "^5.6.0"
   },
   "peerDependencies": {
-    "posthog-js": "^1.165.0",
-    "gtag": "^1.0.1"
+    "posthog-js": "^1.257.2",
+    "react": "catalog:react19"
   },
   "peerDependenciesMeta": {
     "posthog-js": {
-      "optional": true
-    },
-    "gtag": {
       "optional": true
     }
   },
   "devDependencies": {
     "@raypx/tsconfig": "workspace:*",
-    "posthog-js": "^1.165.0",
-    "gtag": "^1.0.1",
+    "posthog-js": "^1.257.2",
     "@types/node": "catalog:",
     "@types/react": "catalog:react19",
     "typescript": "catalog:"

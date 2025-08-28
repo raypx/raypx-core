@@ -1,11 +1,11 @@
-import { db, emailEvents, emails } from "@raypx/db"
+import { db, emails } from "@raypx/db"
 import { and, count, desc, eq, gte, lte, sql } from "drizzle-orm"
 import type {
   EmailAnalyticsFilter,
   EmailDashboardData,
   EmailDeliveryStats,
+  EmailStatus,
 } from "./types"
-import { EmailProvider, type EmailStatus } from "./types"
 
 export class EmailAnalytics {
   static async getDeliveryStats(
@@ -119,7 +119,7 @@ export class EmailAnalytics {
         .limit(limit)
 
       return results.map((result) => ({
-        templateName: result.templateName!,
+        templateName: result.templateName,
         count: Number(result.count),
         deliveryRate:
           result.count > 0
