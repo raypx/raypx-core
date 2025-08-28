@@ -3,7 +3,7 @@ import { createEnv, z } from "@raypx/shared"
 export const envs = () =>
   createEnv({
     server: {
-      RESEND_FROM: z.string().min(1).email("Invalid sender email address"),
+      RESEND_FROM: z.string().min(1),
       RESEND_TOKEN: z
         .string()
         .min(1)

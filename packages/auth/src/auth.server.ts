@@ -2,10 +2,11 @@ import { db, nanoid, schemas, uuidv7 } from "@raypx/db"
 import {
   ResetPasswordEmail,
   SendMagicLinkEmail,
+  SendVerificationOTP,
+  sendEmail,
   VerifyEmail,
   WelcomeEmail,
 } from "@raypx/email"
-import { resend, sendEmail } from "@raypx/email/server"
 import { type BetterAuthOptions, betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import {
@@ -29,7 +30,7 @@ import {
 } from "./permissions"
 
 // Build plugins array based on enabled features
-const buildServerPlugins = (env: ReturnType<typeof envs>) => {
+const buildServerPlugins = () => {
   const plugins = []
 
   // Always include basic plugins
@@ -92,11 +93,12 @@ const buildServerPlugins = (env: ReturnType<typeof envs>) => {
       emailOTP({
         sendVerificationOTP: async (data, _request) => {
           const { email, otp } = data
-          await resend.emails.send({
-            from: env.RESEND_FROM || "noreply@example.com",
+          sendEmail({
             to: email,
             subject: "Verify your email",
-            html: `Verify your email with the code: ${otp}`,
+            template: SendVerificationOTP({
+              otp,
+            }),
           })
         },
       }),
@@ -202,7 +204,7 @@ const createConfig = (): BetterAuthOptions => {
       disabled: false,
       level: "debug",
     },
-    plugins: buildServerPlugins(env),
+    plugins: buildServerPlugins(),
   }
 }
 

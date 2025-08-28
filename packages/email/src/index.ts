@@ -8,7 +8,6 @@ export type { EmailClientOptions, EmailClientResponse } from "./client"
 export { DEFAULT_EMAIL_CLIENT_OPTIONS } from "./client"
 // Environment configuration
 export { envs } from "./envs"
-
 // Core services
 export {
   getEmailById,
@@ -16,6 +15,7 @@ export {
   sendEmail,
   trackEmailEvent,
 } from "./server"
+export * from "./templates"
 // Core types
 export type {
   EmailAnalyticsFilter,

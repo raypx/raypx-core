@@ -119,7 +119,7 @@ export class EmailAnalytics {
         .limit(limit)
 
       return results.map((result) => ({
-        templateName: result.templateName,
+        templateName: result.templateName || "",
         count: Number(result.count),
         deliveryRate:
           result.count > 0

@@ -14,7 +14,8 @@ import { Loader2 } from "@raypx/ui/components/icons"
 import { Input } from "@raypx/ui/components/input"
 import { cn } from "@raypx/ui/lib/utils"
 import type { BetterFetchOption } from "better-auth/react"
-import { useCallback, useEffect } from "react"
+import { type RefObject, useCallback, useEffect } from "react"
+import type ReCAPTCHA from "react-google-recaptcha"
 import { useForm } from "react-hook-form"
 import { z } from "zod/v4"
 import { useAuth } from "../../core/hooks/use-auth"
@@ -158,7 +159,10 @@ export function MagicLinkForm({
           )}
         />
 
-        <Captcha ref={captchaRef} action="/sign-in/magic-link" />
+        <Captcha
+          ref={captchaRef as RefObject<ReCAPTCHA>}
+          action="/sign-in/magic-link"
+        />
 
         <Button
           type="submit"

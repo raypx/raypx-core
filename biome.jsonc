@@ -39,6 +39,7 @@
         "noDangerouslySetInnerHtml": "off"
       },
       "suspicious": {
+        "noExplicitAny": "off",
         "noArrayIndexKey": "off"
       }
     }

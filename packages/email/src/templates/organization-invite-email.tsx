@@ -10,7 +10,7 @@ export interface OrganizationInviteEmailProps {
   expiresIn?: string
 }
 
-export const OrganizationInviteEmail = ({
+const OrganizationInviteEmail = ({
   inviterName,
   inviterEmail,
   organizationName,
@@ -54,3 +54,13 @@ export const OrganizationInviteEmail = ({
     </EmailLayout>
   )
 }
+
+OrganizationInviteEmail.PreviewProps = {
+  inviterName: "John Doe",
+  inviterEmail: "john.doe@example.com",
+  organizationName: "Acme Inc.",
+  role: "Admin",
+  inviteUrl: "https://example.com/invite",
+}
+
+export { OrganizationInviteEmail }

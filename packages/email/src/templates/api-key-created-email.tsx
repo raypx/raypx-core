@@ -15,7 +15,7 @@ export interface ApiKeyCreatedEmailProps {
   securityTips?: boolean
 }
 
-export const ApiKeyCreatedEmail = ({
+const ApiKeyCreatedEmail = ({
   username,
   keyName,
   keyPrefix,
@@ -110,3 +110,16 @@ export const ApiKeyCreatedEmail = ({
     </EmailLayout>
   )
 }
+
+ApiKeyCreatedEmail.PreviewProps = {
+  username: "Raypx",
+  keyName: "API Key 1",
+  keyPrefix: "1234567890",
+  permissions: ["read", "write"],
+  rateLimitInfo: {
+    maxRequests: 1000,
+    timeWindow: "1 hour",
+  },
+}
+
+export { ApiKeyCreatedEmail }

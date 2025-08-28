@@ -67,7 +67,7 @@ const getAlertContent = (alertType: SecurityAlertType) => {
   return alertConfig[alertType]
 }
 
-export const SecurityAlertEmail = ({
+const SecurityAlertEmail = ({
   username,
   alertType,
   details,
@@ -154,3 +154,13 @@ export const SecurityAlertEmail = ({
     </EmailLayout>
   )
 }
+
+SecurityAlertEmail.PreviewProps = {
+  username: "Raypx",
+  alertType: "suspicious_login",
+  details: {
+    timestamp: "2021-01-01 12:00:00",
+  },
+}
+
+export { SecurityAlertEmail }
