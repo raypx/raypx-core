@@ -152,6 +152,8 @@ export const sendEmail = async (
   }
 }
 
+export { render } from "@react-email/render"
+
 export const trackEmailEvent = async (
   eventData: EmailEventData,
 ): Promise<void> => {

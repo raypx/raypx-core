@@ -4,11 +4,13 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./envs": "./src/envs.ts",
+    "./client": "./src/client.ts",
     "./server": "./src/server.ts",
     "./analytics": "./src/analytics.ts",
     "./webhooks": "./src/webhooks.ts",
-    "./types": "./src/types.ts"
+    "./templates": "./src/templates/index.ts",
+    "./types": "./src/types.ts",
+    "./envs": "./src/envs.ts"
   },
   "scripts": {
     "clean": "rimraf dist .turbo",

@@ -76,14 +76,14 @@ export const emails = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
-  (table) => ({
-    providerIdIdx: index("emails_provider_id_idx").on(table.providerId),
-    messageIdIdx: index("emails_message_id_idx").on(table.messageId),
-    toAddressIdx: index("emails_to_address_idx").on(table.toAddress),
-    statusIdx: index("emails_status_idx").on(table.status),
-    userIdIdx: index("emails_user_id_idx").on(table.userId),
-    createdAtIdx: index("emails_created_at_idx").on(table.createdAt),
-  }),
+  (table) => [
+    index("idx_emails_provider_id").on(table.providerId),
+    index("idx_emails_message_id").on(table.messageId),
+    index("idx_emails_to_address").on(table.toAddress),
+    index("idx_emails_status").on(table.status),
+    index("idx_emails_user_id").on(table.userId),
+    index("idx_emails_created_at").on(table.createdAt),
+  ],
 )
 
 export const emailEvents = pgTable(
@@ -117,11 +117,11 @@ export const emailEvents = pgTable(
 
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
-  (table) => ({
-    emailIdIdx: index("email_events_email_id_idx").on(table.emailId),
-    eventTypeIdx: index("email_events_event_type_idx").on(table.eventType),
-    timestampIdx: index("email_events_timestamp_idx").on(table.timestamp),
-  }),
+  (table) => [
+    index("idx_email_events_email_id").on(table.emailId),
+    index("idx_email_events_event_type").on(table.eventType),
+    index("idx_email_events_timestamp").on(table.timestamp),
+  ],
 )
 
 export const emailTemplates = pgTable(
@@ -149,10 +149,10 @@ export const emailTemplates = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
-  (table) => ({
-    nameIdx: index("email_templates_name_idx").on(table.name),
-    isActiveIdx: index("email_templates_is_active_idx").on(table.isActive),
-  }),
+  (table) => [
+    index("idx_email_templates_name").on(table.name),
+    index("idx_email_templates_is_active").on(table.isActive),
+  ],
 )
 
 // Relations

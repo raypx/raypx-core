@@ -35,10 +35,10 @@ export const user = pgTable(
     banReason: text("ban_reason"),
     banExpires: timestamp("ban_expires"),
   },
-  (table) => ({
-    emailIdx: index("idx_user_email").on(table.email),
-    usernameIdx: index("idx_user_username").on(table.username),
-  }),
+  (table) => [
+    index("idx_user_email").on(table.email),
+    index("idx_user_username").on(table.username),
+  ],
 )
 
 export const passkey = pgTable("passkey", {
@@ -88,11 +88,11 @@ export const session = pgTable(
     impersonatedBy: text("impersonated_by"),
     activeOrganizationId: text("active_organization_id"),
   },
-  (table) => ({
-    tokenIdx: index("idx_session_token").on(table.token),
-    userIdIdx: index("idx_session_user_id").on(table.userId),
-    expiresAtIdx: index("idx_session_expires_at").on(table.expiresAt),
-  }),
+  (table) => [
+    index("idx_session_token").on(table.token),
+    index("idx_session_user_id").on(table.userId),
+    index("idx_session_expires_at").on(table.expiresAt),
+  ],
 )
 
 export const account = pgTable("account", {
@@ -167,10 +167,10 @@ export const apikey = pgTable(
     permissions: text("permissions"),
     metadata: text("metadata"),
   },
-  (table) => ({
-    userIdIdx: index("idx_apikey_user_id").on(table.userId),
-    keyIdx: index("idx_apikey_key").on(table.key),
-  }),
+  (table) => [
+    index("idx_apikey_user_id").on(table.userId),
+    index("idx_apikey_key").on(table.key),
+  ],
 )
 
 export const organization = pgTable("organization", {

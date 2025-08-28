@@ -1,9 +1,18 @@
-export { EmailAnalytics } from "./analytics"
-export { resend, sendEmail, trackEmailEvent, transporter } from "./server"
-export * from "./templates"
-export * from "./types"
+export { sendEmail } from "./server"
 export {
-  EmailWebhookHandler,
-  handleClickTracking,
-  handleTrackingPixel,
-} from "./webhooks"
+  ApiKeyCreatedEmail,
+  EmailLayout,
+  OrganizationInviteEmail,
+  ResetPasswordEmail,
+  SecurityAlertEmail,
+  SendMagicLinkEmail,
+  SendVerificationOTP,
+  VerifyEmail,
+  WelcomeEmail,
+} from "./templates"
+export type {
+  EmailDashboardData,
+  EmailDeliveryStats,
+  SendEmailOptions,
+  SendEmailResult,
+} from "./types"
