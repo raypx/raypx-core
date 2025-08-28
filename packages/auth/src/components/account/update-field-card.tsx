@@ -40,7 +40,7 @@ export interface UpdateFieldCardProps {
   multiline?: boolean
   value?: unknown
   validate?: (value: string) => boolean | Promise<boolean>
-  validationSchema?: z.ZodType<any>
+  validationSchema?: z.ZodType<unknown>
 }
 
 export function UpdateFieldCard({

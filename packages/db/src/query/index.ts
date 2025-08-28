@@ -271,7 +271,7 @@ export const createKnowledgeBase = async (data: {
   name: string
   description?: string
   userId: string
-  settings?: any
+  settings?: Record<string, unknown>
 }) => {
   const result = await db.insert(knowledges).values(data).returning()
   return result[0]
@@ -284,7 +284,7 @@ export const updateKnowledgeBase = async (
     name?: string
     description?: string
     status?: string
-    settings?: any
+    settings?: Record<string, unknown>
   },
 ) => {
   const result = await db

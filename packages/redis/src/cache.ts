@@ -474,7 +474,7 @@ export class Cache implements RedisCacheStore {
   async executeCommand<T>(command: string, ...args: unknown[]): Promise<T> {
     try {
       await this.connect()
-      return await (this.redis as any)[command](...args)
+      return await (this.redis as RedisClientType)[command](...args)
     } catch (error) {
       const errorMessage = this.formatErrorMessage(
         "executeCommand",

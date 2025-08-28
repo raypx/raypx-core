@@ -32,18 +32,14 @@
     "rules": {
       "recommended": true,
       "a11y": "off",
-      "suspicious": {
-        "noDocumentCookie": "off",
-        "noArrayIndexKey": "off",
-        "noUnknownAtRules": "off",
-        "noExplicitAny": "off"
-      },
-      "correctness": {
-        "useExhaustiveDependencies": "off",
-        "useHookAtTopLevel": "off"
+      "complexity": {
+        "noStaticOnlyClass": "off"
       },
       "security": {
         "noDangerouslySetInnerHtml": "off"
+      },
+      "suspicious": {
+        "noArrayIndexKey": "off"
       }
     }
   },
@@ -80,5 +76,13 @@
         "organizeImports": "on"
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["**/styles/globals.css"],
+      "linter": {
+        "enabled": false
+      }
+    }
+  ]
 }

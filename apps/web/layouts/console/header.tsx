@@ -7,11 +7,10 @@ interface HeaderProps {
 
 export function Header({ slug }: HeaderProps) {
   return (
-    <header className="border-b bg-card" role="banner">
+    <header className="border-b bg-card">
       <div className="container mx-auto px-6 py-4">
         <nav
           className="flex items-center justify-between"
-          role="navigation"
           aria-label="Console navigation"
         >
           <div className="flex items-center space-x-6">

@@ -52,12 +52,12 @@ export function useOptimizedError() {
    * @param apiResponse - API response object
    * @returns Formatted error message or null
    */
-  const extractAndFormatError = (apiResponse: any): string | null => {
+  const extractAndFormatError = (apiResponse: {
+    error?: { code?: string; message?: string }
+  }): string | null => {
     const errorCode =
-      apiResponse?.error?.code ||
-      apiResponse?.error?.message ||
-      apiResponse?.error
-    return errorCode ? getErrorText(errorCode) : null
+      apiResponse?.error?.code || apiResponse?.error?.message || undefined
+    return typeof errorCode === "string" ? getErrorText(errorCode) : null
   }
 
   return {

@@ -1,5 +1,5 @@
 import { zValidator } from "@hono/zod-validator"
-import { Hono } from "hono"
+import { Hono, type MiddlewareHandler } from "hono"
 import { z } from "zod"
 import { KnowledgeService } from "../services"
 import type { Variables } from "../types"
@@ -40,7 +40,10 @@ const chunksQuerySchema = z.object({
 })
 
 // Middleware to ensure user is authenticated
-const authMiddleware = async (c: any, next: any) => {
+const authMiddleware: MiddlewareHandler<{ Variables: Variables }> = async (
+  c,
+  next,
+) => {
   const user = c.get("user")
   if (!user) {
     return c.json({ error: "Unauthorized" }, 401)

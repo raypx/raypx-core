@@ -266,7 +266,13 @@ export default function UsersPage() {
 
   // Mutations
   const banMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) => banUser(id, data),
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: string
+      data: { banReason: string; banExpires?: string }
+    }) => banUser(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] })
       queryClient.invalidateQueries({ queryKey: ["user-stats"] })
@@ -472,7 +478,7 @@ export default function UsersPage() {
       )}
 
       {/* Impersonation Status */}
-      {session?.user && (session as any).impersonatedBy && (
+      {session?.user && (session as Record<string, unknown>).impersonatedBy && (
         <Card className="border-orange-200 bg-orange-50">
           <CardHeader>
             <CardTitle className="flex items-center space-x-2 text-orange-800">

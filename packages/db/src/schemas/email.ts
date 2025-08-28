@@ -65,7 +65,7 @@ export const emails = pgTable(
     clickCount: varchar("click_count", { length: 10 }).default("0"),
 
     // Metadata
-    metadata: json("metadata").$type<Record<string, any>>(),
+    metadata: json("metadata").$type<Record<string, unknown>>(),
     errorMessage: text("error_message"),
     tags: json("tags").$type<string[]>().default([]),
 
@@ -113,7 +113,7 @@ export const emailEvents = pgTable(
 
     // Provider-specific data
     providerEventId: varchar("provider_event_id", { length: 255 }),
-    providerData: json("provider_data").$type<Record<string, any>>(),
+    providerData: json("provider_data").$type<Record<string, unknown>>(),
 
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },

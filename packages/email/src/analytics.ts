@@ -5,36 +5,29 @@ import type {
   EmailDashboardData,
   EmailDeliveryStats,
 } from "./types"
+import { EmailProvider, type EmailStatus } from "./types"
 
 export class EmailAnalytics {
-  /**
-   * Get email delivery statistics
-   */
   static async getDeliveryStats(
     filter: EmailAnalyticsFilter = {},
   ): Promise<EmailDeliveryStats> {
     try {
       const conditions = EmailAnalytics.buildWhereConditions(filter)
-
-      // Get counts for each status
       const statusCounts = await db
-        .select({
-          status: emails.status,
-          count: count(),
-        })
+        .select({ status: emails.status, count: count() })
         .from(emails)
         .where(conditions)
         .groupBy(emails.status)
 
-      // Convert to object for easier access
+      // Aggregate counts
       const counts: Record<string, number> = {}
       let total = 0
-
       for (const { status, count: statusCount } of statusCounts) {
         counts[status] = statusCount
         total += statusCount
       }
 
+      // Calculate metrics
       const sent =
         (counts.sent || 0) +
         (counts.delivered || 0) +
@@ -52,13 +45,10 @@ export class EmailAnalytics {
       const failed = counts.failed || 0
 
       // Calculate rates
-      const deliveryRate = sent > 0 ? (delivered / sent) * 100 : 0
-      const openRate = delivered > 0 ? (opened / delivered) * 100 : 0
-      const clickRate = delivered > 0 ? (clicked / delivered) * 100 : 0
-      const bounceRate = sent > 0 ? (bounced / sent) * 100 : 0
-      const complaintRate = sent > 0 ? (complained / sent) * 100 : 0
-      const unsubscribeRate =
-        delivered > 0 ? (unsubscribed / delivered) * 100 : 0
+      const calculateRate = (numerator: number, denominator: number) =>
+        denominator > 0
+          ? Math.round((numerator / denominator) * 10000) / 100
+          : 0
 
       return {
         total,
@@ -70,12 +60,12 @@ export class EmailAnalytics {
         complained,
         unsubscribed,
         failed,
-        deliveryRate: Math.round(deliveryRate * 100) / 100,
-        openRate: Math.round(openRate * 100) / 100,
-        clickRate: Math.round(clickRate * 100) / 100,
-        bounceRate: Math.round(bounceRate * 100) / 100,
-        complaintRate: Math.round(complaintRate * 100) / 100,
-        unsubscribeRate: Math.round(unsubscribeRate * 100) / 100,
+        deliveryRate: calculateRate(delivered, sent),
+        openRate: calculateRate(opened, delivered),
+        clickRate: calculateRate(clicked, delivered),
+        bounceRate: calculateRate(bounced, sent),
+        complaintRate: calculateRate(complained, sent),
+        unsubscribeRate: calculateRate(unsubscribed, delivered),
       }
     } catch (error) {
       console.error("Error getting delivery stats:", error)
@@ -83,17 +73,13 @@ export class EmailAnalytics {
     }
   }
 
-  /**
-   * Get recent emails for dashboard
-   */
   static async getRecentEmails(
     limit: number = 10,
     filter: EmailAnalyticsFilter = {},
   ) {
     try {
       const conditions = EmailAnalytics.buildWhereConditions(filter)
-
-      const results = await db
+      return await db
         .select({
           id: emails.id,
           subject: emails.subject,
@@ -107,34 +93,24 @@ export class EmailAnalytics {
         .where(conditions)
         .orderBy(desc(emails.createdAt))
         .limit(limit)
-
-      return results.map((email) => ({
-        ...email,
-        openedAt: email.openedAt || undefined,
-        deliveredAt: email.deliveredAt || undefined,
-      }))
     } catch (error) {
       console.error("Error getting recent emails:", error)
       throw error
     }
   }
 
-  /**
-   * Get top performing email templates
-   */
   static async getTopTemplates(
     limit: number = 5,
     filter: EmailAnalyticsFilter = {},
   ) {
     try {
       const conditions = EmailAnalytics.buildWhereConditions(filter)
-
-      const templateStats = await db
+      const results = await db
         .select({
           templateName: emails.templateName,
-          total: count(),
-          delivered: sql<number>`COUNT(CASE WHEN ${emails.status} IN ('delivered', 'opened', 'clicked') THEN 1 END)`,
-          opened: sql<number>`COUNT(CASE WHEN ${emails.status} IN ('opened', 'clicked') THEN 1 END)`,
+          count: count(),
+          delivered: sql<number>`COUNT(CASE WHEN ${emails.status} = 'delivered' THEN 1 END)`,
+          opened: sql<number>`COUNT(CASE WHEN ${emails.status} = 'opened' THEN 1 END)`,
         })
         .from(emails)
         .where(and(conditions, sql`${emails.templateName} IS NOT NULL`))
@@ -142,16 +118,16 @@ export class EmailAnalytics {
         .orderBy(desc(count()))
         .limit(limit)
 
-      return templateStats.map((stat) => ({
-        templateName: stat.templateName!,
-        count: stat.total,
+      return results.map((result) => ({
+        templateName: result.templateName!,
+        count: Number(result.count),
         deliveryRate:
-          stat.total > 0
-            ? Math.round((stat.delivered / stat.total) * 10000) / 100
+          result.count > 0
+            ? (Number(result.delivered) / Number(result.count)) * 100
             : 0,
         openRate:
-          stat.delivered > 0
-            ? Math.round((stat.opened / stat.delivered) * 10000) / 100
+          Number(result.delivered) > 0
+            ? (Number(result.opened) / Number(result.delivered)) * 100
             : 0,
       }))
     } catch (error) {
@@ -160,31 +136,26 @@ export class EmailAnalytics {
     }
   }
 
-  /**
-   * Get hourly email statistics for charts
-   */
   static async getHourlyStats(filter: EmailAnalyticsFilter = {}) {
     try {
       const conditions = EmailAnalytics.buildWhereConditions(filter)
-
-      const hourlyStats = await db
+      const results = await db
         .select({
-          hour: sql<string>`DATE_TRUNC('hour', ${emails.createdAt}) as hour`,
+          hour: sql<string>`EXTRACT(hour FROM ${emails.createdAt})::text`,
           sent: count(),
-          delivered: sql<number>`COUNT(CASE WHEN ${emails.status} IN ('delivered', 'opened', 'clicked') THEN 1 END)`,
-          opened: sql<number>`COUNT(CASE WHEN ${emails.status} IN ('opened', 'clicked') THEN 1 END)`,
+          delivered: sql<number>`COUNT(CASE WHEN ${emails.status} = 'delivered' THEN 1 END)`,
+          opened: sql<number>`COUNT(CASE WHEN ${emails.status} = 'opened' THEN 1 END)`,
         })
         .from(emails)
         .where(conditions)
-        .groupBy(sql`DATE_TRUNC('hour', ${emails.createdAt})`)
-        .orderBy(sql`DATE_TRUNC('hour', ${emails.createdAt}) DESC`)
-        .limit(24) // Last 24 hours
+        .groupBy(sql`EXTRACT(hour FROM ${emails.createdAt})`)
+        .orderBy(sql`EXTRACT(hour FROM ${emails.createdAt})`)
 
-      return hourlyStats.map((stat) => ({
-        hour: stat.hour,
-        sent: stat.sent,
-        delivered: stat.delivered,
-        opened: stat.opened,
+      return results.map((result) => ({
+        hour: result.hour,
+        sent: Number(result.sent),
+        delivered: Number(result.delivered),
+        opened: Number(result.opened),
       }))
     } catch (error) {
       console.error("Error getting hourly stats:", error)
@@ -192,9 +163,6 @@ export class EmailAnalytics {
     }
   }
 
-  /**
-   * Get complete dashboard data
-   */
   static async getDashboardData(
     filter: EmailAnalyticsFilter = {},
   ): Promise<EmailDashboardData> {
@@ -209,7 +177,15 @@ export class EmailAnalytics {
 
       return {
         stats,
-        recentEmails,
+        recentEmails: recentEmails.map((email) => ({
+          id: email.id,
+          subject: email.subject,
+          toAddress: email.toAddress,
+          status: email.status as EmailStatus,
+          createdAt: email.createdAt,
+          openedAt: email.openedAt || undefined,
+          deliveredAt: email.deliveredAt || undefined,
+        })),
         topTemplates,
         hourlyStats,
       }
@@ -219,113 +195,20 @@ export class EmailAnalytics {
     }
   }
 
-  /**
-   * Get email events for a specific email
-   */
-  static async getEmailEvents(emailId: string) {
-    try {
-      return await db
-        .select()
-        .from(emailEvents)
-        .where(eq(emailEvents.emailId, emailId))
-        .orderBy(desc(emailEvents.timestamp))
-    } catch (error) {
-      console.error("Error getting email events:", error)
-      throw error
-    }
-  }
-
-  /**
-   * Get email performance comparison by template
-   */
-  static async getTemplateComparison(
-    templateNames: string[],
-    filter: EmailAnalyticsFilter = {},
-  ) {
-    try {
-      const conditions = and(
-        EmailAnalytics.buildWhereConditions(filter),
-        sql`${emails.templateName} = ANY(${templateNames})`,
-      )
-
-      const comparison = await db
-        .select({
-          templateName: emails.templateName,
-          total: count(),
-          sent: sql<number>`COUNT(CASE WHEN ${emails.status} != 'queued' AND ${emails.status} != 'failed' THEN 1 END)`,
-          delivered: sql<number>`COUNT(CASE WHEN ${emails.status} IN ('delivered', 'opened', 'clicked') THEN 1 END)`,
-          opened: sql<number>`COUNT(CASE WHEN ${emails.status} IN ('opened', 'clicked') THEN 1 END)`,
-          clicked: sql<number>`COUNT(CASE WHEN ${emails.status} = 'clicked' THEN 1 END)`,
-          bounced: sql<number>`COUNT(CASE WHEN ${emails.status} = 'bounced' THEN 1 END)`,
-        })
-        .from(emails)
-        .where(conditions)
-        .groupBy(emails.templateName)
-
-      return comparison.map((item) => ({
-        templateName: item.templateName!,
-        total: item.total,
-        sent: item.sent,
-        delivered: item.delivered,
-        opened: item.opened,
-        clicked: item.clicked,
-        bounced: item.bounced,
-        deliveryRate:
-          item.sent > 0
-            ? Math.round((item.delivered / item.sent) * 10000) / 100
-            : 0,
-        openRate:
-          item.delivered > 0
-            ? Math.round((item.opened / item.delivered) * 10000) / 100
-            : 0,
-        clickRate:
-          item.delivered > 0
-            ? Math.round((item.clicked / item.delivered) * 10000) / 100
-            : 0,
-        bounceRate:
-          item.sent > 0
-            ? Math.round((item.bounced / item.sent) * 10000) / 100
-            : 0,
-      }))
-    } catch (error) {
-      console.error("Error getting template comparison:", error)
-      throw error
-    }
-  }
-
-  /**
-   * Build WHERE conditions from filter
-   */
   private static buildWhereConditions(filter: EmailAnalyticsFilter) {
     const conditions = []
 
-    if (filter.startDate) {
+    if (filter.startDate)
       conditions.push(gte(emails.createdAt, filter.startDate))
-    }
-
-    if (filter.endDate) {
-      conditions.push(lte(emails.createdAt, filter.endDate))
-    }
-
-    if (filter.provider) {
-      conditions.push(eq(emails.provider, filter.provider as any))
-    }
-
-    if (filter.templateName) {
+    if (filter.endDate) conditions.push(lte(emails.createdAt, filter.endDate))
+    if (filter.provider) conditions.push(eq(emails.provider, filter.provider))
+    if (filter.templateName)
       conditions.push(eq(emails.templateName, filter.templateName))
-    }
-
-    if (filter.userId) {
-      conditions.push(eq(emails.userId, filter.userId))
-    }
-
-    if (filter.status && filter.status.length > 0) {
-      conditions.push(sql`${emails.status} = ANY(${filter.status})`)
-    }
-
-    if (filter.tags && filter.tags.length > 0) {
+    if (filter.userId) conditions.push(eq(emails.userId, filter.userId))
+    if (filter.tags?.length)
       conditions.push(sql`${emails.tags} && ${filter.tags}`)
-    }
+    if (filter.status?.length)
+      conditions.push(sql`${emails.status} = ANY(${filter.status})`)
 
     return conditions.length > 0 ? and(...conditions) : undefined
   }

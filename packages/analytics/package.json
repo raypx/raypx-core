@@ -30,6 +30,8 @@
   },
   "devDependencies": {
     "@raypx/tsconfig": "workspace:*",
+    "posthog-js": "^1.165.0",
+    "gtag": "^1.0.1",
     "@types/node": "catalog:",
     "@types/react": "catalog:react19",
     "typescript": "catalog:"

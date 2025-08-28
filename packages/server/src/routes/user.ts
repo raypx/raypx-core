@@ -1,5 +1,5 @@
 import { zValidator } from "@hono/zod-validator"
-import { Hono } from "hono"
+import { Hono, type MiddlewareHandler } from "hono"
 import { z } from "zod"
 import { UserService } from "../services"
 import type { Variables } from "../types"
@@ -34,7 +34,10 @@ const banUserSchema = z.object({
 })
 
 // Middleware to ensure user is authenticated and has admin role
-const adminMiddleware = async (c: any, next: any) => {
+const adminMiddleware: MiddlewareHandler<{ Variables: Variables }> = async (
+  c,
+  next,
+) => {
   const user = c.get("user")
   if (!user) {
     return c.json({ error: "Unauthorized" }, 401)

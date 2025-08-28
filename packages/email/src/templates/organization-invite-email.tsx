@@ -5,7 +5,6 @@ export interface OrganizationInviteEmailProps {
   inviterName: string
   inviterEmail: string
   organizationName: string
-  organizationLogo?: string
   role: string
   inviteUrl: string
   expiresIn?: string
@@ -15,7 +14,6 @@ export const OrganizationInviteEmail = ({
   inviterName,
   inviterEmail,
   organizationName,
-  organizationLogo,
   role,
   inviteUrl,
   expiresIn = "7 days",

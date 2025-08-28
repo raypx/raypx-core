@@ -1,41 +1,45 @@
 "use client"
 
 import { envs } from "./envs"
+import type { PostHogInstance, PostHogReactHook } from "./types"
 
-let posthogHook: any = null
+let posthogHook: PostHogReactHook | null = null
 
-async function loadPostHogHook() {
+async function _loadPostHogHook(): Promise<PostHogReactHook | null> {
   if (posthogHook) return posthogHook
 
   try {
-    const reactModule = await import("posthog-js/react" as any)
-    posthogHook = reactModule.usePostHog
-    return posthogHook
-  } catch (error) {
+    const reactModule = await import("posthog-js/react").catch(() => null)
+    if (reactModule) {
+      posthogHook = reactModule.usePostHog as PostHogReactHook
+      return posthogHook
+    }
+    return null
+  } catch (_error) {
     return null
   }
 }
 
 export function useAnalytics() {
-  let posthog: any = null
+  let posthog: PostHogInstance | null = null
 
   // Try to get PostHog instance if available
   if (typeof window !== "undefined" && envs.NEXT_PUBLIC_POSTHOG_KEY) {
     try {
       // If PostHog is loaded globally, use it
-      if ((window as any).posthog) {
-        posthog = (window as any).posthog
+      if (window.posthog) {
+        posthog = window.posthog
       }
-    } catch (error) {
+    } catch (_error) {
       // Silent fail
     }
   }
 
-  const track = (event: string, properties?: Record<string, any>) => {
+  const track = (event: string, properties?: Record<string, unknown>) => {
     if (process.env.NODE_ENV !== "production") return
 
     // PostHog
-    if (posthog && posthog.capture) {
+    if (posthog?.capture) {
       posthog.capture(event, properties)
     }
 
@@ -52,11 +56,11 @@ export function useAnalytics() {
     }
   }
 
-  const identify = (userId: string, properties?: Record<string, any>) => {
+  const identify = (userId: string, properties?: Record<string, unknown>) => {
     if (process.env.NODE_ENV !== "production") return
 
     // PostHog
-    if (posthog && posthog.identify) {
+    if (posthog?.identify) {
       posthog.identify(userId, properties)
     }
 
@@ -73,16 +77,16 @@ export function useAnalytics() {
     if (process.env.NODE_ENV !== "production") return
 
     // PostHog
-    if (posthog && posthog.reset) {
+    if (posthog?.reset) {
       posthog.reset()
     }
   }
 
-  const setPersonProperties = (properties: Record<string, any>) => {
+  const setPersonProperties = (properties: Record<string, unknown>) => {
     if (process.env.NODE_ENV !== "production") return
 
     // PostHog
-    if (posthog && posthog.setPersonProperties) {
+    if (posthog?.setPersonProperties) {
       posthog.setPersonProperties(properties)
     }
 
@@ -97,12 +101,12 @@ export function useAnalytics() {
   const group = (
     groupType: string,
     groupKey: string,
-    properties?: Record<string, any>,
+    properties?: Record<string, unknown>,
   ) => {
     if (process.env.NODE_ENV !== "production") return
 
     // PostHog
-    if (posthog && posthog.group) {
+    if (posthog?.group) {
       posthog.group(groupType, groupKey, properties)
     }
   }
@@ -111,7 +115,7 @@ export function useAnalytics() {
     if (process.env.NODE_ENV !== "production") return
 
     // PostHog
-    if (posthog && posthog.capture) {
+    if (posthog?.capture) {
       posthog.capture("$pageview", {
         $current_url: url || window.location.href,
         title,

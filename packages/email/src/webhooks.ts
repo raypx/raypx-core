@@ -1,16 +1,26 @@
+import crypto from "node:crypto"
 import { db, emails } from "@raypx/db"
-import crypto from "crypto"
 import { eq } from "drizzle-orm"
 import { envs } from "./envs"
 import { trackEmailEvent } from "./server"
 import type { ResendWebhookEvent, WebhookEvent } from "./types"
+import { EmailEventType, ResendWebhookEventType } from "./types"
 
 const env = envs()
 
+// Event type mapping
+const EVENT_TYPE_MAP: Record<ResendWebhookEventType, EmailEventType> = {
+  [ResendWebhookEventType.EMAIL_SENT]: EmailEventType.SENT,
+  [ResendWebhookEventType.EMAIL_DELIVERED]: EmailEventType.DELIVERED,
+  [ResendWebhookEventType.EMAIL_DELIVERY_DELAYED]:
+    EmailEventType.DELIVERY_DELAYED,
+  [ResendWebhookEventType.EMAIL_COMPLAINED]: EmailEventType.COMPLAINED,
+  [ResendWebhookEventType.EMAIL_BOUNCED]: EmailEventType.BOUNCED,
+  [ResendWebhookEventType.EMAIL_OPENED]: EmailEventType.OPENED,
+  [ResendWebhookEventType.EMAIL_CLICKED]: EmailEventType.CLICKED,
+}
+
 export class EmailWebhookHandler {
-  /**
-   * Verify webhook signature for Resend
-   */
   static verifyResendSignature(
     payload: string,
     signature: string,
@@ -20,7 +30,6 @@ export class EmailWebhookHandler {
       const hmac = crypto.createHmac("sha256", secret)
       hmac.update(payload, "utf8")
       const expectedSignature = `sha256=${hmac.digest("hex")}`
-
       return crypto.timingSafeEqual(
         Buffer.from(expectedSignature),
         Buffer.from(signature),
@@ -31,47 +40,31 @@ export class EmailWebhookHandler {
     }
   }
 
-  /**
-   * Process Resend webhook events
-   */
   static async handleResendWebhook(event: ResendWebhookEvent): Promise<void> {
     try {
       const { type, data } = event
+      const internalEventType = EVENT_TYPE_MAP[type]
 
-      // Find email by provider ID
-      const emailRecords = await db
-        .select()
-        .from(emails)
-        .where(eq(emails.providerId, data.email_id))
-        .limit(1)
-
-      if (emailRecords.length === 0) {
-        console.warn(`Email not found for provider ID: ${data.email_id}`)
-        return
-      }
-
-      const emailRecord = emailRecords[0]
-
-      // Map Resend event types to our internal event types
-      const eventTypeMap: Record<string, string> = {
-        "email.sent": "sent",
-        "email.delivered": "delivered",
-        "email.delivery_delayed": "delivery_delayed",
-        "email.complained": "complained",
-        "email.bounced": "bounced",
-        "email.opened": "opened",
-        "email.clicked": "clicked",
-      }
-
-      const internalEventType = eventTypeMap[type]
       if (!internalEventType) {
         console.warn(`Unknown event type: ${type}`)
         return
       }
 
-      // Extract additional data based on event type
-      const additionalData: any = {}
-      if (type === "email.clicked" && data.clicked_link) {
+      // Find email by provider ID
+      const [emailRecord] = await db
+        .select()
+        .from(emails)
+        .where(eq(emails.providerId, data.email_id))
+        .limit(1)
+
+      if (!emailRecord) {
+        console.warn(`Email not found for provider ID: ${data.email_id}`)
+        return
+      }
+
+      // Extract additional data
+      const additionalData: Record<string, unknown> = {}
+      if (type === ResendWebhookEventType.EMAIL_CLICKED && data.clicked_link) {
         additionalData.clickedUrl = data.clicked_link.url
       }
 
@@ -94,64 +87,32 @@ export class EmailWebhookHandler {
     }
   }
 
-  /**
-   * Process generic webhook events
-   */
   static async handleWebhookEvent(event: WebhookEvent): Promise<void> {
     try {
-      // Handle different webhook providers
-      if (event.type.startsWith("email.")) {
-        // Resend webhook
-        await EmailWebhookHandler.handleResendWebhook(
-          event as ResendWebhookEvent,
-        )
-      } else {
-        console.warn(`Unknown webhook event type: ${event.type}`)
-      }
+      console.log(`Processing generic webhook event: ${event.type}`)
+      // Handle generic webhook events here - can be extended for other providers
     } catch (error) {
-      console.error("Error handling webhook event:", error)
+      console.error("Error processing generic webhook:", error)
       throw error
     }
   }
 
-  /**
-   * Create a Next.js API route handler for webhooks
-   */
-  static createWebhookHandler() {
-    return async (request: Request) => {
-      try {
-        const body = await request.text()
-        const signature = request.headers.get("webhook-signature") || ""
-
-        // Verify signature if webhook secret is configured
-        if (env.RESEND_WEBHOOK_SECRET && signature) {
-          const isValid = EmailWebhookHandler.verifyResendSignature(
-            body,
-            signature,
-            env.RESEND_WEBHOOK_SECRET,
-          )
-
-          if (!isValid) {
-            return new Response("Invalid signature", { status: 401 })
-          }
-        }
-
-        const event: WebhookEvent = JSON.parse(body)
-
-        await EmailWebhookHandler.handleWebhookEvent(event)
-
-        return new Response("OK", { status: 200 })
-      } catch (error) {
-        console.error("Webhook handler error:", error)
-        return new Response("Internal Server Error", { status: 500 })
-      }
+  static async processWebhookWithVerification(
+    payload: string,
+    signature: string,
+    secret: string,
+    event: ResendWebhookEvent,
+  ): Promise<void> {
+    if (
+      !EmailWebhookHandler.verifyResendSignature(payload, signature, secret)
+    ) {
+      throw new Error("Invalid webhook signature")
     }
+    await EmailWebhookHandler.handleResendWebhook(event)
   }
 }
 
-/**
- * Utility function to handle email tracking pixel
- */
+// Utility functions
 export const handleTrackingPixel = async (
   emailId: string,
   userAgent?: string,
@@ -160,7 +121,7 @@ export const handleTrackingPixel = async (
   try {
     await trackEmailEvent({
       emailId,
-      eventType: "opened",
+      eventType: EmailEventType.OPENED,
       userAgent,
       ipAddress: ip,
     })
@@ -169,9 +130,6 @@ export const handleTrackingPixel = async (
   }
 }
 
-/**
- * Utility function to handle click tracking
- */
 export const handleClickTracking = async (
   emailId: string,
   url: string,
@@ -181,7 +139,7 @@ export const handleClickTracking = async (
   try {
     await trackEmailEvent({
       emailId,
-      eventType: "clicked",
+      eventType: EmailEventType.CLICKED,
       clickedUrl: url,
       userAgent,
       ipAddress: ip,

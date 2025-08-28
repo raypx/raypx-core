@@ -3,11 +3,14 @@ import { createEnv, z } from "@raypx/shared"
 export const envs = () =>
   createEnv({
     server: {
-      RESEND_FROM: z.string().min(1),
-      RESEND_TOKEN: z.string().min(1).startsWith("re_"),
+      RESEND_FROM: z.string().min(1).email("Invalid sender email address"),
+      RESEND_TOKEN: z
+        .string()
+        .min(1)
+        .startsWith("re_", "Resend token must start with 're_'"),
       RESEND_WEBHOOK_SECRET: z.string().min(1).optional(),
       MAIL_HOST: z.string().min(1).optional(),
-      MAIL_PORT: z.number().min(1).optional(),
+      MAIL_PORT: z.number().int().min(1).max(65535).optional(),
       MAIL_SECURE: z.boolean().optional(),
       MAIL_USER: z.string().min(1).optional(),
       MAIL_PASSWORD: z.string().min(1).optional(),

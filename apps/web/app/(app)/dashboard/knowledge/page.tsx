@@ -185,7 +185,7 @@ export default function KnowledgeBasesPage() {
   })
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) =>
+    mutationFn: ({ id, data }: { id: string; data: Record<string, unknown> }) =>
       updateKnowledgeBase(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["knowledges"] })

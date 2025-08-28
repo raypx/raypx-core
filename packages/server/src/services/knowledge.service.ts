@@ -14,14 +14,14 @@ export type Knowledge = InferSelectModel<typeof schemas.knowledges>
 export interface CreateKnowledgeBaseData {
   name: string
   description?: string
-  settings?: any
+  settings?: Record<string, unknown>
 }
 
 export interface UpdateKnowledgeBaseData {
   name?: string
   description?: string
   status?: "active" | "inactive" | "archived"
-  settings?: any
+  settings?: Record<string, unknown>
 }
 
 export interface KnowledgeBaseListOptions {

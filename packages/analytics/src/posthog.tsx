@@ -4,24 +4,39 @@ import { usePathname, useSearchParams } from "next/navigation"
 import type { FC, ReactNode } from "react"
 import { useEffect, useState } from "react"
 import { envs } from "./envs"
+import type { PostHogInstance, PostHogProvider } from "./types"
 
-let posthogInstance: any = null
-let PostHogProvider: any = null
+let posthogInstance: PostHogInstance | null = null
+let PostHogProviderComponent: PostHogProvider | null = null
 
-async function loadPostHog() {
-  if (posthogInstance) return { posthog: posthogInstance, PostHogProvider }
+async function loadPostHog(): Promise<{
+  posthog: PostHogInstance | null
+  PostHogProvider: PostHogProvider | null
+}> {
+  if (posthogInstance)
+    return {
+      posthog: posthogInstance,
+      PostHogProvider: PostHogProviderComponent,
+    }
 
   try {
     const [posthogModule, reactModule] = await Promise.all([
-      import("posthog-js" as any),
-      import("posthog-js/react" as any),
+      import("posthog-js").catch(() => null),
+      import("posthog-js/react").catch(() => null),
     ])
 
-    posthogInstance = posthogModule.default
-    PostHogProvider = reactModule.PostHogProvider
+    if (!posthogModule || !reactModule) {
+      return { posthog: null, PostHogProvider: null }
+    }
 
-    return { posthog: posthogInstance, PostHogProvider }
-  } catch (error) {
+    posthogInstance = posthogModule.default as PostHogInstance
+    PostHogProviderComponent = reactModule.PostHogProvider as PostHogProvider
+
+    return {
+      posthog: posthogInstance,
+      PostHogProvider: PostHogProviderComponent,
+    }
+  } catch (_error) {
     // Silent fail - PostHog is optional
     return { posthog: null, PostHogProvider: null }
   }
@@ -35,7 +50,7 @@ function PostHogPageView() {
     if (pathname && posthogInstance?.__loaded) {
       let url = window.origin + pathname
       if (searchParams.toString()) {
-        url = url + `?${searchParams.toString()}`
+        url = `${url}?${searchParams.toString()}`
       }
       posthogInstance.capture("$pageview", {
         $current_url: url,
@@ -50,7 +65,7 @@ export const PostHogAnalyticsProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [isLoaded, setIsLoaded] = useState(false)
-  const [Provider, setProvider] = useState<any>(null)
+  const [Provider, setProvider] = useState<PostHogProvider | null>(null)
 
   useEffect(() => {
     if (
@@ -60,7 +75,7 @@ export const PostHogAnalyticsProvider: FC<{ children: ReactNode }> = ({
       process.env.NODE_ENV === "production"
     ) {
       loadPostHog().then(({ posthog, PostHogProvider: PHProvider }) => {
-        if (posthog && PHProvider) {
+        if (posthog && PHProvider && envs.NEXT_PUBLIC_POSTHOG_KEY) {
           posthog.init(envs.NEXT_PUBLIC_POSTHOG_KEY, {
             api_host: envs.NEXT_PUBLIC_POSTHOG_HOST,
             person_profiles: "identified_only",

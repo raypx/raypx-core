@@ -7,13 +7,22 @@ import { useAuth } from "../../core/hooks/use-auth"
 import { useLang } from "../../core/hooks/use-lang"
 import { useTheme } from "../../core/hooks/use-theme"
 
+declare global {
+  interface Window {
+    recaptchaOptions: {
+      useRecaptchaNet?: boolean
+      enterprise?: boolean
+    }
+  }
+}
+
 export function RecaptchaV2({ ref }: { ref: RefObject<ReCAPTCHA | null> }) {
   const { captcha } = useAuth()
   const { resolvedTheme } = useTheme()
   const { lang } = useLang()
 
   useEffect(() => {
-    ;(window as any).recaptchaOptions = {
+    window.recaptchaOptions = {
       useRecaptchaNet: captcha?.recaptchaNet,
       enterprise: captcha?.enterprise,
     }
