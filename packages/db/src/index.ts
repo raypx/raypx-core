@@ -29,3 +29,4 @@ export type {
   TableConfig,
   TableLikeHasEmptySelection,
 } from "drizzle-orm/pg-core"
+export { emailEvents, emails, emailTemplates } from "./schemas/email"
