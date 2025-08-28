@@ -109,6 +109,7 @@
         "@hookform/resolvers": "^5.2.1",
         "@raypx/analytics": "workspace:*",
         "@raypx/auth": "workspace:*",
+        "@raypx/config": "workspace:*",
         "@raypx/db": "workspace:*",
         "@raypx/email": "workspace:*",
         "@raypx/i18n": "workspace:*",
@@ -228,6 +229,18 @@
         "@types/node": "catalog:",
         "typescript": "catalog:",
         "vitest": "catalog:",
+      },
+    },
+    "packages/config": {
+      "name": "@raypx/config",
+      "version": "0.1.0",
+      "dependencies": {
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@raypx/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "typescript": "catalog:",
       },
     },
     "packages/db": {
@@ -1023,6 +1036,8 @@
     "@raypx/billing": ["@raypx/billing@workspace:packages/billing"],
 
     "@raypx/cli": ["@raypx/cli@workspace:packages/cli"],
+
+    "@raypx/config": ["@raypx/config@workspace:packages/config"],
 
     "@raypx/db": ["@raypx/db@workspace:packages/db"],
 

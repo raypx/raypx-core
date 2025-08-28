@@ -16,6 +16,7 @@
     "@hookform/resolvers": "^5.2.1",
     "@raypx/analytics": "workspace:*",
     "@raypx/auth": "workspace:*",
+    "@raypx/config": "workspace:*",
     "@raypx/db": "workspace:*",
     "@raypx/email": "workspace:*",
     "@raypx/i18n": "workspace:*",
