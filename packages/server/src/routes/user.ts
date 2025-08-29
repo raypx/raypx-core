@@ -1,5 +1,5 @@
-import { zValidator } from "@hono/zod-validator"
 import { Hono, type MiddlewareHandler } from "hono"
+import { validator as zValidator } from "hono-openapi/zod"
 import { z } from "zod"
 import { UserService } from "../services"
 import type { Variables } from "../types"

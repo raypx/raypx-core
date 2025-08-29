@@ -1,9 +1,8 @@
-import { zValidator } from "@hono/zod-validator"
 import { chunks, documents, knowledges } from "@raypx/db/schemas"
 import { createSelectSchema } from "drizzle-zod"
 import { Hono, type MiddlewareHandler } from "hono"
 import { describeRoute } from "hono-openapi"
-import { resolver } from "hono-openapi/zod"
+import { resolver, validator as zValidator } from "hono-openapi/zod"
 import { z } from "zod"
 import { KnowledgeService } from "../services"
 import type { Variables } from "../types"
@@ -398,7 +397,6 @@ knowledgeRoutes.get(
 knowledgeRoutes.post(
   "/:id/documents",
   describeRoute({
-    title: "Upload document to knowledge base",
     description: "Upload document to knowledge base",
     tags,
     responses: {
