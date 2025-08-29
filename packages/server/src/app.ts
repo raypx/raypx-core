@@ -1,4 +1,6 @@
+import { Scalar } from "@scalar/hono-api-reference"
 import { Hono } from "hono"
+import { openAPISpecs } from "hono-openapi"
 import { defaultMiddleware } from "./config"
 import { authMiddleware, databaseMiddleware } from "./middleware"
 import { authRoutes, knowledgeRoutes, userRoutes } from "./routes"
@@ -37,14 +39,35 @@ export const createApp = (options: ServerOptions) => {
     })
   })
 
-  app.get("/", (c) => {
-    return c.text("Hello World")
-  })
-
   // Mount routes
   app.route("/auth", authRoutes)
   app.route("/knowledges", knowledgeRoutes)
   app.route("/users", userRoutes)
+
+  app.get(
+    "/openapi",
+    openAPISpecs(app, {
+      documentation: {
+        info: {
+          title: "Hono API",
+          version: "1.0.0",
+          description: "Greeting API",
+        },
+        servers: [
+          { url: "http://localhost:3000", description: "Local Server" },
+        ],
+      },
+    }),
+  )
+
+  // Scalar API documentation
+  app.get(
+    "/docs",
+    Scalar({
+      url: `${options.prefix}/openapi`,
+      pageTitle: "Raypx API Documentation",
+    }),
+  )
 
   // Error handling
   app.notFound((c) => {
