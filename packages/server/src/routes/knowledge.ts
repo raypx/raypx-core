@@ -168,6 +168,20 @@ knowledgeRoutes.get(
 // POST /knowledges - Create new knowledge base
 knowledgeRoutes.post(
   "/",
+  describeRoute({
+    description: "Create new knowledge base",
+    tags,
+    responses: {
+      201: {
+        description: "Successful response",
+        content: {
+          "application/json": {
+            schema: resolver(createSelectSchema(knowledges)),
+          },
+        },
+      },
+    },
+  }),
   zValidator("json", createKnowledgeSchema),
   async (c) => {
     try {
@@ -199,6 +213,20 @@ knowledgeRoutes.post(
 // PATCH /knowledges/:id - Update knowledge base
 knowledgeRoutes.patch(
   "/:id",
+  describeRoute({
+    description: "Update knowledge base",
+    tags,
+    responses: {
+      200: {
+        description: "Successful response",
+        content: {
+          "application/json": {
+            schema: resolver(createSelectSchema(knowledges)),
+          },
+        },
+      },
+    },
+  }),
   zValidator("json", updateKnowledgeSchema),
   async (c) => {
     try {
