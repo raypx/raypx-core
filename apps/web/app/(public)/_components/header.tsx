@@ -3,6 +3,7 @@
 import { useAuth } from "@raypx/auth/core"
 import { OrganizationSwitcher } from "@raypx/auth/organization"
 import { Button } from "@raypx/ui/components/button"
+import { ThemeSwitcher } from "@raypx/ui/components/theme-switcher"
 import Image from "next/image"
 import Link from "next/link"
 import { LangSwitcher } from "@/components/lang-switcher"
@@ -29,6 +30,7 @@ export function Header() {
           </h1>
         </Link>
         <div className="flex items-center gap-4">
+          <ThemeSwitcher />
           <LangSwitcher />
           {session?.session ? (
             <OrganizationSwitcher size="icon" />
