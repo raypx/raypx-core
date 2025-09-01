@@ -1,5 +1,4 @@
 import { Suspense } from "react"
-import { Header } from "@/app/(public)/_components/header"
 import { DashboardLayout as DashboardLayoutLazy } from "@/components/dashboard-lazy"
 
 interface DashboardLayoutProps {
@@ -13,7 +12,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         title="Dashboard"
         description="Welcome to your console"
       >
-        <Header />
         {children}
       </DashboardLayoutLazy>
     </Suspense>

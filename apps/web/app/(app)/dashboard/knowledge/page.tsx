@@ -1,15 +1,5 @@
 "use client"
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@raypx/ui/components/alert-dialog"
 import { Badge } from "@raypx/ui/components/badge"
 import { Button } from "@raypx/ui/components/button"
 import {
@@ -19,545 +9,275 @@ import {
   CardHeader,
   CardTitle,
 } from "@raypx/ui/components/card"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@raypx/ui/components/dialog"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@raypx/ui/components/dropdown-menu"
 import { Input } from "@raypx/ui/components/input"
-import { Label } from "@raypx/ui/components/label"
-import { Textarea } from "@raypx/ui/components/textarea"
 import {
-  keepPreviousData,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query"
-import { format } from "date-fns"
-import {
+  BookOpen,
   Calendar,
   Edit,
+  Eye,
   FileText,
-  MoreHorizontal,
+  Filter,
   Plus,
   Search,
+  Tag,
   Trash2,
+  User,
 } from "lucide-react"
-import Link from "next/link"
-import { useState } from "react"
 
-interface KnowledgeBase {
-  id: string
-  name: string
-  description?: string
-  status: "active" | "inactive" | "archived"
-  createdAt: string
-  updatedAt: string
-}
-
-interface KnowledgeBasesResponse {
-  data: KnowledgeBase[]
-  meta: {
-    total: number
-    page: number
-    totalPages: number
-    limit: number
-    offset: number
-  }
-}
-
-// API functions
-const fetchKnowledgeBases = async (params: {
-  limit?: number
-  offset?: number
-  search?: string
-  sortBy?: string
-  sortOrder?: string
-}): Promise<KnowledgeBasesResponse> => {
-  const query = new URLSearchParams()
-  Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined) {
-      query.set(key, value.toString())
-    }
-  })
-
-  const response = await fetch(`/api/v1/knowledges?${query}`)
-  if (!response.ok) {
-    throw new Error("Failed to fetch knowledges")
-  }
-  return response.json()
-}
-
-const createKnowledgeBase = async (data: {
-  name: string
-  description?: string
-}) => {
-  const response = await fetch("/api/v1/knowledges", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+export default function KnowledgePage() {
+  const articles = [
+    {
+      id: 1,
+      title: "Getting Started with Raypx",
+      excerpt:
+        "Learn the basics of setting up and using Raypx for your organization.",
+      category: "Tutorials",
+      status: "published",
+      author: "John Doe",
+      publishDate: "2024-01-15",
+      views: 1245,
+      tags: ["beginner", "setup", "guide"],
     },
-    body: JSON.stringify(data),
-  })
-  if (!response.ok) {
-    throw new Error("Failed to create knowledge base")
-  }
-  return response.json()
-}
-
-const updateKnowledgeBase = async (
-  id: string,
-  data: {
-    name?: string
-    description?: string
-    status?: string
-  },
-) => {
-  const response = await fetch(`/api/v1/knowledges/${id}`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
+    {
+      id: 2,
+      title: "Advanced API Configuration",
+      excerpt:
+        "Deep dive into advanced API settings and optimization techniques.",
+      category: "Technical",
+      status: "published",
+      author: "Jane Smith",
+      publishDate: "2024-01-10",
+      views: 892,
+      tags: ["api", "advanced", "configuration"],
     },
-    body: JSON.stringify(data),
-  })
-  if (!response.ok) {
-    throw new Error("Failed to update knowledge base")
-  }
-  return response.json()
-}
-
-const deleteKnowledgeBase = async (id: string) => {
-  const response = await fetch(`/api/v1/knowledges/${id}`, {
-    method: "DELETE",
-  })
-  if (!response.ok) {
-    throw new Error("Failed to delete knowledge base")
-  }
-  return response.json()
-}
-
-export default function KnowledgeBasesPage() {
-  const [search, setSearch] = useState("")
-  const [currentPage, setCurrentPage] = useState(1)
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-  const [selectedKb, setSelectedKb] = useState<KnowledgeBase | null>(null)
-  const [createForm, setCreateForm] = useState({ name: "", description: "" })
-  const [editForm, setEditForm] = useState({ name: "", description: "" })
-
-  const queryClient = useQueryClient()
-  const limit = 12
-
-  // Queries
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["knowledges", { search, page: currentPage, limit }],
-    queryFn: () =>
-      fetchKnowledgeBases({
-        limit,
-        offset: (currentPage - 1) * limit,
-        search: search || undefined,
-        sortBy: "updatedAt",
-        sortOrder: "desc",
-      }),
-    placeholderData: keepPreviousData,
-  })
-
-  // Mutations
-  const createMutation = useMutation({
-    mutationFn: createKnowledgeBase,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["knowledges"] })
-      setIsCreateDialogOpen(false)
-      setCreateForm({ name: "", description: "" })
+    {
+      id: 3,
+      title: "User Management Best Practices",
+      excerpt: "Best practices for managing users and permissions effectively.",
+      category: "Administration",
+      status: "draft",
+      author: "Bob Johnson",
+      publishDate: null,
+      views: 0,
+      tags: ["users", "permissions", "best-practices"],
     },
-  })
-
-  const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Record<string, unknown> }) =>
-      updateKnowledgeBase(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["knowledges"] })
-      setIsEditDialogOpen(false)
+    {
+      id: 4,
+      title: "Security Guidelines",
+      excerpt: "Comprehensive security guidelines for your Raypx deployment.",
+      category: "Security",
+      status: "published",
+      author: "Alice Brown",
+      publishDate: "2024-01-05",
+      views: 1567,
+      tags: ["security", "guidelines", "compliance"],
     },
-  })
-
-  const deleteMutation = useMutation({
-    mutationFn: deleteKnowledgeBase,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["knowledges"] })
-      setIsDeleteDialogOpen(false)
+    {
+      id: 5,
+      title: "Troubleshooting Common Issues",
+      excerpt: "Solutions to frequently encountered problems and their fixes.",
+      category: "Support",
+      status: "published",
+      author: "Charlie Wilson",
+      publishDate: "2024-01-01",
+      views: 2341,
+      tags: ["troubleshooting", "support", "faq"],
     },
-  })
+  ]
 
-  const handleCreateSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (createForm.name.trim()) {
-      createMutation.mutate(createForm)
-    }
-  }
+  const categories = [
+    { name: "Tutorials", count: 12, color: "bg-blue-100 text-blue-800" },
+    { name: "Technical", count: 8, color: "bg-green-100 text-green-800" },
+    {
+      name: "Administration",
+      count: 6,
+      color: "bg-purple-100 text-purple-800",
+    },
+    { name: "Security", count: 4, color: "bg-red-100 text-red-800" },
+    { name: "Support", count: 10, color: "bg-yellow-100 text-yellow-800" },
+  ]
 
-  const handleEditSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (selectedKb && editForm.name.trim()) {
-      updateMutation.mutate({
-        id: selectedKb.id,
-        data: editForm,
-      })
-    }
-  }
+  const stats = [
+    { title: "Total Articles", value: "156", change: "+12.5%", icon: FileText },
+    { title: "Published", value: "142", change: "+8.2%", icon: BookOpen },
+    { title: "Drafts", value: "14", change: "+5.3%", icon: Edit },
+    { title: "Total Views", value: "89.2K", change: "+23.1%", icon: Eye },
+  ]
 
-  const handleEdit = (kb: KnowledgeBase) => {
-    setSelectedKb(kb)
-    setEditForm({
-      name: kb.name,
-      description: kb.description || "",
-    })
-    setIsEditDialogOpen(true)
-  }
-
-  const handleDelete = (kb: KnowledgeBase) => {
-    setSelectedKb(kb)
-    setIsDeleteDialogOpen(true)
-  }
-
-  const confirmDelete = () => {
-    if (selectedKb) {
-      deleteMutation.mutate(selectedKb.id)
-    }
-  }
-
-  const getStatusBadgeColor = (status: string) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
-      case "active":
+      case "published":
         return "bg-green-100 text-green-800"
-      case "inactive":
-        return "bg-gray-100 text-gray-800"
+      case "draft":
+        return "bg-yellow-100 text-yellow-800"
       case "archived":
-        return "bg-red-100 text-red-800"
+        return "bg-gray-100 text-gray-800"
       default:
         return "bg-gray-100 text-gray-800"
     }
   }
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <p className="text-red-600">Error loading knowledges</p>
-          <Button
-            variant="outline"
-            onClick={() => window.location.reload()}
-            className="mt-2"
-          >
-            Retry
-          </Button>
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">Knowledges</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Knowledge Base</h1>
           <p className="text-muted-foreground">
-            Manage your knowledges and documents
+            Manage your organization's knowledge articles and documentation.
           </p>
         </div>
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="w-4 h-4 mr-2" />
-              New Knowledge Base
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create Knowledge Base</DialogTitle>
-              <DialogDescription>
-                Create a new knowledge base to organize your documents and
-                information.
-              </DialogDescription>
-            </DialogHeader>
-            <form onSubmit={handleCreateSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="name">Name *</Label>
-                <Input
-                  id="name"
-                  value={createForm.name}
-                  onChange={(e) =>
-                    setCreateForm({ ...createForm, name: e.target.value })
-                  }
-                  placeholder="Enter knowledge base name"
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={createForm.description}
-                  onChange={(e) =>
-                    setCreateForm({
-                      ...createForm,
-                      description: e.target.value,
-                    })
-                  }
-                  placeholder="Enter description (optional)"
-                  rows={3}
-                />
-              </div>
-              <DialogFooter>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setIsCreateDialogOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={createMutation.isPending || !createForm.name.trim()}
-                >
-                  {createMutation.isPending ? "Creating..." : "Create"}
-                </Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
+        <Button className="w-full md:w-auto">
+          <Plus className="mr-2 h-4 w-4" />
+          New Article
+        </Button>
       </div>
 
-      {/* Search */}
-      <div className="relative w-full max-w-sm">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-        <Input
-          placeholder="Search knowledges..."
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value)
-            setCurrentPage(1)
-          }}
-          className="pl-9"
-        />
+      {/* Stats Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {stats.map((stat) => (
+          <Card key={stat.title}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                {stat.title}
+              </CardTitle>
+              <stat.icon className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stat.value}</div>
+              <p className="text-xs text-muted-foreground">
+                {stat.change} from last month
+              </p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
-      {/* Content */}
-      {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Card key={i} className="animate-pulse">
-              <CardHeader>
-                <div className="h-6 bg-gray-200 rounded w-3/4"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-              </CardHeader>
-              <CardContent>
-                <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-2/3"></div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      ) : data?.data.length === 0 ? (
-        <div className="text-center py-12">
-          <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-medium mb-2">No knowledges found</h3>
-          <p className="text-muted-foreground mb-4">
-            {search
-              ? "No knowledges match your search."
-              : "Get started by creating your first knowledge base."}
-          </p>
-          {!search && (
-            <Button onClick={() => setIsCreateDialogOpen(true)}>
-              <Plus className="w-4 h-4 mr-2" />
-              Create Knowledge Base
+      {/* Search and Filters */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Search Articles</CardTitle>
+          <CardDescription>
+            Find articles by title, content, or tags
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col gap-4 md:flex-row md:items-center">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input placeholder="Search articles..." className="pl-10" />
+            </div>
+            <Button variant="outline">
+              <Filter className="mr-2 h-4 w-4" />
+              Filters
             </Button>
-          )}
-        </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {data?.data.map((kb) => (
-              <Card key={kb.id} className="hover:shadow-md transition-shadow">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <CardTitle className="text-lg line-clamp-1">
-                        <Link
-                          href={`/dashboard/knowledge/${kb.id}`}
-                          className="hover:underline"
-                        >
-                          {kb.name}
-                        </Link>
-                      </CardTitle>
-                      <div className="flex items-center gap-2 mt-2">
-                        <Badge
-                          variant="outline"
-                          className={getStatusBadgeColor(kb.status)}
-                        >
-                          {kb.status}
-                        </Badge>
-                      </div>
-                    </div>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <MoreHorizontal className="w-4 h-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => handleEdit(kb)}>
-                          <Edit className="w-4 h-4 mr-2" />
-                          Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => handleDelete(kb)}
-                          className="text-red-600"
-                        >
-                          <Trash2 className="w-4 h-4 mr-2" />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="line-clamp-2 mb-3">
-                    {kb.description || "No description"}
-                  </CardDescription>
-                  <div className="flex items-center text-sm text-muted-foreground">
-                    <Calendar className="w-4 h-4 mr-1" />
-                    Updated {format(new Date(kb.updatedAt), "MMM d, yyyy")}
-                  </div>
-                </CardContent>
-              </Card>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Categories Overview */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Categories</CardTitle>
+          <CardDescription>Article distribution by category</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 md:grid-cols-5">
+            {categories.map((category) => (
+              <div key={category.name} className="text-center">
+                <div
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${category.color}`}
+                >
+                  {category.name}
+                </div>
+                <p className="text-2xl font-bold mt-2">{category.count}</p>
+                <p className="text-xs text-muted-foreground">articles</p>
+              </div>
             ))}
           </div>
+        </CardContent>
+      </Card>
 
-          {/* Pagination */}
-          {data && data.meta.totalPages > 1 && (
-            <div className="flex items-center justify-center space-x-2">
-              <Button
-                variant="outline"
-                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                disabled={currentPage === 1}
+      {/* Articles List */}
+      <Card>
+        <CardHeader>
+          <CardTitle>All Articles</CardTitle>
+          <CardDescription>
+            Manage and organize your knowledge base articles
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {articles.map((article) => (
+              <div
+                key={article.id}
+                className="flex items-start justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
               >
-                Previous
-              </Button>
-              <span className="text-sm text-muted-foreground">
-                Page {data.meta.page} of {data.meta.totalPages}
-              </span>
-              <Button
-                variant="outline"
-                onClick={() =>
-                  setCurrentPage(
-                    Math.min(data.meta.totalPages, currentPage + 1),
-                  )
-                }
-                disabled={currentPage === data.meta.totalPages}
-              >
-                Next
-              </Button>
-            </div>
-          )}
-        </>
-      )}
+                <div className="flex-1 space-y-3">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-1">
+                      <h3 className="text-lg font-medium">{article.title}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {article.excerpt}
+                      </p>
+                    </div>
+                    <Badge className={getStatusColor(article.status)}>
+                      {article.status}
+                    </Badge>
+                  </div>
 
-      {/* Edit Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit Knowledge Base</DialogTitle>
-            <DialogDescription>
-              Update the knowledge base information.
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleEditSubmit} className="space-y-4">
-            <div>
-              <Label htmlFor="edit-name">Name *</Label>
-              <Input
-                id="edit-name"
-                value={editForm.name}
-                onChange={(e) =>
-                  setEditForm({ ...editForm, name: e.target.value })
-                }
-                placeholder="Enter knowledge base name"
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="edit-description">Description</Label>
-              <Textarea
-                id="edit-description"
-                value={editForm.description}
-                onChange={(e) =>
-                  setEditForm({ ...editForm, description: e.target.value })
-                }
-                placeholder="Enter description (optional)"
-                rows={3}
-              />
-            </div>
-            <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setIsEditDialogOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                disabled={updateMutation.isPending || !editForm.name.trim()}
-              >
-                {updateMutation.isPending ? "Updating..." : "Update"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+                  <div className="flex items-center space-x-4 text-xs text-muted-foreground">
+                    <div className="flex items-center space-x-1">
+                      <User className="h-3 w-3" />
+                      <span>{article.author}</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <Tag className="h-3 w-3" />
+                      <span>{article.category}</span>
+                    </div>
+                    {article.publishDate && (
+                      <div className="flex items-center space-x-1">
+                        <Calendar className="h-3 w-3" />
+                        <span>{article.publishDate}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center space-x-1">
+                      <Eye className="h-3 w-3" />
+                      <span>{article.views} views</span>
+                    </div>
+                  </div>
 
-      {/* Delete Dialog */}
-      <AlertDialog
-        open={isDeleteDialogOpen}
-        onOpenChange={setIsDeleteDialogOpen}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Knowledge Base</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete "{selectedKb?.name}"? This action
-              cannot be undone and will also delete all associated documents and
-              data.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={confirmDelete}
-              className="bg-red-600 hover:bg-red-700"
-              disabled={deleteMutation.isPending}
-            >
-              {deleteMutation.isPending ? "Deleting..." : "Delete"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+                  <div className="flex items-center space-x-2">
+                    {article.tags.map((tag) => (
+                      <Badge key={tag} variant="outline" className="text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-2 ml-4">
+                  <Button variant="outline" size="sm">
+                    <Edit className="mr-2 h-3 w-3" />
+                    Edit
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    <Eye className="mr-2 h-3 w-3" />
+                    View
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-red-600 hover:text-red-700"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
