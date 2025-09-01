@@ -51,6 +51,9 @@ export function createConfig(options: CreateConfigOptions = {}): NextConfig {
     eslint: {
       ignoreDuringBuilds: true,
     },
+    experimental: {
+      esmExternals: true,
+    },
     serverExternalPackages: ["prettier"],
     allowedDevOrigins: process.env.NEXT_PUBLIC_AUTH_URL
       ? [process.env.NEXT_PUBLIC_AUTH_URL]

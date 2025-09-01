@@ -48,10 +48,10 @@ export function CTASection() {
                 <Button
                   size="lg"
                   variant="secondary"
-                  className="min-w-48 gap-2"
+                  className="min-w-48 gap-2 bg-white text-blue-600 hover:bg-gray-50 hover:text-blue-700 transition-all duration-300 hover:scale-105 hover:shadow-xl font-semibold"
                 >
                   Go to Console
-                  <ArrowRight className="h-5 w-5" />
+                  <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
             ) : (
@@ -60,17 +60,17 @@ export function CTASection() {
                   <Button
                     size="lg"
                     variant="secondary"
-                    className="min-w-48 gap-2"
+                    className="min-w-48 gap-2 bg-white text-blue-600 hover:bg-gray-50 hover:text-blue-700 transition-all duration-300 hover:scale-105 hover:shadow-xl font-semibold group"
                   >
                     Start Building Today
-                    <ArrowRight className="h-5 w-5" />
+                    <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                   </Button>
                 </Link>
                 <Link href={pages.SIGN_IN}>
                   <Button
                     size="lg"
                     variant="outline"
-                    className="min-w-48 border-white text-white hover:bg-white hover:text-blue-600"
+                    className="min-w-48 border-2 border-white text-white hover:bg-white hover:text-blue-600 transition-all duration-300 hover:shadow-lg backdrop-blur-sm bg-white/10"
                   >
                     Sign In
                   </Button>
