@@ -11,11 +11,11 @@
   },
   "scripts": {
     "clean": "rimraf dist .turbo",
-    "generate": "bun with-env drizzle-kit generate",
-    "migrate": "bun with-env drizzle-kit migrate",
-    "push": "bun with-env drizzle-kit push",
-    "seed": "bun with-env tsx seed.ts",
-    "studio": "bun with-env drizzle-kit studio",
+    "generate": "pnpm with-env drizzle-kit generate",
+    "migrate": "pnpm with-env drizzle-kit migrate",
+    "push": "pnpm with-env drizzle-kit push",
+    "seed": "pnpm with-env tsx seed.ts",
+    "studio": "pnpm with-env drizzle-kit studio",
     "test": "vitest",
     "with-env": "dotenv -e ../../.env --"
   },

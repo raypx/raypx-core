@@ -2,7 +2,7 @@
 
 [![Version](https://img.shields.io/github/package-json/v/raypx/raypx-core?style=flat-square)](https://github.com/raypx/raypx-core)
 [![License](https://img.shields.io/github/license/raypx/raypx-core?style=flat-square)](https://opensource.org/licenses/Apache-2.0)
-[![Bun](https://img.shields.io/badge/Bun-1.2.20-black?style=flat-square&logo=bun)](https://bun.sh/)
+[![PNPM](https://img.shields.io/badge/PNPM-10.0.0-black?style=flat-square&logo=pnpm)](https://pnpm.io/)
 [![Turborepo](https://img.shields.io/badge/Turborepo-monorepo-red?style=flat-square&logo=turborepo)](https://turbo.build/)
 [![Biome](https://img.shields.io/badge/Biome-linter%20%26%20formatter-yellow?style=flat-square&logo=biome)](https://biomejs.dev/)
 
@@ -12,8 +12,9 @@
 
 ### 环境要求
 
-- [Bun](https://bun.sh/) >= 1.0.0
-- Node.js >= 20 (兼容性需要)
+- [pnpm](https://pnpm.io/) >= 9.0.0
+- Node.js >= 20
+- PNPM >= 10.0.0
 
 ### 安装步骤
 
@@ -22,11 +23,11 @@
 git clone https://github.com/raypx/raypx.git
 cd raypx
 
-# 使用 Bun 安装依赖
-bun install
+# 使用 PNPM 安装依赖
+pnpm install
 
 # 启动开发服务器
-bun dev
+pnpm dev
 ```
 
 访问 [raypx.com](https://dub.sh/raypx) 开始使用平台。
@@ -39,14 +40,14 @@ bun dev
 
 - **框架**: Next.js 15.5.0 with React 19
 - **语言**: TypeScript 5.9.2
-- **运行时和包管理器**: Bun 1.2.20 ⚡
+- **运行时和包管理器**: PNPM 10.0.0 ⚡
 - **Monorepo**: Turborepo
 - **UI 组件**: Radix UI + Tailwind CSS (shadcn/ui)
 - **数据库**: Drizzle ORM
 - **身份验证**: 自定义认证系统
 - **邮件服务**: Nodemailer
 - **缓存**: Redis
-- **测试**: Vitest (Bun 原生支持)
+- **测试**: Vitest
 - **代码质量**: Biome (代码检查和格式化)
 - **Git 钩子**: Husky + Commitlint
 

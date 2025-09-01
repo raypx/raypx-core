@@ -15,7 +15,8 @@
   },
   "dependencies": {
     "@changesets/cli": "^2.29.6",
-    "chalk": "^5.6.0"
+    "chalk": "^5.6.0",
+    "tsx": "^4.20.5"
   },
   "devDependencies": {
     "@raypx/tsconfig": "workspace:*",

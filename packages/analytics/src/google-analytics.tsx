@@ -5,32 +5,21 @@ import Script from "next/script"
 import type { FC, ReactNode } from "react"
 import { useEffect, useState } from "react"
 import { envs } from "./envs"
+import type { Gtag } from "./types"
 
-declare global {
-  interface Window {
-    gtag: any
-  }
-}
+let gtagInstance: Gtag | null = null
 
-let gtagInstance: any = null
-
-async function loadGtag() {
+async function loadGtag(): Promise<Gtag | null> {
   if (gtagInstance) return gtagInstance
 
-  try {
-    // Try to load gtag module if available
-    const gtagModule = await import("gtag" as any)
-    gtagInstance = gtagModule.default || gtagModule
+  // Use global gtag if available (loaded via script)
+  if (typeof window !== "undefined" && window.gtag) {
+    gtagInstance = window.gtag
     return gtagInstance
-  } catch (error) {
-    // Fallback to global gtag if module not available
-    if (typeof window !== "undefined" && window.gtag) {
-      gtagInstance = window.gtag
-      return gtagInstance
-    }
-    // Silent fail - gtag is optional
-    return null
   }
+
+  // Silent fail - gtag is optional
+  return null
 }
 
 function GoogleAnalyticsPageView() {
@@ -41,7 +30,7 @@ function GoogleAnalyticsPageView() {
     if (pathname && gtagInstance && envs.NEXT_PUBLIC_GA_MEASUREMENT_ID) {
       let url = pathname
       if (searchParams.toString()) {
-        url = url + `?${searchParams.toString()}`
+        url = `${url}?${searchParams.toString()}`
       }
 
       gtagInstance("config", envs.NEXT_PUBLIC_GA_MEASUREMENT_ID, {
@@ -50,7 +39,7 @@ function GoogleAnalyticsPageView() {
     } else if (pathname && window.gtag && envs.NEXT_PUBLIC_GA_MEASUREMENT_ID) {
       let url = pathname
       if (searchParams.toString()) {
-        url = url + `?${searchParams.toString()}`
+        url = `${url}?${searchParams.toString()}`
       }
 
       window.gtag("config", envs.NEXT_PUBLIC_GA_MEASUREMENT_ID, {

@@ -13,13 +13,16 @@
     "test:watch": "vitest --watch"
   },
   "dependencies": {
-    "@hono/zod-validator": "^0.7.2",
     "@raypx/auth": "workspace:*",
     "@raypx/db": "workspace:*",
     "@raypx/shared": "workspace:*",
+    "@scalar/hono-api-reference": "^0.9.16",
     "date-fns": "^4.1.0",
-    "hono": "^4.9.4",
-    "zod": "catalog:"
+    "drizzle-orm": "^0.44.5",
+    "drizzle-zod": "^0.8.3",
+    "hono": "^4.9.5",
+    "zod": "catalog:",
+    "zod-openapi": "^5.4.0"
   },
   "devDependencies": {
     "@raypx/tsconfig": "workspace:*",

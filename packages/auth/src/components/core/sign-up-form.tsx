@@ -22,7 +22,8 @@ import { Input } from "@raypx/ui/components/input"
 import { PasswordField } from "@raypx/ui/components/password-field"
 import { Textarea } from "@raypx/ui/components/textarea"
 import type { BetterFetchOption } from "better-auth/react"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { type RefObject, useCallback, useEffect, useRef, useState } from "react"
+import type ReCAPTCHA from "react-google-recaptcha"
 import { useForm } from "react-hook-form"
 import { z } from "zod/v4"
 import { useAuth } from "../../core/hooks/use-auth"
@@ -687,7 +688,10 @@ export function SignUpForm({
             )
           })}
 
-        <Captcha ref={captchaRef} action="/sign-up/email" />
+        <Captcha
+          ref={captchaRef as RefObject<ReCAPTCHA>}
+          action="/sign-up/email"
+        />
 
         <Button
           type="submit"

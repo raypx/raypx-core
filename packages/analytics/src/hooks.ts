@@ -1,41 +1,55 @@
 "use client"
 
 import { envs } from "./envs"
+import type { PostHogInstance, PostHogReactHook } from "./types"
 
-let posthogHook: any = null
+let posthogHook: PostHogReactHook | null = null
 
-async function loadPostHogHook() {
+async function _loadPostHogHook(): Promise<PostHogReactHook | null> {
   if (posthogHook) return posthogHook
 
   try {
-    const reactModule = await import("posthog-js/react" as any)
-    posthogHook = reactModule.usePostHog
-    return posthogHook
-  } catch (error) {
+    const reactModule = await import("posthog-js/react").catch(() => null)
+    if (reactModule) {
+      posthogHook = reactModule.usePostHog as PostHogReactHook
+      return posthogHook
+    }
+    return null
+  } catch (_error) {
     return null
   }
 }
 
 export function useAnalytics() {
-  let posthog: any = null
+  let posthog: PostHogInstance | null = null
 
   // Try to get PostHog instance if available
   if (typeof window !== "undefined" && envs.NEXT_PUBLIC_POSTHOG_KEY) {
     try {
       // If PostHog is loaded globally, use it
-      if ((window as any).posthog) {
-        posthog = (window as any).posthog
+      if (window.posthog) {
+        posthog = window.posthog
       }
-    } catch (error) {
+    } catch (_error) {
       // Silent fail
     }
   }
 
-  const track = (event: string, properties?: Record<string, any>) => {
-    if (process.env.NODE_ENV !== "production") return
+  const track = (event: string, properties?: Record<string, unknown>) => {
+    if (
+      envs.NEXT_PUBLIC_ANALYTICS_DISABLED ||
+      (process.env.NODE_ENV !== "production" &&
+        !envs.NEXT_PUBLIC_ANALYTICS_DEBUG)
+    ) {
+      return
+    }
+
+    if (envs.NEXT_PUBLIC_ANALYTICS_DEBUG) {
+      console.log("[Analytics] Track:", event, properties)
+    }
 
     // PostHog
-    if (posthog && posthog.capture) {
+    if (posthog?.capture) {
       posthog.capture(event, properties)
     }
 
@@ -52,11 +66,11 @@ export function useAnalytics() {
     }
   }
 
-  const identify = (userId: string, properties?: Record<string, any>) => {
+  const identify = (userId: string, properties?: Record<string, unknown>) => {
     if (process.env.NODE_ENV !== "production") return
 
     // PostHog
-    if (posthog && posthog.identify) {
+    if (posthog?.identify) {
       posthog.identify(userId, properties)
     }
 
@@ -73,16 +87,16 @@ export function useAnalytics() {
     if (process.env.NODE_ENV !== "production") return
 
     // PostHog
-    if (posthog && posthog.reset) {
+    if (posthog?.reset) {
       posthog.reset()
     }
   }
 
-  const setPersonProperties = (properties: Record<string, any>) => {
+  const setPersonProperties = (properties: Record<string, unknown>) => {
     if (process.env.NODE_ENV !== "production") return
 
     // PostHog
-    if (posthog && posthog.setPersonProperties) {
+    if (posthog?.setPersonProperties) {
       posthog.setPersonProperties(properties)
     }
 
@@ -97,12 +111,12 @@ export function useAnalytics() {
   const group = (
     groupType: string,
     groupKey: string,
-    properties?: Record<string, any>,
+    properties?: Record<string, unknown>,
   ) => {
     if (process.env.NODE_ENV !== "production") return
 
     // PostHog
-    if (posthog && posthog.group) {
+    if (posthog?.group) {
       posthog.group(groupType, groupKey, properties)
     }
   }
@@ -111,7 +125,7 @@ export function useAnalytics() {
     if (process.env.NODE_ENV !== "production") return
 
     // PostHog
-    if (posthog && posthog.capture) {
+    if (posthog?.capture) {
       posthog.capture("$pageview", {
         $current_url: url || window.location.href,
         title,
@@ -127,18 +141,76 @@ export function useAnalytics() {
     }
   }
 
+  // AI-specific tracking helpers
+  const trackAIInteraction = (
+    action: string,
+    metadata?: {
+      model?: string
+      tokens?: number
+      latency?: number
+      success?: boolean
+      error?: string
+    },
+  ) => {
+    track("ai_interaction", {
+      action,
+      ...metadata,
+    })
+  }
+
+  const trackFeatureUsage = (
+    feature: string,
+    properties?: Record<string, unknown>,
+  ) => {
+    track("feature_usage", {
+      feature,
+      ...properties,
+    })
+  }
+
+  const trackUserAction = (
+    action: string,
+    context?: string,
+    properties?: Record<string, unknown>,
+  ) => {
+    track("user_action", {
+      action,
+      context,
+      ...properties,
+    })
+  }
+
   return {
+    // Core analytics functions
     track,
     identify,
     reset,
     setPersonProperties,
     group,
     pageView,
+
+    // AI-specific helpers
+    trackAIInteraction,
+    trackFeatureUsage,
+    trackUserAction,
+
     // Raw instances for advanced usage
-    posthog: process.env.NODE_ENV === "production" ? posthog : null,
+    posthog:
+      process.env.NODE_ENV === "production" || envs.NEXT_PUBLIC_ANALYTICS_DEBUG
+        ? posthog
+        : null,
     gtag:
-      process.env.NODE_ENV === "production" && typeof window !== "undefined"
+      (process.env.NODE_ENV === "production" ||
+        envs.NEXT_PUBLIC_ANALYTICS_DEBUG) &&
+      typeof window !== "undefined"
         ? window.gtag
         : null,
+
+    // Utility functions
+    isEnabled:
+      !envs.NEXT_PUBLIC_ANALYTICS_DISABLED &&
+      (process.env.NODE_ENV === "production" ||
+        envs.NEXT_PUBLIC_ANALYTICS_DEBUG),
+    isDebug: envs.NEXT_PUBLIC_ANALYTICS_DEBUG || false,
   }
 }

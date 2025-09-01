@@ -37,10 +37,6 @@ export const createApp = (options: ServerOptions) => {
     })
   })
 
-  app.get("/", (c) => {
-    return c.text("Hello World")
-  })
-
   // Mount routes
   app.route("/auth", authRoutes)
   app.route("/knowledges", knowledgeRoutes)

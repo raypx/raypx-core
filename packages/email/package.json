@@ -4,21 +4,28 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./envs": "./src/envs.ts",
-    "./server": "./src/server.ts"
+    "./client": "./src/client.ts",
+    "./server": "./src/server.ts",
+    "./analytics": "./src/analytics.ts",
+    "./webhooks": "./src/webhooks.ts",
+    "./templates": "./src/templates/index.ts",
+    "./types": "./src/types.ts",
+    "./envs": "./src/envs.ts"
   },
   "scripts": {
     "clean": "rimraf dist .turbo",
     "test": "vitest"
   },
   "dependencies": {
+    "@raypx/db": "workspace:*",
     "@raypx/shared": "workspace:*",
     "@react-email/components": "^0.5.1",
     "@react-email/render": "^1.2.1",
-    "nodemailer": "^7.0.5",
+    "drizzle-orm": "^0.44.5",
+    "nodemailer": "^7.0.6",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
-    "resend": "^6.0.1"
+    "resend": "^6.0.2"
   },
   "devDependencies": {
     "@raypx/tsconfig": "workspace:*",

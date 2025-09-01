@@ -23,7 +23,7 @@ console.log(chalk.cyan(`raypx-scripts: ${name}\n`))
 const quotedScriptPath = JSON.stringify(scriptsPath)
 
 const command = [
-  "bun run",
+  "pnpm exec tsx",
   quotedScriptPath,
   ...throughArgs.map((arg) => JSON.stringify(arg)),
 ].join(" ")

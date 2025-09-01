@@ -17,7 +17,8 @@ import { Input } from "@raypx/ui/components/input"
 import { Link } from "@raypx/ui/components/link"
 import { PasswordField } from "@raypx/ui/components/password-field"
 import { useTranslations } from "next-intl"
-import { useEffect } from "react"
+import { type RefObject, useEffect } from "react"
+import type ReCAPTCHA from "react-google-recaptcha"
 import { useForm } from "react-hook-form"
 import { z } from "zod/v4"
 import { useAuth } from "../../core/hooks/use-auth"
@@ -254,7 +255,10 @@ export function SignInForm({
           />
         )}
 
-        <Captcha ref={captchaRef} action="/sign-in/email" />
+        <Captcha
+          ref={captchaRef as RefObject<ReCAPTCHA>}
+          action="/sign-in/email"
+        />
 
         <Button
           type="submit"

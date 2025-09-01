@@ -10,7 +10,7 @@ import {
   like,
   type SQL,
 } from "../index"
-import { chunks, knowledges, session, user } from "../schemas"
+import { chunks, documents, knowledges, session, user } from "../schemas"
 
 export const getUser = async (id: string) => {
   const data = await db.query.user.findFirst({
@@ -271,7 +271,7 @@ export const createKnowledgeBase = async (data: {
   name: string
   description?: string
   userId: string
-  settings?: any
+  settings?: Record<string, unknown>
 }) => {
   const result = await db.insert(knowledges).values(data).returning()
   return result[0]
@@ -284,7 +284,7 @@ export const updateKnowledgeBase = async (
     name?: string
     description?: string
     status?: string
-    settings?: any
+    settings?: Record<string, unknown>
   },
 ) => {
   const result = await db
@@ -324,4 +324,101 @@ export const getKnowledgeBaseChunks = async (
   })
 
   return data
+}
+
+export const createChunk = async (data: {
+  text: string
+  abstract?: string
+  metadata?: Record<string, unknown>
+  index?: number
+  type?: string
+  clientId?: string
+  documentId?: string
+  knowledgeBaseId: string
+  userId: string
+}) => {
+  const result = await db.insert(chunks).values(data).returning()
+  return result[0]
+}
+
+export const createChunks = async (
+  chunksData: Array<{
+    text: string
+    abstract?: string
+    metadata?: Record<string, unknown>
+    index?: number
+    type?: string
+    clientId?: string
+    documentId?: string
+    knowledgeBaseId: string
+    userId: string
+  }>,
+) => {
+  const result = await db.insert(chunks).values(chunksData).returning()
+  return result
+}
+
+// Document Queries
+export const createDocument = async (data: {
+  name: string
+  originalName: string
+  mimeType: string
+  size: number
+  metadata?: Record<string, unknown>
+  knowledgeBaseId: string
+  userId: string
+}) => {
+  const result = await db.insert(documents).values(data).returning()
+  return result[0]
+}
+
+export const getDocumentsByKnowledgeBase = async (
+  knowledgeBaseId: string,
+  userId: string,
+  options?: {
+    limit?: number
+    offset?: number
+  },
+) => {
+  const { limit = 20, offset = 0 } = options ?? {}
+
+  const data = await db.query.documents.findMany({
+    where: and(
+      eq(documents.knowledgeBaseId, knowledgeBaseId),
+      eq(documents.userId, userId),
+    ),
+    limit,
+    offset,
+    orderBy: desc(documents.createdAt),
+  })
+
+  return data
+}
+
+export const getDocumentById = async (id: string, userId: string) => {
+  const data = await db.query.documents.findFirst({
+    where: and(eq(documents.id, id), eq(documents.userId, userId)),
+  })
+  return data
+}
+
+export const updateDocumentStatus = async (
+  id: string,
+  userId: string,
+  status: string,
+) => {
+  const result = await db
+    .update(documents)
+    .set({ status, updatedAt: new Date() })
+    .where(and(eq(documents.id, id), eq(documents.userId, userId)))
+    .returning()
+  return result[0]
+}
+
+export const deleteDocument = async (id: string, userId: string) => {
+  const result = await db
+    .delete(documents)
+    .where(and(eq(documents.id, id), eq(documents.userId, userId)))
+    .returning()
+  return result[0]
 }

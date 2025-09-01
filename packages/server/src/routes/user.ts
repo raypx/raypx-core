@@ -1,6 +1,4 @@
-import { zValidator } from "@hono/zod-validator"
-import { Hono } from "hono"
-import { z } from "zod"
+import { Hono, type MiddlewareHandler } from "hono"
 import { UserService } from "../services"
 import type { Variables } from "../types"
 
@@ -8,33 +6,11 @@ const userService = new UserService()
 
 export const userRoutes = new Hono<{ Variables: Variables }>()
 
-// Validation schemas
-const listQuerySchema = z.object({
-  limit: z.coerce.number().min(1).max(100).default(20),
-  offset: z.coerce.number().min(0).default(0),
-  search: z.string().optional(),
-  sortBy: z
-    .enum(["name", "email", "createdAt", "updatedAt"])
-    .default("createdAt"),
-  sortOrder: z.enum(["asc", "desc"]).default("desc"),
-  role: z.string().optional(),
-  status: z.enum(["active", "banned"]).optional(),
-})
-
-const updateUserSchema = z.object({
-  banned: z.boolean().optional(),
-  banReason: z.string().optional(),
-  banExpires: z.string().datetime().optional(),
-  role: z.string().optional(),
-})
-
-const banUserSchema = z.object({
-  banReason: z.string().min(1, "Ban reason is required"),
-  banExpires: z.string().datetime().optional(),
-})
-
 // Middleware to ensure user is authenticated and has admin role
-const adminMiddleware = async (c: any, next: any) => {
+const adminMiddleware: MiddlewareHandler<{ Variables: Variables }> = async (
+  c,
+  next,
+) => {
   const user = c.get("user")
   if (!user) {
     return c.json({ error: "Unauthorized" }, 401)
@@ -52,9 +28,9 @@ const adminMiddleware = async (c: any, next: any) => {
 userRoutes.use("*", adminMiddleware)
 
 // GET /users - List users with pagination, search, and filters
-userRoutes.get("/", zValidator("query", listQuerySchema), async (c) => {
+userRoutes.get("/", async (c) => {
   try {
-    const options = c.req.valid("query")
+    const options = c.req.query()
 
     const result = await userService.getUsers(options)
 
@@ -91,15 +67,17 @@ userRoutes.get("/stats", async (c) => {
 })
 
 // PATCH /users/:id - Update user (ban/unban, role changes)
-userRoutes.patch("/:id", zValidator("json", updateUserSchema), async (c) => {
+userRoutes.patch("/:id", async (c) => {
   try {
     const id = c.req.param("id")
-    const data = c.req.valid("json")
+    const data = await c.req.json()
 
     // Convert banExpires string to Date if provided
     const updateData = {
       ...data,
-      banExpires: data.banExpires ? new Date(data.banExpires) : undefined,
+      banExpires: data.banExpires
+        ? new Date(data.banExpires as string)
+        : undefined,
     }
 
     const updatedUser = await userService.updateUser(id, updateData)
@@ -118,10 +96,10 @@ userRoutes.patch("/:id", zValidator("json", updateUserSchema), async (c) => {
 })
 
 // POST /users/:id/ban - Ban a user
-userRoutes.post("/:id/ban", zValidator("json", banUserSchema), async (c) => {
+userRoutes.post("/:id/ban", async (c) => {
   try {
     const id = c.req.param("id")
-    const { banReason, banExpires } = c.req.valid("json")
+    const { banReason, banExpires } = await c.req.json()
 
     const updatedUser = await userService.banUser(
       id,
@@ -165,32 +143,23 @@ userRoutes.post("/:id/unban", async (c) => {
 })
 
 // PUT /users/:id/role - Change user role
-userRoutes.put(
-  "/:id/role",
-  zValidator(
-    "json",
-    z.object({
-      role: z.string().min(1, "Role is required"),
-    }),
-  ),
-  async (c) => {
-    try {
-      const id = c.req.param("id")
-      const { role } = c.req.valid("json")
+userRoutes.put("/:id/role", async (c) => {
+  try {
+    const id = c.req.param("id")
+    const { role } = await c.req.json()
 
-      const updatedUser = await userService.changeUserRole(id, role)
+    const updatedUser = await userService.changeUserRole(id, role)
 
-      return c.json({
-        status: "ok",
-        data: updatedUser,
-        message: "User role updated successfully",
-      })
-    } catch (error) {
-      if (error instanceof Error && error.message === "User not found") {
-        return c.json({ error: "User not found" }, 404)
-      }
-      console.error("Error changing user role:", error)
-      return c.json({ error: "Internal server error" }, 500)
+    return c.json({
+      status: "ok",
+      data: updatedUser,
+      message: "User role updated successfully",
+    })
+  } catch (error) {
+    if (error instanceof Error && error.message === "User not found") {
+      return c.json({ error: "User not found" }, 404)
     }
-  },
-)
+    console.error("Error changing user role:", error)
+    return c.json({ error: "Internal server error" }, 500)
+  }
+})

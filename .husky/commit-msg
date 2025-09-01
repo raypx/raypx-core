@@ -1,2 +1,2 @@
 #!/usr/bin/env sh
-bun commitlint --edit $1
+pnpm commitlint --edit $1

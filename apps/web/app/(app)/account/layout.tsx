@@ -42,9 +42,7 @@ export default async function AccountLayout({ children }: AccountLayoutProps) {
             </nav>
           </div>
         </div>
-        <main className="container mx-auto px-6 py-8" role="main">
-          {children}
-        </main>
+        <main className="container mx-auto px-6 py-8">{children}</main>
       </div>
     </>
   )

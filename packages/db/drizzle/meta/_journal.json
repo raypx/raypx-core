@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1756097995516,
-      "tag": "0000_daily_spectrum",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1756285285606,
-      "tag": "0001_natural_hedge_knight",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1756285358947,
-      "tag": "0002_fantastic_archangel",
+      "when": 1756352835461,
+      "tag": "0000_bumpy_siren",
       "breakpoints": true
     }
   ]

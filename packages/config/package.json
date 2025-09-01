@@ -1,0 +1,22 @@
+{
+  "name": "@raypx/config",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./app": "./src/app.config.ts",
+    "./features": "./src/features.config.ts",
+    "./paths": "./src/paths.config.ts",
+    "./auth": "./src/auth.config.ts",
+    "./billing": "./src/billing.config.ts"
+  },
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@raypx/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
+  }
+}

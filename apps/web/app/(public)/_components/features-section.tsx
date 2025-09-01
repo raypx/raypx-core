@@ -87,16 +87,16 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section className="py-24 bg-white">
+    <section className="py-24 bg-white dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center space-y-4 mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight dark:text-white">
             Everything you need to build
-            <span className="block text-blue-600">
+            <span className="block text-blue-600 dark:text-blue-400">
               next-generation applications
             </span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             From AI integration to global deployment, we provide all the tools
             and services you need to build, ship, and scale your applications.
           </p>
@@ -106,11 +106,11 @@ export function FeaturesSection() {
           {features.map((feature, index) => (
             <Card
               key={index}
-              className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              className="border-0 shadow-lg hover:shadow-xl dark:bg-gray-800 transition-all duration-300 hover:-translate-y-1"
             >
               <CardHeader className="space-y-4">
                 <div
-                  className={`inline-flex p-3 rounded-xl bg-gray-50 w-fit ${feature.color}`}
+                  className={`inline-flex p-3 rounded-xl bg-gray-50 dark:bg-gray-700 w-fit ${feature.color}`}
                 >
                   <feature.icon className="h-6 w-6" />
                 </div>

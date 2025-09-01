@@ -120,7 +120,7 @@ export const PERMISSION_ERROR_MAPPING: Record<string, ErrorContext> = {
  */
 export function getPermissionErrorText(
   errorCode: string,
-  t: (key: string, params?: any) => string,
+  t: (key: string, params?: Record<string, unknown>) => string,
 ): string {
   const context = PERMISSION_ERROR_MAPPING[errorCode]
 
@@ -159,7 +159,7 @@ export const VALIDATION_ERROR_MAPPING: Record<string, ErrorContext> = {
 
 export function getValidationErrorText(
   errorCode: string,
-  t: (key: string, params?: any) => string,
+  t: (key: string, params?: Record<string, unknown>) => string,
 ): string {
   const context = VALIDATION_ERROR_MAPPING[errorCode]
 
@@ -178,7 +178,7 @@ export function getValidationErrorText(
  */
 export function getOptimizedErrorText(
   errorCode: string,
-  t: (key: string, params?: any) => string,
+  t: (key: string, params?: Record<string, unknown>) => string,
 ): string {
   // First try permission error mapping
   if (errorCode.startsWith("YOU_ARE_NOT_ALLOWED_TO_")) {

@@ -245,8 +245,8 @@ export function createPackageGenerator(plop: PlopTypes.NodePlopAPI) {
               : "packages"
           console.log(`\n🚀 Finalizing package setup for "${packageName}"...\n`)
 
-          runCommand("bun install", "install dependencies")
-          runCommand("bun run format", "format code")
+          runCommand("pnpm install", "install dependencies")
+          runCommand("pnpm run format", "format code")
 
           console.log(`\n✨ Package "${packageName}" scaffolded successfully!`)
           console.log(`📁 Location: ${location}/${packageName}`)

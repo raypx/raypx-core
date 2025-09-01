@@ -1,3 +1,5 @@
+CREATE TYPE "public"."email_provider" AS ENUM('resend', 'nodemailer', 'ses', 'sendgrid');--> statement-breakpoint
+CREATE TYPE "public"."email_status" AS ENUM('queued', 'sent', 'delivered', 'opened', 'clicked', 'bounced', 'complained', 'unsubscribed', 'failed');--> statement-breakpoint
 CREATE TABLE "account" (
 	"id" uuid PRIMARY KEY NOT NULL,
 	"account_id" text NOT NULL,
@@ -166,9 +168,60 @@ CREATE TABLE "verification" (
 	"updated_at" timestamp NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "Page" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"name" text NOT NULL
+CREATE TABLE "email_events" (
+	"id" varchar(30) PRIMARY KEY NOT NULL,
+	"email_id" varchar(30) NOT NULL,
+	"event_type" varchar(50) NOT NULL,
+	"timestamp" timestamp DEFAULT now() NOT NULL,
+	"user_agent" text,
+	"ip_address" varchar(45),
+	"location" json,
+	"clicked_url" text,
+	"provider_event_id" varchar(255),
+	"provider_data" json,
+	"created_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "email_templates" (
+	"id" varchar(30) PRIMARY KEY NOT NULL,
+	"name" varchar(100) NOT NULL,
+	"subject" varchar(500) NOT NULL,
+	"html_content" text,
+	"text_content" text,
+	"is_active" boolean DEFAULT true,
+	"tags" json DEFAULT '[]'::json,
+	"description" text,
+	"version" varchar(20) DEFAULT '1.0',
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "email_templates_name_unique" UNIQUE("name")
+);
+--> statement-breakpoint
+CREATE TABLE "emails" (
+	"id" varchar(30) PRIMARY KEY NOT NULL,
+	"provider_id" varchar(255),
+	"message_id" varchar(255),
+	"from_address" varchar(255) NOT NULL,
+	"to_address" varchar(255) NOT NULL,
+	"subject" varchar(500) NOT NULL,
+	"template_name" varchar(100),
+	"provider" "email_provider" DEFAULT 'nodemailer' NOT NULL,
+	"status" "email_status" DEFAULT 'queued' NOT NULL,
+	"sent_at" timestamp,
+	"delivered_at" timestamp,
+	"opened_at" timestamp,
+	"first_clicked_at" timestamp,
+	"bounced_at" timestamp,
+	"complained_at" timestamp,
+	"unsubscribed_at" timestamp,
+	"open_count" varchar(10) DEFAULT '0',
+	"click_count" varchar(10) DEFAULT '0',
+	"metadata" json,
+	"error_message" text,
+	"tags" json DEFAULT '[]'::json,
+	"user_id" varchar(30),
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "chunks" (
@@ -220,8 +273,34 @@ ALTER TABLE "oauth_application" ADD CONSTRAINT "oauth_application_user_id_user_i
 ALTER TABLE "oauth_consent" ADD CONSTRAINT "oauth_consent_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "passkey" ADD CONSTRAINT "passkey_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "session" ADD CONSTRAINT "session_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "email_events" ADD CONSTRAINT "email_events_email_id_emails_id_fk" FOREIGN KEY ("email_id") REFERENCES "public"."emails"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "chunks" ADD CONSTRAINT "chunks_knowledge_base_id_knowledges_id_fk" FOREIGN KEY ("knowledge_base_id") REFERENCES "public"."knowledges"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "chunks" ADD CONSTRAINT "chunks_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "embeddings" ADD CONSTRAINT "embeddings_chunk_id_chunks_id_fk" FOREIGN KEY ("chunk_id") REFERENCES "public"."chunks"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "embeddings" ADD CONSTRAINT "embeddings_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "knowledges" ADD CONSTRAINT "knowledges_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "knowledges" ADD CONSTRAINT "knowledges_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX "idx_apikey_user_id" ON "apikey" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "idx_apikey_key" ON "apikey" USING btree ("key");--> statement-breakpoint
+CREATE INDEX "idx_session_token" ON "session" USING btree ("token");--> statement-breakpoint
+CREATE INDEX "idx_session_user_id" ON "session" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "idx_session_expires_at" ON "session" USING btree ("expires_at");--> statement-breakpoint
+CREATE INDEX "idx_user_email" ON "user" USING btree ("email");--> statement-breakpoint
+CREATE INDEX "idx_user_username" ON "user" USING btree ("username");--> statement-breakpoint
+CREATE INDEX "idx_email_events_email_id" ON "email_events" USING btree ("email_id");--> statement-breakpoint
+CREATE INDEX "idx_email_events_event_type" ON "email_events" USING btree ("event_type");--> statement-breakpoint
+CREATE INDEX "idx_email_events_timestamp" ON "email_events" USING btree ("timestamp");--> statement-breakpoint
+CREATE INDEX "idx_email_templates_name" ON "email_templates" USING btree ("name");--> statement-breakpoint
+CREATE INDEX "idx_email_templates_is_active" ON "email_templates" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX "idx_emails_provider_id" ON "emails" USING btree ("provider_id");--> statement-breakpoint
+CREATE INDEX "idx_emails_message_id" ON "emails" USING btree ("message_id");--> statement-breakpoint
+CREATE INDEX "idx_emails_to_address" ON "emails" USING btree ("to_address");--> statement-breakpoint
+CREATE INDEX "idx_emails_status" ON "emails" USING btree ("status");--> statement-breakpoint
+CREATE INDEX "idx_emails_user_id" ON "emails" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "idx_emails_created_at" ON "emails" USING btree ("created_at");--> statement-breakpoint
+CREATE INDEX "idx_chunks_knowledge_base_id" ON "chunks" USING btree ("knowledge_base_id");--> statement-breakpoint
+CREATE INDEX "idx_chunks_user_id" ON "chunks" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "idx_chunks_knowledge_base_id_user_id" ON "chunks" USING btree ("knowledge_base_id","user_id");--> statement-breakpoint
+CREATE INDEX "idx_embeddings_chunk_id" ON "embeddings" USING btree ("chunk_id");--> statement-breakpoint
+CREATE INDEX "idx_embeddings_user_id" ON "embeddings" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "idx_knowledges_user_id" ON "knowledges" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "idx_knowledges_status" ON "knowledges" USING btree ("status");

@@ -1,6 +1,4 @@
-import { zValidator } from "@hono/zod-validator"
-import { Hono } from "hono"
-import { z } from "zod"
+import { Hono, type MiddlewareHandler } from "hono"
 import { KnowledgeService } from "../services"
 import type { Variables } from "../types"
 
@@ -8,39 +6,11 @@ const knowledgeService = new KnowledgeService()
 
 export const knowledgeRoutes = new Hono<{ Variables: Variables }>()
 
-// Validation schemas
-const createKnowledgeSchema = z.object({
-  name: z.string().min(1, "Name is required").max(255, "Name too long"),
-  description: z.string().optional(),
-  settings: z.any().optional(),
-})
-
-const updateKnowledgeSchema = z.object({
-  name: z
-    .string()
-    .min(1, "Name is required")
-    .max(255, "Name too long")
-    .optional(),
-  description: z.string().optional(),
-  status: z.enum(["active", "inactive", "archived"]).optional(),
-  settings: z.any().optional(),
-})
-
-const listQuerySchema = z.object({
-  limit: z.coerce.number().min(1).max(100).default(10),
-  offset: z.coerce.number().min(0).default(0),
-  search: z.string().optional(),
-  sortBy: z.enum(["name", "createdAt", "updatedAt"]).default("updatedAt"),
-  sortOrder: z.enum(["asc", "desc"]).default("desc"),
-})
-
-const chunksQuerySchema = z.object({
-  limit: z.coerce.number().min(1).max(100).default(50),
-  offset: z.coerce.number().min(0).default(0),
-})
-
 // Middleware to ensure user is authenticated
-const authMiddleware = async (c: any, next: any) => {
+const authMiddleware: MiddlewareHandler<{ Variables: Variables }> = async (
+  c,
+  next,
+) => {
   const user = c.get("user")
   if (!user) {
     return c.json({ error: "Unauthorized" }, 401)
@@ -52,13 +22,13 @@ const authMiddleware = async (c: any, next: any) => {
 knowledgeRoutes.use("*", authMiddleware)
 
 // GET /knowledges - List knowledges with pagination and search
-knowledgeRoutes.get("/", zValidator("query", listQuerySchema), async (c) => {
+knowledgeRoutes.get("/", async (c) => {
   try {
     const user = c.get("user")
     if (!user) {
       return c.json({ error: "Unauthorized" }, 401)
     }
-    const options = c.req.valid("query")
+    const options = c.req.query()
 
     const result = await knowledgeService.getKnowledgeBases(user.id, options)
 
@@ -107,68 +77,60 @@ knowledgeRoutes.get("/:id", async (c) => {
 })
 
 // POST /knowledges - Create new knowledge base
-knowledgeRoutes.post(
-  "/",
-  zValidator("json", createKnowledgeSchema),
-  async (c) => {
-    try {
-      const user = c.get("user")
-      if (!user) {
-        return c.json({ error: "Unauthorized" }, 401)
-      }
-      const data = c.req.valid("json")
-
-      const knowledgeBase = await knowledgeService.createKnowledgeBase(
-        user.id,
-        data,
-      )
-
-      return c.json(
-        {
-          status: "ok",
-          data: knowledgeBase,
-        },
-        201,
-      )
-    } catch (error) {
-      console.error("Error creating knowledge base:", error)
-      return c.json({ error: "Internal server error" }, 500)
+knowledgeRoutes.post("/", async (c) => {
+  try {
+    const user = c.get("user")
+    if (!user) {
+      return c.json({ error: "Unauthorized" }, 401)
     }
-  },
-)
+    const data = await c.req.json()
 
-// PATCH /knowledges/:id - Update knowledge base
-knowledgeRoutes.patch(
-  "/:id",
-  zValidator("json", updateKnowledgeSchema),
-  async (c) => {
-    try {
-      const user = c.get("user")
-      if (!user) {
-        return c.json({ error: "Unauthorized" }, 401)
-      }
-      const id = c.req.param("id")
-      const data = c.req.valid("json")
+    const knowledgeBase = await knowledgeService.createKnowledgeBase(
+      user.id,
+      data,
+    )
 
-      const knowledgeBase = await knowledgeService.updateKnowledgeBase(
-        id,
-        user.id,
-        data,
-      )
-
-      return c.json({
+    return c.json(
+      {
         status: "ok",
         data: knowledgeBase,
-      })
-    } catch (error) {
-      if (error instanceof Error && error.message.includes("not found")) {
-        return c.json({ error: "Knowledge base not found" }, 404)
-      }
-      console.error("Error updating knowledge base:", error)
-      return c.json({ error: "Internal server error" }, 500)
+      },
+      201,
+    )
+  } catch (error) {
+    console.error("Error creating knowledge base:", error)
+    return c.json({ error: "Internal server error" }, 500)
+  }
+})
+
+// PATCH /knowledges/:id - Update knowledge base
+knowledgeRoutes.patch("/:id", async (c) => {
+  try {
+    const user = c.get("user")
+    if (!user) {
+      return c.json({ error: "Unauthorized" }, 401)
     }
-  },
-)
+    const id = c.req.param("id")
+    const data = await c.req.json()
+
+    const knowledgeBase = await knowledgeService.updateKnowledgeBase(
+      id,
+      user.id,
+      data,
+    )
+
+    return c.json({
+      status: "ok",
+      data: knowledgeBase,
+    })
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("not found")) {
+      return c.json({ error: "Knowledge base not found" }, 404)
+    }
+    console.error("Error updating knowledge base:", error)
+    return c.json({ error: "Internal server error" }, 500)
+  }
+})
 
 // DELETE /knowledges/:id - Delete knowledge base
 knowledgeRoutes.delete("/:id", async (c) => {
@@ -195,37 +157,163 @@ knowledgeRoutes.delete("/:id", async (c) => {
 })
 
 // GET /knowledges/:id/chunks - Get chunks for knowledge base
-knowledgeRoutes.get(
-  "/:id/chunks",
-  zValidator("query", chunksQuerySchema),
-  async (c) => {
-    try {
-      const user = c.get("user")
-      if (!user) {
-        return c.json({ error: "Unauthorized" }, 401)
-      }
-      const id = c.req.param("id")
-      const options = c.req.valid("query")
-
-      const chunks = await knowledgeService.getKnowledgeBaseChunks(
-        id,
-        user.id,
-        options,
-      )
-
-      return c.json({
-        status: "ok",
-        data: chunks,
-      })
-    } catch (error) {
-      if (
-        error instanceof Error &&
-        error.message === "Knowledge base not found"
-      ) {
-        return c.json({ error: "Knowledge base not found" }, 404)
-      }
-      console.error("Error fetching knowledge base chunks:", error)
-      return c.json({ error: "Internal server error" }, 500)
+knowledgeRoutes.get("/:id/chunks", async (c) => {
+  try {
+    const user = c.get("user")
+    if (!user) {
+      return c.json({ error: "Unauthorized" }, 401)
     }
-  },
-)
+    const id = c.req.param("id")
+    const options = c.req.query()
+
+    const chunks = await knowledgeService.getKnowledgeBaseChunks(
+      id,
+      user.id,
+      options,
+    )
+
+    return c.json({
+      status: "ok",
+      data: chunks,
+    })
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message === "Knowledge base not found"
+    ) {
+      return c.json({ error: "Knowledge base not found" }, 404)
+    }
+    console.error("Error fetching knowledge base chunks:", error)
+    return c.json({ error: "Internal server error" }, 500)
+  }
+})
+
+// GET /knowledges/:id/documents - Get documents for knowledge base
+knowledgeRoutes.get("/:id/documents", async (c) => {
+  try {
+    const user = c.get("user")
+    if (!user) {
+      return c.json({ error: "Unauthorized" }, 401)
+    }
+    const id = c.req.param("id")
+    const options = c.req.query()
+
+    const documents = await knowledgeService.getDocuments(id, user.id, options)
+
+    return c.json({
+      status: "ok",
+      data: documents,
+    })
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message === "Knowledge base not found"
+    ) {
+      return c.json({ error: "Knowledge base not found" }, 404)
+    }
+    console.error("Error fetching knowledge base documents:", error)
+    return c.json({ error: "Internal server error" }, 500)
+  }
+})
+
+// POST /knowledges/:id/documents - Upload document to knowledge base
+knowledgeRoutes.post("/:id/documents", async (c) => {
+  try {
+    const user = c.get("user")
+    if (!user) {
+      return c.json({ error: "Unauthorized" }, 401)
+    }
+    const knowledgeBaseId = c.req.param("id")
+    const { name, content } = await c.req.json()
+
+    // Create document record
+    const document = await knowledgeService.createDocument(
+      knowledgeBaseId,
+      user.id,
+      {
+        name,
+        originalName: name,
+        mimeType: "text/plain",
+        size: content.length,
+        metadata: {
+          source: "text_input",
+        },
+      },
+    )
+
+    // Process document and create chunks
+    const chunks = await knowledgeService.processDocument(
+      document.id,
+      user.id,
+      content,
+    )
+
+    return c.json(
+      {
+        status: "ok",
+        data: {
+          document,
+          chunks: chunks.length,
+        },
+      },
+      201,
+    )
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message === "Knowledge base not found"
+    ) {
+      return c.json({ error: "Knowledge base not found" }, 404)
+    }
+    console.error("Error uploading document:", error)
+    return c.json({ error: "Internal server error" }, 500)
+  }
+})
+
+// GET /knowledges/:id/documents/:documentId - Get specific document
+knowledgeRoutes.get("/:id/documents/:documentId", async (c) => {
+  try {
+    const user = c.get("user")
+    if (!user) {
+      return c.json({ error: "Unauthorized" }, 401)
+    }
+    const documentId = c.req.param("documentId")
+
+    const document = await knowledgeService.getDocument(documentId, user.id)
+
+    return c.json({
+      status: "ok",
+      data: document,
+    })
+  } catch (error) {
+    if (error instanceof Error && error.message === "Document not found") {
+      return c.json({ error: "Document not found" }, 404)
+    }
+    console.error("Error fetching document:", error)
+    return c.json({ error: "Internal server error" }, 500)
+  }
+})
+
+// DELETE /knowledges/:id/documents/:documentId - Delete document
+knowledgeRoutes.delete("/:id/documents/:documentId", async (c) => {
+  try {
+    const user = c.get("user")
+    if (!user) {
+      return c.json({ error: "Unauthorized" }, 401)
+    }
+    const documentId = c.req.param("documentId")
+
+    await knowledgeService.deleteDocument(documentId, user.id)
+
+    return c.json({
+      status: "ok",
+      message: "Document deleted successfully",
+    })
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("not found")) {
+      return c.json({ error: "Document not found" }, 404)
+    }
+    console.error("Error deleting document:", error)
+    return c.json({ error: "Internal server error" }, 500)
+  }
+})

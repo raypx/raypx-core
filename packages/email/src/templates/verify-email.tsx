@@ -1,7 +1,19 @@
 import { Button, Text } from "@react-email/components"
+import type { EmailTemplateProps } from "../types"
 import { EmailLayout } from "./layout-email"
 
-const VerifyEmail = ({ url, username }: { url: string; username: string }) => {
+/**
+ * Props for the verify email component
+ */
+interface VerifyEmailProps extends Pick<EmailTemplateProps, "username"> {
+  /** Verification URL */
+  url: string
+}
+
+/**
+ * Email verification template
+ */
+const VerifyEmail = ({ url, username }: VerifyEmailProps) => {
   return (
     <EmailLayout preview="Verify your email address">
       <Text className="font-bold text-2xl text-gray-800">

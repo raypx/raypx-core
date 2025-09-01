@@ -1,7 +1,16 @@
 import { Text } from "@react-email/components"
+import type { EmailTemplateProps } from "../types"
 import { EmailLayout } from "./layout-email"
 
-const WelcomeEmail = ({ username }: { username: string }) => {
+/**
+ * Props for the welcome email component
+ */
+interface WelcomeEmailProps extends Pick<EmailTemplateProps, "username"> {}
+
+/**
+ * Welcome email template for new users
+ */
+const WelcomeEmail = ({ username }: WelcomeEmailProps) => {
   return (
     <EmailLayout preview="Welcome to our app!">
       <Text className="font-bold text-2xl text-gray-800">

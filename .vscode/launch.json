@@ -5,7 +5,7 @@
       "name": "Dev Web App",
       "type": "node",
       "request": "launch",
-      "program": "bun",
+      "program": "pnpm",
       "args": ["run", "dev"],
       "cwd": "${workspaceFolder}/apps/web",
       "console": "integratedTerminal"

@@ -4,7 +4,7 @@
     {
       "type": "shell",
       "label": "Dev",
-      "command": "bun",
+      "command": "pnpm",
       "args": ["run", "dev"],
       "group": {
         "kind": "build",
@@ -15,14 +15,14 @@
     {
       "type": "shell",
       "label": "Build",
-      "command": "bun",
+      "command": "pnpm",
       "args": ["run", "build"],
       "group": "build"
     },
     {
       "type": "shell",
       "label": "Test",
-      "command": "bun",
+      "command": "pnpm",
       "args": ["test"],
       "group": "test"
     }

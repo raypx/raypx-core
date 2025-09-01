@@ -76,7 +76,7 @@ import {
   UserX,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 interface User {
   id: string
@@ -84,7 +84,7 @@ interface User {
   email: string
   emailVerified: boolean
   username?: string
-  role?: string
+  role?: "user" | "moderator" | "admin" | "superadmin"
   banned: boolean
   banReason?: string
   banExpires?: string
@@ -92,6 +92,10 @@ interface User {
   updatedAt: string
   image?: string
 }
+
+type UserRole = "user" | "moderator" | "admin" | "superadmin"
+type UserStatus = "all" | "active" | "banned"
+type FilterState = "all" | UserRole
 
 interface UserStats {
   totalUsers: number
@@ -207,10 +211,25 @@ const endImpersonation = async () => {
 
 export default function UsersPage() {
   const [search, setSearch] = useState("")
+  const [debouncedSearch, setDebouncedSearch] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
-  const [statusFilter, setStatusFilter] = useState<string>("all")
-  const [roleFilter, setRoleFilter] = useState<string>("all")
+  const [statusFilter, setStatusFilter] = useState<UserStatus>("all")
+  const [roleFilter, setRoleFilter] = useState<FilterState>("all")
   const router = useRouter()
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search)
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [search])
+
+  // Reset page when search changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [debouncedSearch, statusFilter, roleFilter])
 
   const {
     hooks: { useSession },
@@ -232,46 +251,54 @@ export default function UsersPage() {
   const queryClient = useQueryClient()
   const limit = 15
 
-  // Queries
-  const { data: statsData } = useQuery({
+  // Queries with proper typing
+  const { data: statsData, isLoading: isStatsLoading } = useQuery({
     queryKey: ["user-stats"],
     queryFn: fetchUserStats,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
   })
 
   // Remove active impersonations query since better-auth handles this internally
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: [
-      "users",
-      {
-        search,
-        page: currentPage,
-        limit,
-        status: statusFilter,
-        role: roleFilter,
-      },
-    ],
-    queryFn: () =>
-      fetchUsers({
-        limit,
-        offset: (currentPage - 1) * limit,
-        search: search || undefined,
-        status: statusFilter === "all" ? undefined : statusFilter,
-        role: roleFilter === "all" ? undefined : roleFilter,
-        sortBy: "createdAt",
-        sortOrder: "desc",
-      }),
+  const queryParams = useMemo(
+    () => ({
+      limit,
+      offset: (currentPage - 1) * limit,
+      search: debouncedSearch || undefined,
+      status: statusFilter === "all" ? undefined : statusFilter,
+      role: roleFilter === "all" ? undefined : roleFilter,
+      sortBy: "createdAt" as const,
+      sortOrder: "desc" as const,
+    }),
+    [currentPage, limit, debouncedSearch, statusFilter, roleFilter],
+  )
+
+  const { data, isLoading, error, isFetching } = useQuery({
+    queryKey: ["users", queryParams],
+    queryFn: () => fetchUsers(queryParams),
     placeholderData: keepPreviousData,
+    staleTime: 2 * 60 * 1000, // 2 minutes
   })
 
   // Mutations
   const banMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) => banUser(id, data),
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: string
+      data: { banReason: string; banExpires?: string }
+    }) => banUser(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] })
       queryClient.invalidateQueries({ queryKey: ["user-stats"] })
       setIsBanDialogOpen(false)
       setBanForm({ reason: "", expires: "" })
+      setSelectedUser(null)
+    },
+    onError: (error) => {
+      console.error("Failed to ban user:", error)
     },
   })
 
@@ -281,6 +308,10 @@ export default function UsersPage() {
       queryClient.invalidateQueries({ queryKey: ["users"] })
       queryClient.invalidateQueries({ queryKey: ["user-stats"] })
       setIsUnbanDialogOpen(false)
+      setSelectedUser(null)
+    },
+    onError: (error) => {
+      console.error("Failed to unban user:", error)
     },
   })
 
@@ -291,6 +322,10 @@ export default function UsersPage() {
       queryClient.invalidateQueries({ queryKey: ["users"] })
       setIsRoleDialogOpen(false)
       setNewRole("")
+      setSelectedUser(null)
+    },
+    onError: (error) => {
+      console.error("Failed to change user role:", error)
     },
   })
 
@@ -298,9 +333,13 @@ export default function UsersPage() {
     mutationFn: ({ userId }: { userId: string }) => startImpersonation(userId),
     onSuccess: () => {
       setIsImpersonateDialogOpen(false)
+      setSelectedUser(null)
       // Refresh the page to switch to impersonated user
       router.replace("/")
       refetch()
+    },
+    onError: (error) => {
+      console.error("Failed to start impersonation:", error)
     },
   })
 
@@ -311,28 +350,32 @@ export default function UsersPage() {
       router.replace("/")
       refetch()
     },
+    onError: (error) => {
+      console.error("Failed to end impersonation:", error)
+    },
   })
 
-  const handleBan = (user: User) => {
+  const handleBan = useCallback((user: User) => {
     setSelectedUser(user)
+    setBanForm({ reason: "", expires: "" }) // Reset form
     setIsBanDialogOpen(true)
-  }
+  }, [])
 
-  const handleUnban = (user: User) => {
+  const handleUnban = useCallback((user: User) => {
     setSelectedUser(user)
     setIsUnbanDialogOpen(true)
-  }
+  }, [])
 
-  const handleRoleChange = (user: User) => {
+  const handleRoleChange = useCallback((user: User) => {
     setSelectedUser(user)
     setNewRole(user.role || "")
     setIsRoleDialogOpen(true)
-  }
+  }, [])
 
-  const handleImpersonate = (user: User) => {
+  const handleImpersonate = useCallback((user: User) => {
     setSelectedUser(user)
     setIsImpersonateDialogOpen(true)
-  }
+  }, [])
 
   const handleEndImpersonation = () => {
     endImpersonationMutation.mutate()
@@ -340,44 +383,45 @@ export default function UsersPage() {
     refetch()
   }
 
-  const confirmBan = () => {
+  const confirmBan = useCallback(() => {
     if (selectedUser && banForm.reason.trim()) {
       banMutation.mutate({
         id: selectedUser.id,
         data: {
-          banReason: banForm.reason,
+          banReason: banForm.reason.trim(),
           banExpires: banForm.expires || undefined,
         },
       })
     }
-  }
+  }, [selectedUser, banForm, banMutation])
 
-  const confirmUnban = () => {
+  const confirmUnban = useCallback(() => {
     if (selectedUser) {
       unbanMutation.mutate(selectedUser.id)
     }
-  }
+  }, [selectedUser, unbanMutation])
 
-  const confirmRoleChange = () => {
-    if (selectedUser && newRole) {
+  const confirmRoleChange = useCallback(() => {
+    if (selectedUser && newRole && newRole !== selectedUser.role) {
       roleChangeMutation.mutate({
         id: selectedUser.id,
-        role: newRole,
+        role: newRole as UserRole,
       })
     }
-  }
+  }, [selectedUser, newRole, roleChangeMutation])
 
-  const confirmImpersonate = () => {
+  const confirmImpersonate = useCallback(() => {
     if (selectedUser) {
       impersonateMutation.mutate({
         userId: selectedUser.id,
       })
     }
-  }
+  }, [selectedUser, impersonateMutation])
 
-  const getRoleBadgeColor = (role?: string) => {
+  const getRoleBadgeColor = useCallback((role?: UserRole) => {
     switch (role) {
       case "admin":
+      case "superadmin":
         return "bg-red-100 text-red-800"
       case "moderator":
         return "bg-blue-100 text-blue-800"
@@ -386,21 +430,134 @@ export default function UsersPage() {
       default:
         return "bg-gray-100 text-gray-800"
     }
+  }, [])
+
+  // Enhanced error handling
+  if (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "An unknown error occurred"
+    return (
+      <div className="p-6 space-y-6">
+        <div>
+          <h1 className="text-2xl font-semibold">User Management</h1>
+          <p className="text-muted-foreground">
+            Manage users, roles, and access permissions
+          </p>
+        </div>
+        <Card className="border-red-200">
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-center py-12">
+              <div className="text-center space-y-4">
+                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+                  <AlertTriangle className="w-8 h-8 text-red-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-medium text-red-900 mb-2">
+                    Failed to Load Users
+                  </h3>
+                  <p className="text-red-700 text-sm max-w-md mx-auto mb-4">
+                    {errorMessage}
+                  </p>
+                </div>
+                <div className="flex gap-3 justify-center">
+                  <Button
+                    variant="outline"
+                    onClick={() => window.location.reload()}
+                  >
+                    Reload Page
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      queryClient.invalidateQueries({ queryKey: ["users"] })
+                      queryClient.invalidateQueries({
+                        queryKey: ["user-stats"],
+                      })
+                    }}
+                  >
+                    Retry
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <p className="text-red-600">Error loading users</p>
-          <Button
-            variant="outline"
-            onClick={() => window.location.reload()}
-            className="mt-2"
-          >
-            Retry
-          </Button>
+  // Stats component with loading state
+  const renderStatsSection = (): any => {
+    if (isStatsLoading) {
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Card key={i}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <div className="h-4 w-24 bg-gray-200 rounded animate-pulse" />
+                <div className="h-4 w-4 bg-gray-200 rounded animate-pulse" />
+              </CardHeader>
+              <CardContent>
+                <div className="h-8 w-16 bg-gray-200 rounded animate-pulse" />
+              </CardContent>
+            </Card>
+          ))}
         </div>
+      )
+    }
+
+    if (!statsData?.data) return null
+
+    const stats = [
+      {
+        title: "Total Users",
+        value: statsData.data.totalUsers,
+        icon: Users,
+        color: "text-muted-foreground",
+        valueColor: "text-gray-900",
+      },
+      {
+        title: "Active Users",
+        value: statsData.data.activeUsers,
+        icon: UserCheck,
+        color: "text-green-600",
+        valueColor: "text-green-600",
+      },
+      {
+        title: "Banned Users",
+        value: statsData.data.bannedUsers,
+        icon: UserX,
+        color: "text-red-600",
+        valueColor: "text-red-600",
+      },
+      {
+        title: "New Users (30d)",
+        value: statsData.data.recentUsers,
+        icon: Users,
+        color: "text-blue-600",
+        valueColor: "text-blue-600",
+      },
+    ]
+
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        {stats.map((stat, index) => {
+          const Icon = stat.icon
+          return (
+            <Card key={index}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  {stat.title}
+                </CardTitle>
+                <Icon className={`h-4 w-4 ${stat.color}`} />
+              </CardHeader>
+              <CardContent>
+                <div className={`text-2xl font-bold ${stat.valueColor}`}>
+                  {stat.value.toLocaleString()}
+                </div>
+              </CardContent>
+            </Card>
+          )
+        })}
       </div>
     )
   }
@@ -415,64 +572,10 @@ export default function UsersPage() {
         </p>
       </div>
 
-      {/* Stats Cards */}
-      {statsData && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {statsData.data.totalUsers}
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Active Users
-              </CardTitle>
-              <UserCheck className="h-4 w-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">
-                {statsData.data.activeUsers}
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Banned Users
-              </CardTitle>
-              <UserX className="h-4 w-4 text-red-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-red-600">
-                {statsData.data.bannedUsers}
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                New Users (30d)
-              </CardTitle>
-              <Users className="h-4 w-4 text-blue-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-blue-600">
-                {statsData.data.recentUsers}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+      {renderStatsSection()}
 
       {/* Impersonation Status */}
-      {session?.user && (session as any).impersonatedBy && (
+      {session?.user && (session as Record<string, unknown>).impersonatedBy && (
         <Card className="border-orange-200 bg-orange-50">
           <CardHeader>
             <CardTitle className="flex items-center space-x-2 text-orange-800">
@@ -520,16 +623,21 @@ export default function UsersPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <Input
-            placeholder="Search users..."
+            placeholder="Search by name, email, or username..."
             value={search}
-            onChange={(e) => {
-              setSearch(e.target.value)
-              setCurrentPage(1)
-            }}
+            onChange={(e) => setSearch(e.target.value)}
             className="pl-9"
           />
+          {search !== debouncedSearch && (
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+              <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+            </div>
+          )}
         </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
+        <Select
+          value={statusFilter}
+          onValueChange={(value) => setStatusFilter(value as UserStatus)}
+        >
           <SelectTrigger className="w-full sm:w-32">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
@@ -539,7 +647,10 @@ export default function UsersPage() {
             <SelectItem value="banned">Banned</SelectItem>
           </SelectContent>
         </Select>
-        <Select value={roleFilter} onValueChange={setRoleFilter}>
+        <Select
+          value={roleFilter}
+          onValueChange={(value) => setRoleFilter(value as FilterState)}
+        >
           <SelectTrigger className="w-full sm:w-32">
             <SelectValue placeholder="Role" />
           </SelectTrigger>
@@ -548,6 +659,7 @@ export default function UsersPage() {
             <SelectItem value="admin">Admin</SelectItem>
             <SelectItem value="moderator">Moderator</SelectItem>
             <SelectItem value="user">User</SelectItem>
+            <SelectItem value="superadmin">Super Admin</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -556,23 +668,40 @@ export default function UsersPage() {
       <Card>
         <CardHeader>
           <CardTitle>Users</CardTitle>
-          <CardDescription>{data?.meta.total || 0} users total</CardDescription>
+          <CardDescription>
+            {data?.meta.total || 0} users total
+            {isFetching && !isLoading && (
+              <span className="ml-2 text-blue-600">• Updating...</span>
+            )}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
             <div className="space-y-3">
               {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="animate-pulse">
-                  <div className="h-12 bg-gray-200 rounded"></div>
+                <div key={i} className="animate-pulse border rounded p-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-gray-200 rounded-full" />
+                    <div className="space-y-2 flex-1">
+                      <div className="h-4 bg-gray-200 rounded w-1/4" />
+                      <div className="h-3 bg-gray-200 rounded w-1/6" />
+                    </div>
+                    <div className="h-6 bg-gray-200 rounded w-16" />
+                    <div className="h-6 bg-gray-200 rounded w-12" />
+                  </div>
                 </div>
               ))}
             </div>
           ) : data?.data.length === 0 ? (
-            <div className="text-center py-8">
-              <UserIcon className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <div className="text-center py-12">
+              <UserIcon className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-50" />
               <h3 className="text-lg font-medium mb-2">No users found</h3>
-              <p className="text-muted-foreground">
-                No users match your current filters.
+              <p className="text-muted-foreground max-w-sm mx-auto">
+                {debouncedSearch ||
+                statusFilter !== "all" ||
+                roleFilter !== "all"
+                  ? "No users match your current filters. Try adjusting your search criteria."
+                  : "No users have been created yet."}
               </p>
             </div>
           ) : (
@@ -831,6 +960,7 @@ export default function UsersPage() {
                 <SelectItem value="user">User</SelectItem>
                 <SelectItem value="moderator">Moderator</SelectItem>
                 <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="superadmin">Super Admin</SelectItem>
               </SelectContent>
             </Select>
           </div>

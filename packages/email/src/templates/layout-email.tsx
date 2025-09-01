@@ -9,11 +9,20 @@ import {
 } from "@react-email/components"
 import type { ReactNode } from "react"
 
+/**
+ * Props for the email layout component
+ */
 interface EmailLayoutProps {
+  /** Email preview text shown in email clients */
   preview: string
+  /** Email content to be rendered inside the layout */
   children: ReactNode
 }
 
+/**
+ * Base email layout component that provides consistent styling
+ * and structure for all email templates
+ */
 export const EmailLayout = ({ preview, children }: EmailLayoutProps) => {
   return (
     <Html>

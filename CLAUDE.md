@@ -2,11 +2,11 @@
 
 ## Package Manager
 
-**This project uses Bun as the package manager.**
+**This project uses pnpm as the package manager.**
 
-- Commands: `bun install`, `bun add`, `bun remove`, `bunx` (instead of `npx`)
-- Workspace configuration: Defined in root `package.json` `workspaces` field
-- Lock file: `bun.lockb` (binary format, faster than text-based locks)
+- Commands: `pnpm install`, `pnpm add`, `pnpm remove`, `pnpx` (instead of `npx`)
+- Workspace configuration: Defined in `pnpm-workspace.yaml` and root `package.json` `workspaces` field
+- Lock file: `pnpm-lock.yaml` (human-readable format)
 
 ## Build Configuration
 
@@ -20,22 +20,22 @@ All packages under `packages/` are consumed directly as TypeScript source files 
 ## Testing
 
 - Use `@raypx/testing` package for consistent testing setup across the monorepo
-- Test runner: Vitest (Bun has native support for Vitest)
-- Run tests: `bun test` or `vitest`
+- Test runner: Vitest (pnpm has excellent support for Vitest)
+- Run tests: `pnpm test` or `vitest`
 
 ## Dependency Management
 
 - **Catalog dependencies**: Use `catalog:` for shared dependencies managed in root `package.json` `workspaces.catalog`
 - **React dependencies**: Use `catalog:react19` for React 19 related packages
 - **Internal packages**: Use `workspace:*` for internal package dependencies
-- Bun natively supports workspace dependencies and monorepo structure with zero configuration
+- pnpm natively supports workspace dependencies and monorepo structure with excellent performance
 
 ## Performance Benefits
 
-- **Installation**: 2-10x faster than npm/pnpm
-- **Runtime**: Native speed for JavaScript/TypeScript execution
-- **Bundling**: Built-in bundler eliminates need for separate build tools
-- **Testing**: Integrated test runner reduces tooling complexity
+- **Installation**: Faster than npm with efficient dependency resolution
+- **Storage efficiency**: Uses symlinks and hard links to save disk space
+- **Workspace support**: Excellent monorepo support with workspace protocols
+- **Lock file**: Fast and reliable dependency resolution
 
 ## Code Change Validation
 
@@ -44,7 +44,7 @@ All packages under `packages/` are consumed directly as TypeScript source files 
 After completing any code changes, especially to packages that affect the web application, run the following command to ensure no build errors:
 
 ```bash
-cd apps/web && bun run build
+cd apps/web && pnpm run build
 ```
 
 This validation step should be performed:

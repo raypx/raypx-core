@@ -36,7 +36,7 @@ export function HeroSection() {
   }
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="absolute inset-0 bg-grid-pattern opacity-5" />
       <div className="relative max-w-7xl mx-auto px-6 py-24 lg:py-32">
         <div className="text-center space-y-8">
@@ -56,7 +56,7 @@ export function HeroSection() {
               </span>
             </h1>
 
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
               Raypx is the complete platform for building, deploying, and
               scaling AI-powered applications with enterprise-grade security and
               performance.
@@ -89,19 +89,19 @@ export function HeroSection() {
           </div>
 
           <div className="pt-16">
-            <p className="text-sm text-gray-500 mb-8">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">
               Trusted by developers worldwide
             </p>
             <div className="flex justify-center items-center gap-12 opacity-60">
-              <div className="flex items-center gap-2 text-gray-600">
+              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
                 <Zap className="h-5 w-5" />
                 <span className="font-semibold">Lightning Fast</span>
               </div>
-              <div className="flex items-center gap-2 text-gray-600">
+              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
                 <Shield className="h-5 w-5" />
                 <span className="font-semibold">Enterprise Security</span>
               </div>
-              <div className="flex items-center gap-2 text-gray-600">
+              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
                 <Sparkles className="h-5 w-5" />
                 <span className="font-semibold">AI-Powered</span>
               </div>
