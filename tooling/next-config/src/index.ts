@@ -15,6 +15,8 @@ export interface CreateConfigOptions {
   bundleAnalyzer?: boolean
   /** Enable i18n support */
   i18n?: I18nConfig
+  /** Output mode for deployment (standalone for Docker, undefined for Vercel) */
+  output?: "standalone" | "export" | undefined
 }
 
 const INTERNAL_PACKAGES = [
@@ -35,7 +37,14 @@ export function createConfig(options: CreateConfigOptions = {}): NextConfig {
     override = {},
     bundleAnalyzer = false,
     i18n = false,
+    output,
   } = options
+
+  // Determine output mode: use provided option, environment variable, or default
+  const outputMode =
+    output ??
+    (process.env.NEXT_OUTPUT as "standalone" | "export" | undefined) ??
+    (process.env.DOCKER_BUILD === "true" ? "standalone" : undefined)
 
   let nextConfig: NextConfig = {
     reactStrictMode: true,
@@ -47,6 +56,7 @@ export function createConfig(options: CreateConfigOptions = {}): NextConfig {
       ? [process.env.NEXT_PUBLIC_AUTH_URL]
       : [],
     transpilePackages: [...INTERNAL_PACKAGES, ...transpilePackages],
+    ...(outputMode && { output: outputMode }),
     ...override,
   }
 
