@@ -44,7 +44,6 @@ export const createApp = (options: ServerOptions) => {
 
   // Error handling
   app.notFound((c) => {
-    console.log("Not Found", c.req.path)
     return c.json(
       {
         message: "Not Found",

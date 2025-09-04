@@ -22,6 +22,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import type { ReactNode } from "react"
 import { useState } from "react"
+import { SettingsModal } from "@/components/settings-modal"
 
 export interface ConsolePageProps {
   children: ReactNode
@@ -178,6 +179,13 @@ export function ConsolePage({
 
               {/* User menu */}
               <div className="flex items-center gap-x-2">
+                <SettingsModal
+                  trigger={
+                    <Button variant="ghost" size="icon">
+                      <Settings className="h-4 w-4" />
+                    </Button>
+                  }
+                />
                 <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
                   <User className="h-4 w-4 text-primary-foreground" />
                 </div>

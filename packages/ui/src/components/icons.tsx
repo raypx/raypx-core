@@ -22,6 +22,7 @@ export {
   CopyIcon,
   EllipsisIcon,
   FingerprintIcon,
+  HomeIcon,
   KeyRoundIcon,
   LaptopIcon,
   LockIcon,

@@ -18,6 +18,7 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react"
+import { SettingsButton } from "@/components/settings-button"
 
 export default function ConsolePage() {
   const stats = [
@@ -110,6 +111,17 @@ export default function ConsolePage() {
     },
   ]
 
+  const customActions = [
+    {
+      name: "Settings",
+      component: (
+        <SettingsButton variant="outline" size="sm">
+          Settings
+        </SettingsButton>
+      ),
+    },
+  ]
+
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
@@ -188,6 +200,11 @@ export default function ConsolePage() {
                   {action.name}
                 </a>
               </Button>
+            ))}
+            {customActions.map((action) => (
+              <div key={action.name} className="w-full">
+                {action.component}
+              </div>
             ))}
           </CardContent>
         </Card>

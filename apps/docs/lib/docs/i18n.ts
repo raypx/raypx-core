@@ -1,0 +1,13 @@
+import type { I18nConfig } from "fumadocs-core/i18n"
+import { DEFAULT_LOCALE, LOCALES } from "../i18n/routing"
+
+/**
+ * Internationalization configuration for FumaDocs
+ *
+ * https://fumadocs.dev/docs/ui/internationalization
+ */
+export const docsI18nConfig: I18nConfig = {
+  defaultLanguage: DEFAULT_LOCALE,
+  languages: LOCALES,
+  hideLocale: "default-locale",
+}

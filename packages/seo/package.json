@@ -11,14 +11,14 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@raypx/shared": "workspace:*",
-    "next-seo": "^6.8.0"
+    "@raypx/shared": "workspace:*"
   },
   "devDependencies": {
     "@raypx/tsconfig": "workspace:*",
     "@types/node": "catalog:",
     "@types/react": "catalog:react19",
     "next": "catalog:",
+    "next-seo": "^6.8.0",
     "schema-dts": "^1.1.5",
     "typescript": "catalog:"
   }

@@ -46,7 +46,6 @@ const buildPath = (
   pathParts.push(...validSegments)
 
   // Use join and replace to handle paths, avoiding duplicate slashes
-  console.log("pathParts", pathParts)
   const cleanPath =
     pathParts
       .join("/")

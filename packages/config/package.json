@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "scripts": {
+    "clean": "rimraf dist .turbo"
+  },
   "exports": {
     ".": "./src/index.ts",
     "./app": "./src/app.config.ts",

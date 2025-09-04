@@ -5,4 +5,5 @@ const withMDX = createMDX()
 
 export default createConfig({
   withMDX,
+  i18n: "./config/i18n.config.ts",
 })

@@ -1,0 +1,279 @@
+---
+title: Analytics Integration
+description: Set up analytics tracking for your AI-powered applications with PostHog, Google Analytics, and more.
+---
+
+# Analytics Integration
+
+This guide will help you set up comprehensive analytics tracking for your Raypx AI platform applications.
+
+## Supported Analytics Platforms
+
+### PostHog (Recommended)
+
+PostHog is a full-featured product analytics platform that's particularly well-suited for AI applications:
+
+**Key Features:**
+- Event tracking and user behavior analysis
+- Session recordings
+- Feature flags
+- A/B testing
+- Heatmaps
+- Performance monitoring
+- User cohorts
+- AI-specific tracking capabilities
+
+**Environment Variables:**
+```bash
+NEXT_PUBLIC_POSTHOG_KEY=phc_your_posthog_key_here
+NEXT_PUBLIC_POSTHOG_HOST=https://app.posthog.com
+NEXT_PUBLIC_POSTHOG_INGESTION_URL=https://app.posthog.com
+```
+
+**Getting PostHog Keys:**
+1. Sign up at [PostHog](https://posthog.com)
+2. Create a new project
+3. Find your API key in project settings
+
+### Google Analytics (Optional)
+
+Classic website analytics tool for basic web metrics:
+
+```bash
+NEXT_PUBLIC_GA_MEASUREMENT_ID=G-YOUR_GA_ID
+```
+
+### Umami (Optional)
+
+Open-source, privacy-friendly analytics alternative:
+
+```bash
+NEXT_PUBLIC_UMAMI_HOST=https://your-umami-instance.com
+NEXT_PUBLIC_UMAMI_WEBSITE_ID=your-website-id
+```
+
+## Global Control Options
+
+```bash
+# Disable all analytics (default: false)
+NEXT_PUBLIC_ANALYTICS_DISABLED=false
+
+# Enable debug mode in development (default: false)
+NEXT_PUBLIC_ANALYTICS_DEBUG=false
+```
+
+## Usage
+
+### Client-Side Tracking
+
+```tsx
+import { useAnalytics } from "@raypx/analytics"
+
+function MyComponent() {
+  const analytics = useAnalytics()
+  
+  const handleClick = () => {
+    // Basic event tracking
+    analytics.track("button_clicked", {
+      component: "MyComponent",
+      location: "header"
+    })
+    
+    // AI interaction tracking
+    analytics.trackAIInteraction("chat_message", {
+      model: "gpt-4",
+      tokens: 150,
+      latency: 1200,
+      success: true
+    })
+    
+    // Feature usage tracking
+    analytics.trackFeatureUsage("export_data", {
+      format: "pdf",
+      size: "large"
+    })
+  }
+  
+  const handleUserLogin = (userId: string) => {
+    // User identification
+    analytics.identify(userId, {
+      plan: "pro",
+      signup_date: "2024-01-01"
+    })
+  }
+  
+  return (
+    <button 
+      onClick={handleClick}
+      data-track // Automatically captured by PostHog
+    >
+      Click me
+    </button>
+  )
+}
+```
+
+### Server-Side Tracking
+
+```tsx
+import { serverAnalytics } from "@raypx/analytics/server"
+
+export async function POST(request: Request) {
+  const userId = "user_123"
+  
+  // Server-side event tracking
+  await serverAnalytics.track({
+    event: "api_request",
+    distinctId: userId,
+    properties: {
+      endpoint: "/api/generate",
+      method: "POST",
+      response_time: 500
+    }
+  })
+  
+  // User identification
+  await serverAnalytics.identify({
+    distinctId: userId,
+    properties: {
+      email: "user@example.com",
+      plan: "enterprise"
+    }
+  })
+  
+  return Response.json({ success: true })
+}
+```
+
+## AI-Specific Analytics
+
+We provide specialized tracking methods for AI applications:
+
+```tsx
+const analytics = useAnalytics()
+
+// AI conversation tracking
+analytics.trackAIInteraction("conversation_started", {
+  model: "gpt-4-turbo",
+  context: "customer_support"
+})
+
+// AI content generation tracking
+analytics.trackAIInteraction("content_generated", {
+  model: "claude-3-5-sonnet",
+  type: "code",
+  tokens: 500,
+  latency: 2000,
+  success: true
+})
+
+// Model switching tracking
+analytics.trackFeatureUsage("model_switch", {
+  from: "gpt-3.5-turbo",
+  to: "gpt-4",
+  reason: "quality_upgrade"
+})
+```
+
+## Automatic Event Capture
+
+The system automatically tracks the following events:
+
+1. **Page Views** - All page navigation
+2. **Click Events** - Elements with `data-track` attribute
+3. **Form Submissions** - Important form interactions
+4. **Error Events** - JavaScript and API errors
+
+## Privacy & Compliance
+
+- Default configuration is GDPR compliant
+- Sensitive data is automatically masked
+- Users can opt out of tracking
+- All password fields are automatically masked
+- Session recordings respect privacy settings
+
+## Development & Debugging
+
+Enable debug mode in development:
+
+```bash
+NEXT_PUBLIC_ANALYTICS_DEBUG=true
+```
+
+This will log all analytics events to the browser console for debugging.
+
+## Best Practices
+
+### Event Naming Convention
+
+Use clear, consistent event naming:
+- `feature_used` - Feature usage
+- `ai_interaction` - AI interactions  
+- `user_action` - User actions
+- `system_event` - System events
+
+### Standardized Properties
+
+Add standardized properties to events:
+```tsx
+analytics.track("feature_used", {
+  feature: "export",
+  category: "data",
+  value: 1,
+  user_plan: "pro",
+  timestamp: new Date().toISOString()
+})
+```
+
+### Error Tracking
+
+Ensure important errors are tracked:
+```tsx
+try {
+  await aiGenerateContent()
+} catch (error) {
+  analytics.track("ai_error", {
+    error_type: error.name,
+    error_message: error.message,
+    model: "gpt-4",
+    context: "content_generation"
+  })
+}
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Events not sending**
+   - Check environment variables are correctly set
+   - Ensure `NEXT_PUBLIC_ANALYTICS_DISABLED` is not enabled
+   - Check network connectivity and console errors
+
+2. **No data in development**
+   - By default, analytics only send in production
+   - Set `NEXT_PUBLIC_ANALYTICS_DEBUG=true` to enable in development
+
+3. **PostHog data delays**
+   - PostHog has a few minutes processing delay, this is normal
+   - Use debug mode to see real-time event sending
+
+## Feature Flags (PostHog)
+
+PostHog also provides feature flag functionality:
+
+```tsx
+// Server-side feature flags
+import { serverAnalytics } from "@raypx/analytics/server"
+
+const isNewFeatureEnabled = await serverAnalytics.getFeatureFlag(
+  "new-ai-model",
+  userId,
+  {
+    personProperties: { plan: "pro" },
+    groups: { company: "raypx" }
+  }
+)
+```
+
+Need help? Check the official documentation for each platform or contact our support team.

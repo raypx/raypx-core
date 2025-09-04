@@ -1,3 +1,3 @@
-// Re-export utilities by category
+export * from "./date"
 export * from "./lodash"
 export * from "./parser"

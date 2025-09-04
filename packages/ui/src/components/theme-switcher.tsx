@@ -13,7 +13,7 @@ import { useEffect, useState } from "react"
 
 export function ThemeSwitcher() {
   const [mounted, setMounted] = useState(false)
-  const { theme, setTheme } = useTheme()
+  const { setTheme } = useTheme()
 
   useEffect(() => {
     setMounted(true)
@@ -30,14 +30,13 @@ export function ThemeSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
-          {theme === "light" ? (
-            <Sun className="h-4 w-4" />
-          ) : theme === "dark" ? (
-            <Moon className="h-4 w-4" />
-          ) : (
-            <Monitor className="h-4 w-4" />
-          )}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-8 p-0.5 border border-border rounded-full cursor-pointer"
+        >
+          <Sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
