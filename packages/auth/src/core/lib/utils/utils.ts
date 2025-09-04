@@ -1,5 +1,6 @@
+"use client"
+
 import { BetterFetchError } from "@better-fetch/fetch"
-import { BetterAuthError } from "better-auth"
 import { z } from "zod/v4"
 import {
   PERMISSION_ERROR_MAPPING,
@@ -36,12 +37,6 @@ function transformError(error: unknown): {
       code: fetchError.error.code,
       message: fetchError.error.message,
       statusText: fetchError.error.statusText || fetchError.statusText,
-    }
-  } else if (error instanceof BetterAuthError) {
-    const authError = error as BetterAuthError
-    return {
-      code: authError.name,
-      message: authError.message,
     }
   } else if (error instanceof Error) {
     const err = error as Error

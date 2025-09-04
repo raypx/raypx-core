@@ -1,5 +1,6 @@
 "use client"
 
+import { dayjs } from "@raypx/shared/utils"
 import { Button } from "@raypx/ui/components/button"
 import { Card } from "@raypx/ui/components/card"
 import {
@@ -39,6 +40,7 @@ export function InvitationCell({
     organization: organizationOptions,
     toast,
     t,
+    locale,
   } = useAuth()
 
   const [isLoading, setIsLoading] = useState(false)
@@ -94,7 +96,8 @@ export function InvitationCell({
           </span>
 
           <span className="truncate text-muted-foreground text-xs">
-            {t("EXPIRES")} {invitation.expiresAt.toLocaleDateString()}
+            {t("EXPIRES")}{" "}
+            {dayjs(invitation.expiresAt).locale(locale).format("LL")}
           </span>
         </div>
       </div>

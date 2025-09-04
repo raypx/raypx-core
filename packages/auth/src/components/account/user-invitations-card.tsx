@@ -1,5 +1,6 @@
 "use client"
 
+import { dayjs } from "@raypx/shared/utils"
 import { Button } from "@raypx/ui/components/button"
 import { Card, CardContent } from "@raypx/ui/components/card"
 import {
@@ -85,7 +86,13 @@ function UserInvitationRow({
   }
   onChanged?: () => unknown
 }) {
-  const { authClient, organization: organizationOptions, t, toast } = useAuth()
+  const {
+    authClient,
+    organization: organizationOptions,
+    t,
+    toast,
+    locale,
+  } = useAuth()
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -159,7 +166,8 @@ function UserInvitationRow({
           </span>
 
           <span className="truncate text-muted-foreground text-xs">
-            {t("EXPIRES")} {invitation.expiresAt.toLocaleDateString()}
+            {t("EXPIRES")}{" "}
+            {dayjs(invitation.expiresAt).locale(locale).format("LL")}
           </span>
         </div>
       </div>

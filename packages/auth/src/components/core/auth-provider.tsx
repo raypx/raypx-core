@@ -1,6 +1,7 @@
 "use client"
 
 import { toast } from "@raypx/ui/components/toast"
+import { useLocale } from "next-intl"
 import { createContext, type ReactNode, useMemo } from "react"
 import { useAuthData } from "../../core/hooks/use-auth-data"
 import {
@@ -360,6 +361,10 @@ export type AuthContextType = {
    * @default navigate
    */
   replace: (href: string) => void
+  /**
+   * locale
+   */
+  locale: string
 }
 
 export type AuthProviderProps = {
@@ -423,6 +428,10 @@ export type AuthProviderProps = {
    * @default { fields: ["name"] }
    */
   signUp?: SignUpOptions | boolean
+  /**
+   * locale
+   */
+  locale?: string
 } & Partial<
   Omit<
     AuthContextType,
@@ -472,10 +481,11 @@ export const AuthProvider = ({
   multiSession,
   magicLink,
   oneTap,
+  locale: localeProp,
   ...props
 }: AuthProviderProps) => {
   const authClient = authClientProp as AuthClient
-
+  const lang = useLocale()
   const avatar = useMemo(() => normalizeAvatar(avatarProp), [avatarProp])
   const { t } = useAuthTranslations()
 
@@ -495,6 +505,8 @@ export const AuthProvider = ({
       viewPaths: { ...accountViewPaths, ...accountProp.viewPaths },
     }
   }, [accountProp])
+
+  const locale = useMemo(() => localeProp || lang, [localeProp, lang])
 
   const deleteUser = useMemo(
     () => normalizeDeleteUser(deleteUserProp),
@@ -634,6 +646,7 @@ export const AuthProvider = ({
         navigate: navigate || defaultNavigate,
         replace: replace || navigate || defaultReplace,
         viewPaths,
+        locale,
         ...featureConfig,
         ...props,
       }}

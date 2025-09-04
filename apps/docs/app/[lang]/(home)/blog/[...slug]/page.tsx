@@ -1,3 +1,4 @@
+import { dayjs } from "@raypx/shared/utils"
 import { ArrowLeft, Calendar } from "lucide-react"
 import type { Metadata } from "next"
 import Link from "next/link"
@@ -58,14 +59,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound()
   }
 
-  const formattedDate = page.data.date.toLocaleDateString(
-    lang === "zh" ? "zh-CN" : "en-US",
-    {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    },
-  )
+  const formattedDate = dayjs(page.data.date).locale(lang).format("LL")
 
   const backText = lang === "zh" ? "返回博客" : "Back to Blog"
 

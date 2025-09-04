@@ -1,8 +1,8 @@
 import { HomeIcon } from "@raypx/ui/components/icons"
 import { ThemeSwitcher } from "@raypx/ui/components/theme-switcher"
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared"
-import Image from "next/image"
 import { getPathname } from "@/components/link"
+import { Logo } from "@/components/logo"
 import appConfig from "@/config/app.config"
 import { docsI18nConfig } from "@/lib/docs/i18n"
 
@@ -11,13 +11,7 @@ export function baseOptions(locale: string): BaseLayoutProps {
     nav: {
       title: (
         <>
-          <Image
-            src="/logo.png"
-            alt="Logo"
-            width={24}
-            height={24}
-            className="rounded-full"
-          />
+          <Logo size={24} priority />
           {appConfig.name}
         </>
       ),

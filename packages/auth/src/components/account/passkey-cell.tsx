@@ -1,5 +1,6 @@
 "use client"
 
+import { dayjs } from "@raypx/shared/utils"
 import { Button } from "@raypx/ui/components/button"
 import { Card } from "@raypx/ui/components/card"
 import { FingerprintIcon, Loader2 } from "@raypx/ui/components/icons"
@@ -27,6 +28,7 @@ export function PasskeyCell({
     t,
     mutators: { deletePasskey },
     toast,
+    locale,
   } = useAuth()
 
   const { refetch } = useListPasskeys()
@@ -76,7 +78,7 @@ export function PasskeyCell({
         <div className="flex items-center gap-3">
           <FingerprintIcon className={cn("size-4", classNames?.icon)} />
           <span className="text-sm">
-            {new Date(passkey.createdAt).toLocaleString()}
+            {dayjs(passkey.createdAt).locale(locale).format("LL")}
           </span>
         </div>
 

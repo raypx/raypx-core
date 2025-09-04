@@ -1,5 +1,6 @@
 "use client"
 
+import { dayjs } from "@raypx/shared/utils"
 import { Button } from "@raypx/ui/components/button"
 import { Card } from "@raypx/ui/components/card"
 import { KeyRoundIcon } from "@raypx/ui/components/icons"
@@ -34,12 +35,8 @@ export function ApiKeyCell({
   const formatExpiration = () => {
     if (!apiKey.expiresAt) return t("NEVER_EXPIRES")
 
-    const expiresDate = new Date(apiKey.expiresAt)
-    return `${t("EXPIRES")} ${expiresDate.toLocaleDateString(lang ?? "en", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    })}`
+    const expiresDate = dayjs(apiKey.expiresAt)
+    return `${t("EXPIRES")} ${expiresDate.locale(lang ?? "en").format("ll")}`
   }
 
   return (
