@@ -1,4 +1,3 @@
-import { HomeIcon } from "@raypx/ui/components/icons"
 import { ThemeSwitcher } from "@raypx/ui/components/theme-switcher"
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared"
 import { getPathname } from "@/components/link"
@@ -19,13 +18,6 @@ export function baseOptions(locale: string): BaseLayoutProps {
       transparentMode: "top",
     },
     links: [
-      {
-        text: "Homepage",
-        url: getPathname({ href: "/", locale }),
-        icon: <HomeIcon />,
-        active: "none",
-        external: false,
-      },
       {
         url: getPathname({ href: "/docs", locale }),
         text: "Docs",
