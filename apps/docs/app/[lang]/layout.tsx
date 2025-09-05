@@ -5,8 +5,10 @@ import { Inter } from "next/font/google"
 import type { ReactNode } from "react"
 import appConfig from "@/config/app.config"
 import "@/styles/globals.css"
+import { NextIntlClientProvider } from "@raypx/i18n"
 import { Toaster } from "@raypx/ui/components/toast"
 import { defineI18nUI } from "fumadocs-ui/i18n"
+import { getMessages } from "next-intl/server"
 import { docsI18nConfig } from "@/lib/docs/i18n"
 
 const inter = Inter({
@@ -47,15 +49,19 @@ export default async function Layout({
   params: Promise<{ lang: string }>
 }) {
   const { lang } = await params
+  const messages = await getMessages({ locale: lang })
+
   return (
     <html lang={lang} className={inter.className} suppressHydrationWarning>
       <body className="flex flex-col min-h-screen">
-        <RootProvider i18n={provider(lang)}>
-          <AnalyticsProvider>
-            {children}
-            <Toaster />
-          </AnalyticsProvider>
-        </RootProvider>
+        <NextIntlClientProvider locale={lang} messages={messages}>
+          <RootProvider i18n={provider(lang)}>
+            <AnalyticsProvider>
+              {children}
+              <Toaster />
+            </AnalyticsProvider>
+          </RootProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   )

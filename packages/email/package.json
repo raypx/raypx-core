@@ -19,8 +19,8 @@
   "dependencies": {
     "@raypx/db": "workspace:*",
     "@raypx/shared": "workspace:*",
-    "@react-email/components": "^0.5.1",
-    "@react-email/render": "^1.2.1",
+    "@react-email/components": "^0.5.2",
+    "@react-email/render": "^1.2.2",
     "drizzle-orm": "^0.44.5",
     "nodemailer": "^7.0.6",
     "react": "catalog:react19",

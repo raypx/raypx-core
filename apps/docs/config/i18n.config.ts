@@ -13,8 +13,8 @@ export default createI18nServerConfig({
       (m) => m.default,
     )
 
-    return {
-      common: messages,
-    }
+    console.log(messages)
+
+    return messages
   },
 })
