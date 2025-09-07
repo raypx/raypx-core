@@ -1,3 +1,4 @@
+import { getTranslations } from "@raypx/i18n/server"
 import { HomeLayout } from "fumadocs-ui/layouts/home"
 import type { ReactNode } from "react"
 import { baseOptions } from "@/app/layout.shared"
@@ -9,5 +10,6 @@ interface HomeLayoutProps {
 
 export default async function Layout({ children, params }: HomeLayoutProps) {
   const { lang } = await params
-  return <HomeLayout {...baseOptions(lang)}>{children}</HomeLayout>
+  const t = await getTranslations({ locale: lang, namespace: "docs" })
+  return <HomeLayout {...baseOptions(lang, t)}>{children}</HomeLayout>
 }

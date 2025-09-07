@@ -5,7 +5,7 @@ import { Logo } from "@/components/logo"
 import appConfig from "@/config/app.config"
 import { docsI18nConfig } from "@/lib/docs/i18n"
 
-export function baseOptions(locale: string): BaseLayoutProps {
+export function baseOptions(locale: string, t: any): BaseLayoutProps {
   return {
     nav: {
       title: (
@@ -20,19 +20,19 @@ export function baseOptions(locale: string): BaseLayoutProps {
     links: [
       {
         url: getPathname({ href: "/docs", locale }),
-        text: "Docs",
+        text: t("docs.title"),
       },
       {
         url: getPathname({ href: "/blog", locale }),
-        text: "Blog",
+        text: t("blog.title"),
       },
       {
         url: getPathname({ href: "/changelog", locale }),
-        text: "Changelog",
+        text: t("changelog.title"),
       },
       {
         url: "https://github.com/raypx/raypx/discussions",
-        text: "Community",
+        text: t("community.title"),
         external: true,
       },
     ],

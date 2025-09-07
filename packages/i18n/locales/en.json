@@ -1,20 +1,22 @@
 {
-  "changelog": {
-    "title": "Changelog",
-    "description": "Product updates and version history for {name}"
-  },
-  "blog": {
-    "title": "Blog",
-    "description": "The latest news and updates from {name}",
-    "back": "Back to Blog",
-    "from": "From {name} Blog",
-    "updated": "Updated on {date}"
-  },
   "docs": {
-    "title": "Docs",
-    "description": "Documentation for {name}"
-  },
-  "community": {
-    "title": "Community"
+    "changelog": {
+      "title": "Changelog",
+      "description": "Product updates and version history for {name}"
+    },
+    "blog": {
+      "title": "Blog",
+      "description": "The latest news and updates from {name}",
+      "back": "Back to Blog",
+      "from": "From {name} Blog",
+      "updated": "Updated on {date}"
+    },
+    "docs": {
+      "title": "Docs",
+      "description": "Documentation for {name}"
+    },
+    "community": {
+      "title": "Community"
+    }
   }
 }
