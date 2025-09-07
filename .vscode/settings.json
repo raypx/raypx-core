@@ -13,5 +13,8 @@
     "**/pnpm-workspace.yaml": true,
     "**/dist": true,
     "**/node_modules": true
+  },
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
   }
 }
