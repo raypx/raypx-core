@@ -6,7 +6,7 @@
     "analyze": "cross-env ANALYZE=true pnpm with-env next build",
     "build": "pnpm with-env next build",
     "clean": "rimraf .next .source",
-    "dev": "pnpm with-env next dev --turbo --port 3001",
+    "dev": "pnpm with-env next dev --turbo --port 3003",
     "postinstall": "fumadocs-mdx",
     "start": "pnpm with-env next start",
     "with-env": "dotenv -e ../../.env --"

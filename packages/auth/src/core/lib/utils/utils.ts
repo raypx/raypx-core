@@ -9,12 +9,8 @@ import {
 import type { PasswordValidation } from "../../../types"
 import type { AuthTranslations } from "../../hooks/use-auth-translations"
 
+export { isValidEmail } from "@raypx/shared/utils"
 export { cn } from "@raypx/ui/lib/utils"
-
-export function isValidEmail(email: string) {
-  const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(email)
-}
 
 /**
  * Converts error codes from SNAKE_CASE to camelCase
