@@ -5,13 +5,9 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./server": "./src/server.ts",
-    "./locales/*": "./locales/*.json"
+    "./server": "./src/server.ts"
   },
   "scripts": {
-    "build:locales": "tsx scripts/build-locales.ts",
-    "build:locales:watch": "tsx scripts/build-locales.ts --watch",
-    "split:locales": "tsx scripts/split-locales.ts",
     "clean": "rimraf dist .turbo",
     "test": "vitest"
   },

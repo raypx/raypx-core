@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next"
 import appConfig from "@/config/app.config"
-import { LOCALES } from "@/lib/i18n/routing"
+import { locales } from "@/config/i18n.config"
 import { blogSource, changelogSource, pagesSource, source } from "@/lib/source"
 
 export const revalidate = false
@@ -10,7 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const sitemapEntries: MetadataRoute.Sitemap = []
 
   // Add main pages for each locale
-  LOCALES.forEach((locale) => {
+  locales.forEach((locale) => {
     sitemapEntries.push(
       {
         url: url(`/${locale}`),
@@ -26,7 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   })
 
   // Add documentation pages
-  LOCALES.forEach((locale) => {
+  locales.forEach((locale) => {
     source.getPages().forEach((page) => {
       const { lastModified } = page.data
       sitemapEntries.push({
@@ -41,7 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Add blog pages
   const blogPosts = blogSource.getPages()
   if (blogPosts.length > 0) {
-    LOCALES.forEach((locale) => {
+    locales.forEach((locale) => {
       // Blog index page
       sitemapEntries.push({
         url: url(`/${locale}/blog`),
@@ -66,7 +66,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Add changelog pages
   const changelogEntries = changelogSource.getPages()
   if (changelogEntries.length > 0) {
-    LOCALES.forEach((locale) => {
+    locales.forEach((locale) => {
       // Changelog index page
       sitemapEntries.push({
         url: url(`/${locale}/changelog`),
@@ -92,7 +92,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages = pagesSource.getPages()
   staticPages.forEach((page) => {
     if (page.data.published !== false) {
-      LOCALES.forEach((locale) => {
+      locales.forEach((locale) => {
         sitemapEntries.push({
           url: url(`/${locale}/pages${page.url}`),
           lastModified: page.data.date ? new Date(page.data.date) : undefined,
