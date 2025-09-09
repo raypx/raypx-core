@@ -9,6 +9,9 @@
     "./locales/*": "./locales/*.json"
   },
   "scripts": {
+    "build:locales": "tsx scripts/build-locales.ts",
+    "build:locales:watch": "tsx scripts/build-locales.ts --watch",
+    "split:locales": "tsx scripts/split-locales.ts",
     "clean": "rimraf dist .turbo",
     "test": "vitest"
   },
@@ -20,6 +23,7 @@
     "type-fest": "^4.41.0",
     "@types/node": "catalog:",
     "next": "catalog:",
+    "tsx": "^4.19.2",
     "typescript": "catalog:"
   }
 }
