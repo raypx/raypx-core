@@ -123,6 +123,11 @@ const createDefaultMutators = (authClient: AuthClient): AuthMutators =>
 
 const createDefaultHooks = (authClient: AuthClient): AuthHooks =>
   ({
+    useLastUsedLoginMethod: () => ({
+      isLastUsedLoginMethod: authClient.isLastUsedLoginMethod,
+      clearLastUsedLoginMethod: authClient.clearLastUsedLoginMethod,
+      getLastUsedLoginMethod: authClient.getLastUsedLoginMethod,
+    }),
     useSession: authClient.useSession,
     useListAccounts: () =>
       useAuthData({

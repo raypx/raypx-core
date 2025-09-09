@@ -60,6 +60,11 @@ export type AuthHooks = {
     total: number
   }>
   useIsRestoring?: () => boolean
+  useLastUsedLoginMethod: () => {
+    isLastUsedLoginMethod: (method: string) => boolean
+    clearLastUsedLoginMethod: () => void
+    getLastUsedLoginMethod: () => string | null
+  }
 }
 
 type MutateFn<T = Record<string, unknown>> = (

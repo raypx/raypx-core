@@ -2,6 +2,7 @@
 
 import type { BetterFetchOption } from "@better-fetch/fetch"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Badge } from "@raypx/ui/components/badge"
 import { Button } from "@raypx/ui/components/button"
 import { Checkbox } from "@raypx/ui/components/checkbox"
 import {
@@ -57,8 +58,19 @@ export function SignInForm({
   const t = useTranslations("auth")
   const { captchaRef, getCaptchaHeaders, resetCaptcha } = useCaptcha()
 
-  const { authClient, basePath, credentials, viewPaths, navigate, toast } =
-    useAuth()
+  const {
+    hooks: { useLastUsedLoginMethod },
+    authClient,
+    basePath,
+    credentials,
+    viewPaths,
+    navigate,
+    toast,
+  } = useAuth()
+
+  const { isLastUsedLoginMethod } = useLastUsedLoginMethod()
+
+  const isLastUsed = isLastUsedLoginMethod("email")
 
   const rememberMeEnabled = credentials?.rememberMe
   const usernameEnabled = credentials?.username
@@ -267,12 +279,21 @@ export function SignInForm({
             "w-full",
             classNames?.button,
             classNames?.primaryButton,
+            isLastUsed && "relative",
           )}
         >
           {isSubmitting ? (
             <Loader2 className="animate-spin" />
           ) : (
             t("SIGN_IN_ACTION")
+          )}
+          {isLastUsed && (
+            <Badge
+              variant="secondary"
+              className="absolute -top-2 -right-2 text-xs bg-blue-100 text-blue-800 border-blue-200"
+            >
+              Last Used
+            </Badge>
           )}
         </Button>
       </form>

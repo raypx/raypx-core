@@ -3,6 +3,7 @@ import {
   apiKeyClient,
   emailOTPClient,
   genericOAuthClient,
+  lastLoginMethodClient,
   magicLinkClient,
   multiSessionClient,
   oneTapClient,
@@ -29,6 +30,7 @@ export const authClient = createAuthClient({
     emailOTPClient(),
     twoFactorClient(),
     organizationClient(),
+    lastLoginMethodClient(),
   ],
 })
 

@@ -1,3 +1,6 @@
+"use client"
+
+import { Badge } from "@raypx/ui/components/badge"
 import { Button } from "@raypx/ui/components/button"
 import { cn } from "@raypx/ui/lib/utils"
 import type { SocialProvider } from "better-auth/social-providers"
@@ -41,7 +44,10 @@ export function ProviderButton({
     genericOAuth,
     toast,
     t,
+    hooks: { useLastUsedLoginMethod },
   } = useAuth()
+
+  const { isLastUsedLoginMethod } = useLastUsedLoginMethod()
 
   const getRedirectTo = useCallback(
     () => redirectToProp || getSearchParam("redirectTo") || contextRedirectTo,
@@ -113,6 +119,8 @@ export function ProviderButton({
     }
   }
 
+  const isLastUsed = isLastUsedLoginMethod(provider.provider)
+
   return (
     <Button
       className={cn(
@@ -121,6 +129,7 @@ export function ProviderButton({
         classNames?.form?.button,
         classNames?.form?.outlineButton,
         classNames?.form?.providerButton,
+        isLastUsed && "relative",
       )}
       disabled={isSubmitting}
       variant="outline"
@@ -130,6 +139,14 @@ export function ProviderButton({
 
       {socialLayout === "grid" && provider.name}
       {socialLayout === "vertical" && `${t("SIGN_IN_WITH")} ${provider.name}`}
+      {isLastUsed && (
+        <Badge
+          variant="secondary"
+          className="absolute -top-2 -right-2 text-xs bg-blue-100 text-blue-800 border-blue-200"
+        >
+          Last Used
+        </Badge>
+      )}
     </Button>
   )
 }
