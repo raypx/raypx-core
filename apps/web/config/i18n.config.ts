@@ -5,12 +5,18 @@ export const defaultLocale = "en" as const
 
 export type Locale = (typeof locales)[number]
 
+const authMessages: Record<Locale, () => Promise<Record<string, unknown>>> = {
+  en: () => import("@raypx/auth/localization/en"),
+  zh: () => import("@raypx/auth/localization/zh"),
+}
+
 const config = createI18nServerConfig({
   locales,
   defaultLocale,
   importMessages: async (locale) => {
     const messages = {
       common: (await import(`../locales/${locale}/common.json`)).default,
+      auth: (await authMessages[locale as Locale]()).default,
     }
 
     return messages
