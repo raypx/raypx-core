@@ -1,6 +1,6 @@
 ---
 description: Next.js Development Guidelines
-globs: **/*.tsx,**/*.ts,**/next.config.*,**/app/**/*,**/pages/**/*
+globs: **/*.tsx,**/*.jsx,**/*.ts,**/next.config.*,**/app/**/*,**/pages/**/*
 alwaysApply: false
 ---
 # Next.js Development Guidelines
@@ -14,6 +14,10 @@ alwaysApply: false
 - Optimize for performance with built-in features
 - Follow Next.js best practices for data fetching
 - Implement proper error handling and loading states
+- Use React 19 features and modern patterns
+- Prefer functional components with hooks over class components
+- Optimize performance with React.memo, useCallback, and useMemo
+- Follow accessibility-first design principles
 
 ## App Router Structure
 
@@ -302,7 +306,7 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   experimental: {
-    serverComponentsExternalPackages: ['@raypx/ui']
+    serverComponentsExternalPackages: ['@raypx/ui', '@raypx/db', '@raypx/auth']
   },
   images: {
     domains: ['images.unsplash.com', 'cdn.example.com'],

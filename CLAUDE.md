@@ -1,5 +1,36 @@
 # Claude Code Project Guidelines
 
+## Quick Start
+
+**Start development environment:**
+
+```bash
+# Install dependencies
+pnpm install
+
+# Start development server
+pnpm dev
+
+# Run tests
+pnpm test
+
+# Build for production
+pnpm build
+```
+
+**Project Structure:**
+```
+raypx/
+├── apps/web/          # Main Next.js application
+├── apps/docs/         # Documentation site
+├── packages/          # Shared packages (consumed as TypeScript source)
+│   ├── ui/           # UI components with shadcn/ui
+│   ├── db/           # Database layer with Drizzle ORM
+│   ├── auth/         # Authentication utilities
+│   └── shared/       # Shared utilities and types
+└── .cursor/rules/     # AI coding assistant rules
+```
+
 ## Package Manager
 
 **This project uses pnpm as the package manager.**
@@ -64,6 +95,100 @@ The build process verifies TypeScript compilation, dependency resolution, and en
 - Applies to all files: TypeScript, JavaScript, JSX, TSX, configuration files, and database schemas
 - Database schema comments, index names, and migration comments should also be in English
 
+## Development Workflow
+
+### Local Development
+```bash
+# Start development with turbo
+pnpm dev                    # Start all apps in development mode
+pnpm dev --filter web       # Start only web app
+pnpm dev --filter docs      # Start only docs app
+
+# Database operations
+pnpm --filter @raypx/db run db:migrate    # Run database migrations
+pnpm --filter @raypx/db run db:studio     # Open Drizzle Studio
+pnpm --filter @raypx/db run db:seed       # Seed database with test data
+
+# Testing
+pnpm test                   # Run all tests
+pnpm test --filter web      # Test specific package
+pnpm test --watch          # Watch mode
+pnpm test --coverage       # With coverage report
+```
+
+### Code Quality
+```bash
+# Linting and formatting
+pnpm check                  # Run Biome linting
+pnpm format                # Format code with Biome
+
+# Type checking
+pnpm build --dry-run       # Type check without building
+```
+
+## Debugging and Troubleshooting
+
+### Common Issues
+
+**Build Failures:**
+```bash
+# Clear all caches and reinstall
+pnpm clean && rm -rf node_modules && pnpm install
+
+# Clear Next.js cache
+rm -rf apps/web/.next
+
+# Clear turbo cache
+pnpm turbo clean
+```
+
+**Database Issues:**
+```bash
+# Reset database (development only)
+pnpm --filter @raypx/db run db:reset
+
+# Check database connection
+pnpm --filter @raypx/db run db:check
+```
+
+**TypeScript Errors:**
+```bash
+# Restart TypeScript server in your editor
+# Check for circular dependencies
+# Verify all packages are properly built
+```
+
+### Performance Optimization
+
+**Development:**
+- Use `--turbopack` flag for faster dev builds
+- Enable `experimental.webpackBuildWorker` in Next.js config
+- Use `pnpm dev --filter` to run only needed packages
+
+**Production:**
+- Enable `experimental.optimizeCss` in Next.js config
+- Use `ANALYZE=true pnpm build` to analyze bundle size
+- Implement proper caching strategies
+
+## Environment Configuration
+
+### Development Environment
+```bash
+# Copy environment template
+cp .env.example .env.local
+
+# Required variables:
+DATABASE_URL=postgresql://...
+NEXTAUTH_SECRET=your-secret-key
+```
+
+### Production Checklist
+- [ ] Environment variables configured in deployment platform
+- [ ] Database migrations run successfully
+- [ ] SSL certificates valid
+- [ ] CDN configured for static assets
+- [ ] Monitoring and error tracking enabled
+
 ## Git Commit Guidelines
 
 **Git commit messages must not contain Claude or AI assistance references.**
@@ -72,3 +197,29 @@ The build process verifies TypeScript compilation, dependency resolution, and en
 - Do not include phrases like "Generated with Claude Code", "Co-Authored-By: Claude", or similar AI assistance attributions
 - Record Claude assistance details in this CLAUDE.md file instead of commit messages
 - Commit messages should follow conventional commit format and describe the actual changes made
+
+### Commit Format
+```
+feat: add user authentication system
+fix: resolve database connection timeout
+docs: update API documentation
+refactor: optimize database queries
+test: add integration tests for auth flow
+```
+
+## AI Assistant Configuration
+
+This project includes comprehensive AI coding assistant rules in `.cursor/rules/`:
+
+- **nextjs.mdc** - Next.js + React development patterns
+- **drizzle.mdc** - Database ORM best practices
+- **security.mdc** - Security guidelines and validation
+- **tailwind.mdc** - Styling and responsive design
+- **api.mdc** - API design and implementation
+- **i18n.mdc** - Internationalization with next-intl
+- **ui.mdc** - Component system with shadcn/ui
+- **typescript.mdc** - Type safety and modern TypeScript
+- **monorepo.mdc** - Workspace management with pnpm
+- **deployment.mdc** - Environment and deployment configuration
+
+These rules provide context-aware assistance and ensure consistency across the codebase.

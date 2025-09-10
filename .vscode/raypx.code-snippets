@@ -1,0 +1,194 @@
+{
+  "React Component": {
+    "prefix": "rfc",
+    "body": [
+      "interface ${1:ComponentName}Props {",
+      "  ${2:// props}",
+      "}",
+      "",
+      "export function ${1:ComponentName}({ ${3:props} }: ${1:ComponentName}Props) {",
+      "  return (",
+      "    <div>",
+      "      ${4:// component content}",
+      "    </div>",
+      "  )",
+      "}"
+    ],
+    "description": "Create a React functional component with TypeScript"
+  },
+  "Next.js Page": {
+    "prefix": "npage",
+    "body": [
+      "import type { Metadata } from 'next'",
+      "",
+      "export const metadata: Metadata = {",
+      "  title: '${1:Page Title}',",
+      "  description: '${2:Page description}'",
+      "}",
+      "",
+      "export default function ${3:PageName}Page() {",
+      "  return (",
+      "    <div>",
+      "      <h1>${1:Page Title}</h1>",
+      "      ${4:// page content}",
+      "    </div>",
+      "  )",
+      "}"
+    ],
+    "description": "Create a Next.js page with metadata"
+  },
+  "API Route": {
+    "prefix": "napi",
+    "body": [
+      "import { NextRequest, NextResponse } from 'next/server'",
+      "",
+      "export async function GET(request: NextRequest) {",
+      "  try {",
+      "    ${1:// API logic}",
+      "    return NextResponse.json({ success: true })",
+      "  } catch (error) {",
+      "    console.error('API Error:', error)",
+      "    return NextResponse.json(",
+      "      { error: 'Internal server error' },",
+      "      { status: 500 }",
+      "    )",
+      "  }",
+      "}"
+    ],
+    "description": "Create a Next.js API route"
+  },
+  "Drizzle Schema": {
+    "prefix": "drizzle",
+    "body": [
+      "import { boolean, index, text, timestamp, uuid } from 'drizzle-orm/pg-core'",
+      "import { uuidv7 } from '../utils'",
+      "import { pgTable } from './_table'",
+      "",
+      "export const ${1:tableName} = pgTable(",
+      "  '${1:tableName}',",
+      "  {",
+      "    id: uuid('id')",
+      "      .primaryKey()",
+      "      .\\$defaultFn(() => uuidv7()),",
+      "    ${2:// columns}",
+      "    createdAt: timestamp('created_at')",
+      "      .\\$defaultFn(() => /* @__PURE__ */ new Date())",
+      "      .notNull(),",
+      "    updatedAt: timestamp('updated_at')",
+      "      .\\$defaultFn(() => /* @__PURE__ */ new Date())",
+      "      .\\$onUpdateFn(() => /* @__PURE__ */ new Date())",
+      "      .notNull(),",
+      "  },",
+      "  (table) => [",
+      "    ${3:// indexes}",
+      "  ],",
+      ")",
+      "",
+      "export type ${1/(.*)/${1:/capitalize}/} = typeof ${1:tableName}.\\$inferSelect",
+      "export type New${1/(.*)/${1:/capitalize}/} = typeof ${1:tableName}.\\$inferInsert"
+    ],
+    "description": "Create a Drizzle schema table"
+  },
+  "Zod Schema": {
+    "prefix": "zod",
+    "body": [
+      "import { z } from 'zod'",
+      "",
+      "export const ${1:schemaName}Schema = z.object({",
+      "  ${2:// fields}",
+      "})",
+      "",
+      "export type ${1/(.*)/${1:/capitalize}/} = z.infer<typeof ${1:schemaName}Schema>"
+    ],
+    "description": "Create a Zod validation schema"
+  },
+  "React Hook": {
+    "prefix": "hook",
+    "body": [
+      "import { useState, useEffect } from 'react'",
+      "",
+      "export function use${1:HookName}(${2:params}) {",
+      "  const [${3:state}, set${3/(.*)/${3:/capitalize}/}] = useState(${4:initialValue})",
+      "",
+      "  useEffect(() => {",
+      "    ${5:// effect logic}",
+      "  }, [${6:deps}])",
+      "",
+      "  return {",
+      "    ${3:state},",
+      "    set${3/(.*)/${3:/capitalize}/},",
+      "    ${7:// other returns}",
+      "  }",
+      "}"
+    ],
+    "description": "Create a custom React hook"
+  },
+  "Test Suite": {
+    "prefix": "test",
+    "body": [
+      "import { describe, it, expect, beforeEach } from 'vitest'",
+      "import { render, screen } from '@raypx/testing'",
+      "",
+      "describe('${1:TestSuite}', () => {",
+      "  beforeEach(() => {",
+      "    ${2:// setup}",
+      "  })",
+      "",
+      "  it('should ${3:test description}', () => {",
+      "    ${4:// test implementation}",
+      "    expect(${5:actual}).toBe(${6:expected})",
+      "  })",
+      "})"
+    ],
+    "description": "Create a test suite with Vitest"
+  },
+  "Tailwind Component": {
+    "prefix": "twc",
+    "body": [
+      "import { cn } from '@raypx/shared/lib/utils'",
+      "",
+      "interface ${1:ComponentName}Props {",
+      "  className?: string",
+      "  ${2:// other props}",
+      "}",
+      "",
+      "export function ${1:ComponentName}({ className, ${3:props} }: ${1:ComponentName}Props) {",
+      "  return (",
+      "    <div className={cn('${4:default-classes}', className)}>",
+      "      ${5:// component content}",
+      "    </div>",
+      "  )",
+      "}"
+    ],
+    "description": "Create a component with Tailwind CSS classes"
+  },
+  "Server Action": {
+    "prefix": "action",
+    "body": [
+      "'use server'",
+      "",
+      "import { z } from 'zod'",
+      "import { redirect } from 'next/navigation'",
+      "",
+      "const ${1:actionName}Schema = z.object({",
+      "  ${2:// schema fields}",
+      "})",
+      "",
+      "export async function ${1:actionName}(formData: FormData) {",
+      "  const data = ${1:actionName}Schema.parse({",
+      "    ${3:// parse form data}",
+      "  })",
+      "",
+      "  try {",
+      "    ${4:// action logic}",
+      "    ",
+      "    redirect('${5:/success-path}')",
+      "  } catch (error) {",
+      "    console.error('${1:actionName} error:', error)",
+      "    throw new Error('Failed to ${6:action description}')",
+      "  }",
+      "}"
+    ],
+    "description": "Create a Next.js server action"
+  }
+}

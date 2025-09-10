@@ -232,12 +232,27 @@ CREATE TABLE "chunks" (
 	"index" integer,
 	"type" varchar,
 	"client_id" text,
+	"document_id" uuid,
 	"knowledge_base_id" uuid,
 	"user_id" uuid,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"accessed_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "chunks_client_id_user_id_unique" UNIQUE("client_id","user_id")
+);
+--> statement-breakpoint
+CREATE TABLE "documents" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" varchar(255) NOT NULL,
+	"original_name" varchar(255) NOT NULL,
+	"mime_type" varchar(100) NOT NULL,
+	"size" integer NOT NULL,
+	"status" varchar(50) DEFAULT 'processing' NOT NULL,
+	"metadata" jsonb,
+	"knowledge_base_id" uuid NOT NULL,
+	"user_id" uuid NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "embeddings" (
@@ -274,8 +289,11 @@ ALTER TABLE "oauth_consent" ADD CONSTRAINT "oauth_consent_user_id_user_id_fk" FO
 ALTER TABLE "passkey" ADD CONSTRAINT "passkey_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "session" ADD CONSTRAINT "session_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "email_events" ADD CONSTRAINT "email_events_email_id_emails_id_fk" FOREIGN KEY ("email_id") REFERENCES "public"."emails"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "chunks" ADD CONSTRAINT "chunks_document_id_documents_id_fk" FOREIGN KEY ("document_id") REFERENCES "public"."documents"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "chunks" ADD CONSTRAINT "chunks_knowledge_base_id_knowledges_id_fk" FOREIGN KEY ("knowledge_base_id") REFERENCES "public"."knowledges"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "chunks" ADD CONSTRAINT "chunks_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "documents" ADD CONSTRAINT "documents_knowledge_base_id_knowledges_id_fk" FOREIGN KEY ("knowledge_base_id") REFERENCES "public"."knowledges"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "documents" ADD CONSTRAINT "documents_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "embeddings" ADD CONSTRAINT "embeddings_chunk_id_chunks_id_fk" FOREIGN KEY ("chunk_id") REFERENCES "public"."chunks"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "embeddings" ADD CONSTRAINT "embeddings_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "knowledges" ADD CONSTRAINT "knowledges_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -297,9 +315,13 @@ CREATE INDEX "idx_emails_to_address" ON "emails" USING btree ("to_address");--> 
 CREATE INDEX "idx_emails_status" ON "emails" USING btree ("status");--> statement-breakpoint
 CREATE INDEX "idx_emails_user_id" ON "emails" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "idx_emails_created_at" ON "emails" USING btree ("created_at");--> statement-breakpoint
+CREATE INDEX "idx_chunks_document_id" ON "chunks" USING btree ("document_id");--> statement-breakpoint
 CREATE INDEX "idx_chunks_knowledge_base_id" ON "chunks" USING btree ("knowledge_base_id");--> statement-breakpoint
 CREATE INDEX "idx_chunks_user_id" ON "chunks" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "idx_chunks_knowledge_base_id_user_id" ON "chunks" USING btree ("knowledge_base_id","user_id");--> statement-breakpoint
+CREATE INDEX "idx_documents_knowledge_base_id" ON "documents" USING btree ("knowledge_base_id");--> statement-breakpoint
+CREATE INDEX "idx_documents_user_id" ON "documents" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "idx_documents_status" ON "documents" USING btree ("status");--> statement-breakpoint
 CREATE INDEX "idx_embeddings_chunk_id" ON "embeddings" USING btree ("chunk_id");--> statement-breakpoint
 CREATE INDEX "idx_embeddings_user_id" ON "embeddings" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "idx_knowledges_user_id" ON "knowledges" USING btree ("user_id");--> statement-breakpoint

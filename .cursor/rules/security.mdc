@@ -1,0 +1,640 @@
+---
+description: Security Best Practices and Guidelines
+globs: **/*.ts,**/*.tsx,**/middleware.*,**/auth/**/*,**/*.env.*
+alwaysApply: false
+---
+# Security Best Practices and Guidelines
+
+## Core Security Principles
+
+- Implement defense in depth with multiple security layers
+- Follow principle of least privilege for all access controls
+- Never trust user input - validate and sanitize everything
+- Use secure authentication and authorization patterns
+- Protect sensitive data with proper encryption
+- Implement comprehensive logging and monitoring
+- Follow OWASP security guidelines and best practices
+- Regular security audits and dependency updates
+
+## Input Validation and Sanitization
+
+### Zod Schema Validation
+```typescript
+// ✅ Good - Comprehensive input validation
+import { z } from 'zod'
+
+export const userRegistrationSchema = z.object({
+  email: z
+    .string()
+    .email('Invalid email format')
+    .toLowerCase()
+    .max(254, 'Email too long'), // RFC 5322 limit
+  password: z
+    .string()
+    .min(12, 'Password must be at least 12 characters')
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/, 
+           'Password must contain uppercase, lowercase, number and special character'),
+  name: z
+    .string()
+    .min(1, 'Name is required')
+    .max(100, 'Name too long')
+    .regex(/^[a-zA-Z\s\-']+$/, 'Name contains invalid characters'),
+  age: z
+    .number()
+    .int('Age must be an integer')
+    .min(13, 'Must be at least 13 years old')
+    .max(120, 'Invalid age'),
+})
+
+// API route validation
+export async function POST(request: Request) {
+  try {
+    const body = await request.json()
+    const validatedData = userRegistrationSchema.parse(body)
+    
+    // Proceed with validated data
+    return await createUser(validatedData)
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: 'Validation failed', details: error.errors },
+        { status: 400 }
+      )
+    }
+    
+    // Don't expose internal errors
+    console.error('Registration error:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
+```
+
+### XSS Prevention
+```typescript
+// ✅ Good - XSS prevention
+import DOMPurify from 'isomorphic-dompurify'
+import { escape } from 'html-escaper'
+
+// Server-side HTML sanitization
+export function sanitizeHtml(html: string): string {
+  return DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'ul', 'ol', 'li'],
+    ALLOWED_ATTR: [],
+  })
+}
+
+// Safe text rendering
+export function SafeText({ text }: { text: string }) {
+  return <span dangerouslySetInnerHTML={{ __html: escape(text) }} />
+}
+
+// URL validation
+export function validateUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url)
+    return ['http:', 'https:'].includes(parsed.protocol)
+  } catch {
+    return false
+  }
+}
+```
+
+### SQL Injection Prevention
+```typescript
+// ✅ Good - Drizzle ORM prevents SQL injection automatically
+import { db } from '@raypx/db'
+import { user } from '@raypx/db/schemas'
+import { eq, and, like } from 'drizzle-orm'
+
+// Safe parameterized queries
+export async function searchUsers(searchTerm: string, userId: string) {
+  // Drizzle automatically parameterizes these values
+  return db
+    .select()
+    .from(user)
+    .where(
+      and(
+        eq(user.id, userId),
+        like(user.name, `%${searchTerm}%`)
+      )
+    )
+    .limit(10)
+}
+
+// ❌ Bad - Never use raw SQL with user input
+// const result = await db.execute(`SELECT * FROM user WHERE name = '${userInput}'`)
+```
+
+## Authentication and Authorization
+
+### Secure Authentication Flow
+```typescript
+// ✅ Good - Secure authentication with proper session management
+import { compare, hash } from 'bcryptjs'
+import { SignJWT, jwtVerify } from 'jose'
+import { cookies } from 'next/headers'
+
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET!)
+const SALT_ROUNDS = 12
+
+export async function hashPassword(password: string): Promise<string> {
+  return hash(password, SALT_ROUNDS)
+}
+
+export async function verifyPassword(password: string, hash: string): Promise<boolean> {
+  return compare(password, hash)
+}
+
+export async function createSession(userId: string, role: string) {
+  const token = await new SignJWT({ userId, role })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setExpirationTime('7d')
+    .setIssuedAt()
+    .sign(JWT_SECRET)
+
+  const cookieStore = await cookies()
+  cookieStore.set('auth-token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 7 * 24 * 60 * 60, // 7 days
+    path: '/',
+  })
+
+  return token
+}
+
+export async function verifySession(): Promise<{ userId: string; role: string } | null> {
+  try {
+    const cookieStore = await cookies()
+    const token = cookieStore.get('auth-token')?.value
+
+    if (!token) return null
+
+    const { payload } = await jwtVerify(token, JWT_SECRET)
+    return { userId: payload.userId as string, role: payload.role as string }
+  } catch {
+    return null
+  }
+}
+```
+
+### Role-Based Access Control
+```typescript
+// ✅ Good - RBAC implementation
+export enum Permission {
+  READ_USER = 'read:user',
+  WRITE_USER = 'write:user',
+  DELETE_USER = 'delete:user',
+  READ_ADMIN = 'read:admin',
+  WRITE_ADMIN = 'write:admin',
+}
+
+export const rolePermissions: Record<string, Permission[]> = {
+  user: [Permission.READ_USER, Permission.WRITE_USER],
+  moderator: [Permission.READ_USER, Permission.WRITE_USER, Permission.READ_ADMIN],
+  admin: [
+    Permission.READ_USER,
+    Permission.WRITE_USER,
+    Permission.DELETE_USER,
+    Permission.READ_ADMIN,
+    Permission.WRITE_ADMIN,
+  ],
+}
+
+export function hasPermission(userRole: string, requiredPermission: Permission): boolean {
+  const permissions = rolePermissions[userRole] || []
+  return permissions.includes(requiredPermission)
+}
+
+// Middleware for route protection
+export async function requirePermission(permission: Permission) {
+  const session = await verifySession()
+  
+  if (!session) {
+    throw new Error('Authentication required')
+  }
+
+  if (!hasPermission(session.role, permission)) {
+    throw new Error('Insufficient permissions')
+  }
+
+  return session
+}
+```
+
+## Environment and Configuration Security
+
+### Environment Variables
+```typescript
+// ✅ Good - Secure environment configuration
+import { z } from 'zod'
+
+const envSchema = z.object({
+  // Database
+  DATABASE_URL: z.string().url(),
+  DATABASE_SSL: z.boolean().default(true),
+  
+  // Authentication
+  JWT_SECRET: z.string().min(32, 'JWT secret must be at least 32 characters'),
+  BCRYPT_ROUNDS: z.coerce.number().min(10).max(15).default(12),
+  
+  // External APIs
+  STRIPE_SECRET_KEY: z.string().startsWith('sk_'),
+  RESEND_API_KEY: z.string().startsWith('re_'),
+  
+  // Security headers
+  CORS_ORIGIN: z.string().url().optional(),
+  CSP_NONCE: z.string().optional(),
+  
+  // Node environment
+  NODE_ENV: z.enum(['development', 'staging', 'production']),
+})
+
+export const env = envSchema.parse(process.env)
+
+// ❌ Never expose secrets in client-side code
+export const publicEnv = {
+  APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+  STRIPE_PUBLIC_KEY: process.env.NEXT_PUBLIC_STRIPE_KEY,
+}
+```
+
+### Security Headers
+```typescript
+// ✅ Good - Security headers configuration
+import { NextRequest, NextResponse } from 'next/server'
+
+export function middleware(request: NextRequest) {
+  const response = NextResponse.next()
+
+  // Security headers
+  response.headers.set('X-DNS-Prefetch-Control', 'off')
+  response.headers.set('X-Frame-Options', 'DENY')
+  response.headers.set('X-Content-Type-Options', 'nosniff')
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+  response.headers.set('X-XSS-Protection', '1; mode=block')
+  
+  // Strict Transport Security
+  if (process.env.NODE_ENV === 'production') {
+    response.headers.set(
+      'Strict-Transport-Security',
+      'max-age=31536000; includeSubDomains; preload'
+    )
+  }
+
+  // Content Security Policy
+  const nonce = crypto.randomUUID()
+  const csp = [
+    "default-src 'self'",
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`,
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: https:",
+    "font-src 'self' https://fonts.gstatic.com",
+    "connect-src 'self' https://api.stripe.com",
+    "frame-src 'none'",
+    "object-src 'none'",
+    "base-uri 'none'",
+    "form-action 'self'",
+    "upgrade-insecure-requests",
+  ].join('; ')
+
+  response.headers.set('Content-Security-Policy', csp)
+
+  return response
+}
+```
+
+## API Security
+
+### Rate Limiting
+```typescript
+// ✅ Good - Rate limiting implementation
+import { Redis } from 'ioredis'
+import { NextRequest } from 'next/server'
+
+const redis = new Redis(process.env.REDIS_URL!)
+
+interface RateLimitResult {
+  success: boolean
+  limit: number
+  remaining: number
+  reset: number
+}
+
+export async function rateLimit(
+  identifier: string,
+  limit: number = 100,
+  window: number = 3600 // 1 hour in seconds
+): Promise<RateLimitResult> {
+  const key = `rate_limit:${identifier}`
+  const current = Date.now()
+  const windowStart = current - window * 1000
+
+  // Remove expired entries and count current requests
+  const pipeline = redis.pipeline()
+  pipeline.zremrangebyscore(key, '-inf', windowStart)
+  pipeline.zadd(key, current, current)
+  pipeline.zcard(key)
+  pipeline.expire(key, window)
+
+  const results = await pipeline.exec()
+  const requestCount = results?.[2]?.[1] as number || 0
+
+  const reset = Math.ceil((current + window * 1000) / 1000)
+  
+  return {
+    success: requestCount <= limit,
+    limit,
+    remaining: Math.max(0, limit - requestCount),
+    reset,
+  }
+}
+
+// Usage in API route
+export async function withRateLimit(
+  request: NextRequest,
+  handler: () => Promise<Response>
+) {
+  const ip = request.ip || 'anonymous'
+  const result = await rateLimit(ip)
+
+  if (!result.success) {
+    return new Response('Rate limit exceeded', {
+      status: 429,
+      headers: {
+        'X-RateLimit-Limit': result.limit.toString(),
+        'X-RateLimit-Remaining': result.remaining.toString(),
+        'X-RateLimit-Reset': result.reset.toString(),
+      },
+    })
+  }
+
+  return handler()
+}
+```
+
+### CORS Configuration
+```typescript
+// ✅ Good - Secure CORS configuration
+export function corsHeaders(origin?: string) {
+  const allowedOrigins = [
+    'https://raypx.com',
+    'https://app.raypx.com',
+    ...(process.env.NODE_ENV === 'development' ? ['http://localhost:3000'] : []),
+  ]
+
+  const corsOrigin = origin && allowedOrigins.includes(origin) ? origin : 'null'
+
+  return {
+    'Access-Control-Allow-Origin': corsOrigin,
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Credentials': 'true',
+    'Access-Control-Max-Age': '86400', // 24 hours
+  }
+}
+```
+
+## Data Protection
+
+### Encryption and Hashing
+```typescript
+// ✅ Good - Data encryption utilities
+import { createCipheriv, createDecipheriv, randomBytes, scrypt } from 'crypto'
+import { promisify } from 'util'
+
+const scryptAsync = promisify(scrypt)
+
+export class DataEncryption {
+  private static readonly ALGORITHM = 'aes-256-gcm'
+  private static readonly IV_LENGTH = 16
+  private static readonly SALT_LENGTH = 32
+  private static readonly TAG_LENGTH = 16
+
+  static async encrypt(text: string, password: string): Promise<string> {
+    const salt = randomBytes(this.SALT_LENGTH)
+    const iv = randomBytes(this.IV_LENGTH)
+    const key = (await scryptAsync(password, salt, 32)) as Buffer
+
+    const cipher = createCipheriv(this.ALGORITHM, key, iv)
+    
+    let encrypted = cipher.update(text, 'utf8', 'hex')
+    encrypted += cipher.final('hex')
+    
+    const authTag = cipher.getAuthTag()
+    
+    // Combine salt, iv, authTag, and encrypted data
+    const result = Buffer.concat([salt, iv, authTag, Buffer.from(encrypted, 'hex')])
+    return result.toString('base64')
+  }
+
+  static async decrypt(encryptedData: string, password: string): Promise<string> {
+    const data = Buffer.from(encryptedData, 'base64')
+    
+    const salt = data.subarray(0, this.SALT_LENGTH)
+    const iv = data.subarray(this.SALT_LENGTH, this.SALT_LENGTH + this.IV_LENGTH)
+    const authTag = data.subarray(
+      this.SALT_LENGTH + this.IV_LENGTH,
+      this.SALT_LENGTH + this.IV_LENGTH + this.TAG_LENGTH
+    )
+    const encrypted = data.subarray(this.SALT_LENGTH + this.IV_LENGTH + this.TAG_LENGTH)
+
+    const key = (await scryptAsync(password, salt, 32)) as Buffer
+    
+    const decipher = createDecipheriv(this.ALGORITHM, key, iv)
+    decipher.setAuthTag(authTag)
+    
+    let decrypted = decipher.update(encrypted, undefined, 'utf8')
+    decrypted += decipher.final('utf8')
+    
+    return decrypted
+  }
+}
+```
+
+### PII Protection
+```typescript
+// ✅ Good - PII handling and masking
+export class PIIProtection {
+  static maskEmail(email: string): string {
+    const [local, domain] = email.split('@')
+    if (local.length <= 2) return `*@${domain}`
+    
+    return `${local.slice(0, 2)}***@${domain}`
+  }
+
+  static maskPhone(phone: string): string {
+    return phone.replace(/(\d{3})\d{3}(\d{4})/, '$1***$2')
+  }
+
+  static maskCreditCard(cardNumber: string): string {
+    return cardNumber.replace(/\d(?=\d{4})/g, '*')
+  }
+
+  static validatePII(data: Record<string, any>): Record<string, any> {
+    const sensitiveFields = ['ssn', 'creditCard', 'password', 'token']
+    
+    return Object.keys(data).reduce((acc, key) => {
+      if (sensitiveFields.some(field => key.toLowerCase().includes(field))) {
+        acc[key] = '[REDACTED]'
+      } else {
+        acc[key] = data[key]
+      }
+      return acc
+    }, {} as Record<string, any>)
+  }
+}
+```
+
+## Logging and Monitoring
+
+### Security Event Logging
+```typescript
+// ✅ Good - Security event logging
+export enum SecurityEvent {
+  LOGIN_SUCCESS = 'login_success',
+  LOGIN_FAILURE = 'login_failure',
+  PASSWORD_CHANGE = 'password_change',
+  PERMISSION_DENIED = 'permission_denied',
+  SUSPICIOUS_ACTIVITY = 'suspicious_activity',
+  DATA_ACCESS = 'data_access',
+  RATE_LIMIT_EXCEEDED = 'rate_limit_exceeded',
+}
+
+interface SecurityLogEntry {
+  event: SecurityEvent
+  userId?: string
+  ip: string
+  userAgent: string
+  timestamp: Date
+  details?: Record<string, any>
+  risk: 'low' | 'medium' | 'high' | 'critical'
+}
+
+export class SecurityLogger {
+  static async log(entry: Omit<SecurityLogEntry, 'timestamp'>): Promise<void> {
+    const logEntry: SecurityLogEntry = {
+      ...entry,
+      timestamp: new Date(),
+      // Remove sensitive data from details
+      details: entry.details ? PIIProtection.validatePII(entry.details) : undefined,
+    }
+
+    // Log to multiple destinations
+    console.log('[SECURITY]', JSON.stringify(logEntry))
+    
+    // Send to monitoring service for high-risk events
+    if (['high', 'critical'].includes(entry.risk)) {
+      await this.sendAlert(logEntry)
+    }
+    
+    // Store in database for audit trail
+    await db.insert(securityLogs).values(logEntry)
+  }
+
+  private static async sendAlert(entry: SecurityLogEntry): Promise<void> {
+    // Implementation for sending alerts to security team
+  }
+}
+
+// Usage
+await SecurityLogger.log({
+  event: SecurityEvent.LOGIN_FAILURE,
+  userId: 'user123',
+  ip: request.ip,
+  userAgent: request.headers['user-agent'],
+  details: { reason: 'invalid_password', attempts: 3 },
+  risk: 'medium',
+})
+```
+
+## Dependency Security
+
+### Package Security Auditing
+```bash
+# ✅ Good - Regular security auditing
+# Add to package.json scripts
+"audit": "pnpm audit --audit-level moderate",
+"audit:fix": "pnpm audit --fix",
+"outdated": "pnpm outdated",
+"update:deps": "pnpm update --interactive --latest"
+
+# Run these commands regularly
+pnpm audit
+pnpm outdated
+```
+
+### Secure Package Configuration
+```json
+// ✅ Good - package.json security configuration
+{
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "postinstall": "pnpm audit --audit-level moderate"
+  },
+  "overrides": {
+    // Pin vulnerable packages to secure versions
+    "lodash": "^4.17.21",
+    "axios": "^1.6.0"
+  }
+}
+```
+
+## Best Practices Checklist
+
+### Security Implementation Checklist
+- [ ] Input validation with Zod schemas on all user inputs
+- [ ] XSS prevention with proper output encoding and CSP
+- [ ] SQL injection prevention using parameterized queries
+- [ ] Secure authentication with proper session management
+- [ ] Role-based access control implementation
+- [ ] Rate limiting on API endpoints
+- [ ] Security headers configuration
+- [ ] Environment variables validation and protection
+- [ ] PII data encryption and masking
+- [ ] Comprehensive security event logging
+- [ ] Regular dependency security audits
+- [ ] Error handling without information disclosure
+- [ ] CORS configuration for API endpoints
+- [ ] HTTPS enforcement in production
+- [ ] Content Security Policy implementation
+
+### Security Testing
+```typescript
+// ✅ Good - Security testing examples
+describe('Security Tests', () => {
+  it('should prevent XSS attacks', () => {
+    const maliciousInput = '<script>alert("xss")</script>'
+    const sanitized = sanitizeHtml(maliciousInput)
+    expect(sanitized).not.toContain('<script>')
+  })
+
+  it('should validate JWT tokens', async () => {
+    const invalidToken = 'invalid.jwt.token'
+    const result = await verifySession(invalidToken)
+    expect(result).toBeNull()
+  })
+
+  it('should enforce rate limits', async () => {
+    const identifier = 'test-user'
+    
+    // Exceed rate limit
+    for (let i = 0; i < 101; i++) {
+      await rateLimit(identifier, 100)
+    }
+    
+    const result = await rateLimit(identifier, 100)
+    expect(result.success).toBe(false)
+  })
+})
+```
+
+Remember: Security is not optional - implement these practices from day one, not as an afterthought. Regular security audits and staying updated with the latest security practices are essential.

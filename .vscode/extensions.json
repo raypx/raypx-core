@@ -2,10 +2,24 @@
   "recommendations": [
     "biomejs.biome",
     "bradlc.vscode-tailwindcss",
+    "ms-vscode.vscode-typescript-next",
+    "PKief.material-icon-theme",
+    "zhuangtongfa.material-theme",
+    "formulahendry.auto-rename-tag",
+    "christian-kohler.path-intellisense",
+    "ms-vscode.vscode-json",
+    "eamodio.gitlens",
+    "github.vscode-github-actions",
+    "ms-vscode.vscode-docker",
+    "ms-playwright.playwright",
+    "drizzle-team.drizzle-vscode",
+    "ms-vscode.live-server",
+    "usernamehw.errorlens",
+    "streetsidesoftware.code-spell-checker",
+    "yoavbls.pretty-ts-errors",
+    "esbenp.prettier-vscode",
+    "oderwat.indent-rainbow",
     "ms-vscode.vscode-typescript-next"
   ],
-  "unwantedRecommendations": [
-    "esbenp.prettier-vscode",
-    "dbaeumer.vscode-eslint"
-  ]
+  "unwantedRecommendations": ["dbaeumer.vscode-eslint"]
 }
