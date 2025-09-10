@@ -6,7 +6,6 @@
   "editor.defaultFormatter": "biomejs.biome",
   "editor.formatOnSave": true,
   "editor.inlayHints.enabled": "on",
-  "editor.suggest.includeCompletionsForImportStatements": true,
   "editor.tabSize": 2,
   "editor.insertSpaces": true,
   "editor.detectIndentation": false,
@@ -63,7 +62,5 @@
   },
   "git.autofetch": true,
   "git.enableSmartCommit": true,
-  "git.confirmSync": false,
-  "workbench.iconTheme": "material-icon-theme",
-  "workbench.colorTheme": "One Dark Pro Darker"
+  "git.confirmSync": false
 }
