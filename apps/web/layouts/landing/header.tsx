@@ -1,5 +1,6 @@
 "use client"
 
+import { useAuth } from "@raypx/auth/core"
 import { Button } from "@raypx/ui/components/button"
 import { cn } from "@raypx/ui/lib/utils"
 import { Menu, X } from "lucide-react"
@@ -12,11 +13,13 @@ const menuItems = [
   { name: "Solution", href: "#link" },
   { name: "Pricing", href: "#link" },
   { name: "About", href: "#link" },
+  { name: "Docs", href: "https://docs.raypx.com" },
 ]
 
 export const Header = () => {
   const [menuState, setMenuState] = React.useState(false)
   const [isScrolled, setIsScrolled] = React.useState(false)
+  const { viewPaths: pages } = useAuth()
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -93,7 +96,7 @@ export const Header = () => {
                   size="sm"
                   className={cn(isScrolled && "lg:hidden")}
                 >
-                  <Link href="#">
+                  <Link href={pages.SIGN_IN}>
                     <span>Login</span>
                   </Link>
                 </Button>
@@ -102,7 +105,7 @@ export const Header = () => {
                   size="sm"
                   className={cn(isScrolled && "lg:hidden")}
                 >
-                  <Link href="#">
+                  <Link href={pages.SIGN_UP}>
                     <span>Sign Up</span>
                   </Link>
                 </Button>
@@ -111,7 +114,7 @@ export const Header = () => {
                   size="sm"
                   className={cn(isScrolled ? "lg:inline-flex" : "hidden")}
                 >
-                  <Link href="#">
+                  <Link href={pages.SIGN_UP}>
                     <span>Get Started</span>
                   </Link>
                 </Button>
