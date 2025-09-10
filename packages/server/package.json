@@ -22,7 +22,7 @@
     "drizzle-zod": "^0.8.3",
     "hono": "catalog:",
     "zod": "catalog:",
-    "zod-openapi": "^5.4.0"
+    "zod-openapi": "^5.4.1"
   },
   "devDependencies": {
     "@raypx/tsconfig": "workspace:*",

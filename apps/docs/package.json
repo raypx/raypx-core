@@ -28,7 +28,7 @@
     "fumadocs-ui": "^15.7.10",
     "lucide-react": "catalog:",
     "next": "catalog:",
-    "next-intl": "^4.3.6",
+    "next-intl": "^4.3.7",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
     "zod": "catalog:"

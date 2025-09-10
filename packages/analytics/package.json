@@ -32,7 +32,7 @@
     "@raypx/tsconfig": "workspace:*",
     "@types/node": "catalog:",
     "@types/react": "catalog:react19",
-    "posthog-js": "^1.261.8",
+    "posthog-js": "^1.262.0",
     "typescript": "catalog:"
   }
 }

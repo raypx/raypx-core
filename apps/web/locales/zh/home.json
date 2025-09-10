@@ -1,0 +1,179 @@
+{
+  "navbar": {
+    "features": {
+      "title": "功能"
+    },
+    "pricing": {
+      "title": "价格"
+    },
+    "blog": {
+      "title": "博客"
+    },
+    "docs": {
+      "title": "文档"
+    },
+    "ai": {
+      "title": "AI 工具",
+      "items": {
+        "text": {
+          "title": "AI 文本",
+          "description": "展示如何使用 AI 生成精彩文本"
+        },
+        "image": {
+          "title": "AI 图像",
+          "description": "展示如何使用 AI 生成精美图像"
+        },
+        "chat": {
+          "title": "AI 聊天",
+          "description": "展示如何使用 AI 与客户聊天"
+        },
+        "video": {
+          "title": "AI 视频",
+          "description": "展示如何使用 AI 生成惊人视频"
+        },
+        "audio": {
+          "title": "AI 音频",
+          "description": "展示如何使用 AI 生成动听音频"
+        }
+      }
+    },
+    "pages": {
+      "title": "内置页面",
+      "items": {
+        "about": {
+          "title": "关于我们",
+          "description": "了解更多关于我们的公司、使命和价值观"
+        },
+        "contact": {
+          "title": "联系我们",
+          "description": "与我们的团队联系，以获取支持或咨询"
+        },
+        "waitlist": {
+          "title": "邮件列表",
+          "description": "加入我们的邮件列表，获取最新消息和更新"
+        },
+        "changelog": {
+          "title": "更新日志",
+          "description": "查看我们产品的更新历史，查看最新动态"
+        },
+        "roadmap": {
+          "title": "路线图",
+          "description": "探索我们的未来计划和即将推出的功能"
+        },
+        "cookiePolicy": {
+          "title": "Cookie 政策",
+          "description": "关于我们如何在网站上使用 Cookie 的信息"
+        },
+        "privacyPolicy": {
+          "title": "隐私政策",
+          "description": "关于我们将如何保护和处理您在网站上的数据"
+        },
+        "termsOfService": {
+          "title": "服务条款",
+          "description": "关于您与我们公司之间的法律协议和条款"
+        }
+      }
+    },
+    "blocks": {
+      "title": "内置组件",
+      "items": {
+        "magicui": {
+          "title": "MagicUI 组件"
+        },
+        "hero-section": {
+          "title": "Hero 组件"
+        },
+        "logo-cloud": {
+          "title": "Logo Cloud 组件"
+        },
+        "features": {
+          "title": "Features 组件"
+        },
+        "integrations": {
+          "title": "Integrations 组件"
+        },
+        "content": {
+          "title": "Content 组件"
+        },
+        "stats": {
+          "title": "Stats 组件"
+        },
+        "team": {
+          "title": "Team 组件"
+        },
+        "testimonials": {
+          "title": "Testimonials 组件"
+        },
+        "callToAction": {
+          "title": "Call to Action 组件"
+        },
+        "footer": {
+          "title": "Footer 组件"
+        },
+        "pricing": {
+          "title": "Pricing 组件"
+        },
+        "comparator": {
+          "title": "Comparator 组件"
+        },
+        "faq": {
+          "title": "FAQ 组件"
+        },
+        "login": {
+          "title": "Login 组件"
+        },
+        "signup": {
+          "title": "Signup 组件"
+        },
+        "forgot-password": {
+          "title": "Forgot Password 组件"
+        },
+        "contact": {
+          "title": "Contact 组件"
+        }
+      }
+    }
+  },
+  "footer": {
+    "tagline": "使用 Raypx 在几天内轻松构建您的 AI SaaS",
+    "product": {
+      "title": "产品",
+      "items": {
+        "features": "功能",
+        "pricing": "价格",
+        "faq": "常见问题"
+      }
+    },
+    "resources": {
+      "title": "资源",
+      "items": {
+        "blog": "博客",
+        "docs": "文档",
+        "changelog": "更新日志",
+        "roadmap": "路线图"
+      }
+    },
+    "company": {
+      "title": "公司",
+      "items": {
+        "about": "关于我们",
+        "contact": "联系我们",
+        "waitlist": "邮件列表"
+      }
+    },
+    "legal": {
+      "title": "法律",
+      "items": {
+        "cookiePolicy": "Cookie政策",
+        "privacyPolicy": "隐私政策",
+        "termsOfService": "服务条款"
+      }
+    }
+  },
+  "avatar": {
+    "dashboard": "工作台",
+    "billing": "账单",
+    "credits": "积分",
+    "settings": "设置"
+  }
+}

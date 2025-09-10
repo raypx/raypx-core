@@ -12,7 +12,7 @@
     "test": "vitest"
   },
   "dependencies": {
-    "next-intl": "^4.3.6"
+    "next-intl": "^4.3.7"
   },
   "devDependencies": {
     "@raypx/tsconfig": "workspace:*",

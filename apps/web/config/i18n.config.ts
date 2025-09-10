@@ -17,6 +17,7 @@ const config = createI18nServerConfig({
     const messages = {
       common: (await import(`../locales/${locale}/common.json`)).default,
       auth: (await authMessages[locale as Locale]()).default,
+      home: (await import(`../locales/${locale}/home.json`)).default,
     }
 
     return messages

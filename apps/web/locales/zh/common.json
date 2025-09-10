@@ -1,4 +1,14 @@
 {
+  "login": "Log in",
+  "logout": "Log out",
+  "signUp": "Sign up",
+  "language": "Switch language",
+  "mode": {
+    "label": "Toggle mode",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
   "button": {
     "save": "保存",
     "cancel": "取消",
