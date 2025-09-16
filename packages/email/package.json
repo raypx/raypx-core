@@ -14,7 +14,8 @@
   },
   "scripts": {
     "clean": "rimraf dist .turbo",
-    "test": "vitest"
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@raypx/db": "workspace:*",

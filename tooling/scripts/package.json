@@ -17,7 +17,7 @@
     "@changesets/cli": "^2.29.7",
     "chalk": "^5.6.2",
     "deepmerge": "^4.3.1",
-    "fs-extra": "^11.2.0",
+    "fs-extra": "^11.3.2",
     "listr2": "^9.0.4",
     "tsx": "^4.20.5"
   },

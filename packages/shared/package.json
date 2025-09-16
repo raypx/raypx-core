@@ -12,6 +12,7 @@
   },
   "scripts": {
     "clean": "rimraf dist .turbo",
+    "typecheck": "tsc --noEmit",
     "test": "vitest"
   },
   "dependencies": {

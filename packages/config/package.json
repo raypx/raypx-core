@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "clean": "rimraf dist .turbo"
+    "clean": "rimraf dist .turbo",
+    "typecheck": "tsc --noEmit"
   },
   "exports": {
     ".": "./src/index.ts",

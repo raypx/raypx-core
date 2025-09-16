@@ -63,6 +63,10 @@
     "vaul": "^1.1.2",
     "zod": "catalog:"
   },
+  "scripts": {
+    "clean": "rimraf dist .turbo",
+    "typecheck": "tsc --noEmit"
+  },
   "peerDependencies": {
     "next": "catalog:"
   },

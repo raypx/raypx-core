@@ -10,6 +10,7 @@
   "scripts": {
     "clean": "rimraf dist .turbo",
     "test": "vitest",
+    "typecheck": "tsc --noEmit",
     "test:watch": "vitest --watch"
   },
   "dependencies": {
