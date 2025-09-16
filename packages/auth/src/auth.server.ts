@@ -13,6 +13,7 @@ import {
   admin,
   apiKey,
   emailOTP,
+  lastLoginMethod,
   magicLink,
   mcp,
   oneTap,
@@ -39,6 +40,7 @@ const buildServerPlugins = () => {
     mcp({
       loginPage: "/signin",
     }),
+    lastLoginMethod(),
   )
 
   // Add feature-specific plugins

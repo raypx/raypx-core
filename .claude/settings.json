@@ -1,0 +1,57 @@
+{
+  "sandbox": {
+    "filesystem": {
+      "read": {
+        "deny": [
+          ".env",
+          ".env.local",
+          ".env.production",
+          ".env.development",
+          "secrets/*",
+          "private/*"
+        ]
+      }
+    }
+  },
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Bash(pnpm:*)",
+      "Bash(pnpx:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(cat:*)",
+      "Bash(tree:*)",
+      "Bash(awk:*)",
+      "Bash(sed:*)",
+      "Bash(jq:*)",
+      "Bash(chmod:*)",
+      "Bash(sips:*)",
+      "Bash(timeout:*)",
+      "Bash(time:*)",
+      "Bash(for:*)",
+      "Bash(do:*)",
+      "Bash(if:*)",
+      "Bash(then:*)",
+      "Bash(else:*)",
+      "Bash(fi:*)",
+      "Bash(done:*)",
+      "Bash(/dev/null:*)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:fumadocs.dev)",
+      "WebFetch(domain:next-intl.dev)"
+    ],
+    "deny": [
+      "Bash(rm -rf /*)",
+      "Bash(sudo:*)",
+      "Bash(su:*)"
+    ],
+    "ask": [
+      "Bash(rm:*)",
+      "Bash(mv:*)",
+      "Bash(docker:*)"
+    ]
+  }
+}

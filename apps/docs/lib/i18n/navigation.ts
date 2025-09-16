@@ -1,5 +1,5 @@
 import { createNavigation } from "next-intl/navigation"
-import { routing } from "./routing"
+import { routing } from "@/config/i18n.config"
 
 /**
  * Navigation APIs

@@ -54,7 +54,8 @@ export function createConfig(options: CreateConfigOptions = {}): NextConfig {
     experimental: {
       esmExternals: true,
     },
-    serverExternalPackages: ["prettier"],
+    // Remove prettier from serverExternalPackages to allow prettier/standalone in client
+    serverExternalPackages: [],
     allowedDevOrigins: process.env.NEXT_PUBLIC_AUTH_URL
       ? [process.env.NEXT_PUBLIC_AUTH_URL]
       : [],

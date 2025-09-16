@@ -1,10 +1,12 @@
 import { createMetadata } from "@raypx/seo"
 import type { Metadata } from "next"
 import appConfig from "@/config/app.config"
+// import { Footer } from "./_components/footer"
+import { Footer } from "../../layouts/landing/footer"
+// import { Navbar } from "../../layouts/landing/navbar"
+import { Header } from "../../layouts/landing/header"
 import { CTASection } from "./_components/cta-section"
 import { FeaturesSection } from "./_components/features-section"
-import { Footer } from "./_components/footer"
-import { Header } from "./_components/header"
 import { HeroSection } from "./_components/hero-section"
 
 export const generateMetadata = async (): Promise<Metadata> => {

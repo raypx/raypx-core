@@ -19,13 +19,13 @@
   "dependencies": {
     "@raypx/db": "workspace:*",
     "@raypx/shared": "workspace:*",
-    "@react-email/components": "^0.5.2",
-    "@react-email/render": "^1.2.2",
+    "@react-email/components": "^0.5.3",
+    "@react-email/render": "^1.2.3",
     "drizzle-orm": "^0.44.5",
     "nodemailer": "^7.0.6",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
-    "resend": "^6.0.2"
+    "resend": "^6.1.0"
   },
   "devDependencies": {
     "@raypx/tsconfig": "workspace:*",

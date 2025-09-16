@@ -4,6 +4,7 @@ import {
   apiKeyClient,
   emailOTPClient,
   genericOAuthClient,
+  lastLoginMethodClient,
   magicLinkClient,
   oneTapClient,
   organizationClient,
@@ -29,7 +30,7 @@ const buildClientPlugins = () => {
   const plugins = []
 
   // Always include basic plugins
-  plugins.push(anonymousClient(), usernameClient())
+  plugins.push(anonymousClient(), usernameClient(), lastLoginMethodClient())
 
   // Add feature-specific plugins
   if (authFeatures.apiKey) {

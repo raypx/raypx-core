@@ -13,7 +13,7 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.2.1",
+    "@hookform/resolvers": "^5.2.2",
     "@raypx/analytics": "workspace:*",
     "@raypx/auth": "workspace:*",
     "@raypx/config": "workspace:*",
@@ -25,17 +25,18 @@
     "@raypx/server": "workspace:*",
     "@raypx/shared": "workspace:*",
     "@raypx/ui": "workspace:*",
-    "@tanstack/react-form": "^1.19.3",
-    "@tanstack/react-query": "^5.87.1",
+    "@tanstack/react-form": "^1.20.0",
+    "@tanstack/react-query": "^5.89.0",
     "date-fns": "^4.1.0",
     "lucide-react": "catalog:",
     "next": "catalog:",
-    "next-intl": "^4.3.6",
+    "next-intl": "catalog:",
     "next-seo": "^6.8.0",
     "next-themes": "^0.4.6",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
     "react-hook-form": "^7.62.0",
+    "react-remove-scroll": "^2.7.1",
     "zod": "catalog:"
   },
   "devDependencies": {

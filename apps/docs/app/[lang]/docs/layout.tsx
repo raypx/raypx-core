@@ -1,5 +1,5 @@
-import { getTranslations } from "@raypx/i18n/server"
 import { DocsLayout } from "fumadocs-ui/layouts/docs"
+import { getTranslations } from "next-intl/server"
 import type { ReactNode } from "react"
 import { baseOptions } from "@/app/layout.shared"
 import { source } from "@/lib/source"

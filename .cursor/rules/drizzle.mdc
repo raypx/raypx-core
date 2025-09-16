@@ -1,0 +1,427 @@
+---
+description: Drizzle ORM Database Guidelines
+globs: **/*.ts,**/drizzle.config.*,**/*.sql,**/migrations/**/*
+alwaysApply: false
+---
+# Drizzle ORM Database Guidelines
+
+## Core Principles
+
+- Use Drizzle ORM for type-safe database operations
+- Implement proper schema design with relationships
+- Follow PostgreSQL best practices and conventions  
+- Use migrations for all schema changes
+- Implement proper indexing and constraints
+- Handle database errors gracefully
+- Use transactions for complex operations
+- Follow snake_case naming for database objects
+
+## Schema Design
+
+### Table Definitions
+```typescript
+// ✅ Good - Well-structured schema
+import { boolean, index, integer, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { uuidv7 } from '../utils'
+import { pgTable } from './_table'
+
+export const user = pgTable('user', {
+  id: uuid('id').primaryKey().$defaultFn(() => uuidv7()),
+  name: text('name').notNull(),
+  email: text('email').notNull().unique(),
+  emailVerified: boolean('email_verified').notNull(),
+  image: text('image'),
+  createdAt: timestamp('created_at').$defaultFn(() => new Date()).notNull(),
+  updatedAt: timestamp('updated_at')
+    .$defaultFn(() => new Date())
+    .$onUpdateFn(() => new Date())
+    .notNull(),
+  username: text('username').unique(),
+  displayUsername: text('display_username'),
+  role: text('role'),
+  banned: boolean('banned'),
+  banReason: text('ban_reason'),
+  banExpires: timestamp('ban_expires'),
+}, (table) => ({
+  emailIndex: index('idx_user_email').on(table.email),
+  usernameIndex: index('idx_user_username').on(table.username),
+}))
+
+export type User = typeof user.$inferSelect
+export type NewUser = typeof user.$inferInsert
+```
+
+### Relationships
+```typescript
+// ✅ Good - Proper relationships
+import { relations } from 'drizzle-orm'
+
+export const post = pgTable('post', {
+  id: uuid('id').primaryKey().$defaultFn(() => uuidv7()),
+  title: text('title').notNull(),
+  content: text('content').notNull(),
+  authorId: uuid('author_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  isPublished: boolean('is_published').$defaultFn(() => false).notNull(),
+  createdAt: timestamp('created_at').$defaultFn(() => new Date()).notNull(),
+  updatedAt: timestamp('updated_at')
+    .$defaultFn(() => new Date())
+    .$onUpdateFn(() => new Date())
+    .notNull(),
+}, (table) => ({
+  authorIndex: index('post_author_idx').on(table.authorId),
+  publishedIndex: index('post_published_idx').on(table.isPublished),
+  titleIndex: index('post_title_idx').on(table.title),
+}))
+
+export const postRelations = relations(post, ({ one, many }) => ({
+  author: one(user, {
+    fields: [post.authorId],
+    references: [user.id],
+  }),
+  comments: many(comment),
+}))
+```
+
+### Enums and Types
+```typescript
+// ✅ Good - Use PostgreSQL enums
+import { pgEnum } from 'drizzle-orm/pg-core'
+
+export const userRole = pgEnum('user_role', ['user', 'admin', 'moderator'])
+export const postStatus = pgEnum('post_status', ['draft', 'published', 'archived'])
+
+export const user = pgTable('user', {
+  id: uuid('id').primaryKey().$defaultFn(() => uuidv7()),
+  role: userRole('role').$defaultFn(() => 'user').notNull(),
+  // ...
+})
+```
+
+## Database Queries
+
+### Basic Operations
+```typescript
+// ✅ Good - Type-safe queries
+import { db } from '@raypx/db'
+import { user, post } from '@raypx/db/schemas'
+import { eq, desc, and, count } from 'drizzle-orm'
+
+// Select operations
+export async function getUserById(id: string): Promise<User | null> {
+  const [result] = await db.select().from(user).where(eq(user.id, id)).limit(1)
+  return result ?? null
+}
+
+export async function getVerifiedUsers(): Promise<User[]> {
+  return db.select().from(user).where(eq(user.emailVerified, true)).orderBy(desc(user.createdAt))
+}
+
+// Insert operations
+export async function createUser(userData: NewUser): Promise<User> {
+  const [newUser] = await db.insert(user).values(userData).returning()
+  return newUser
+}
+
+// Update operations
+export async function updateUser(id: string, updates: Partial<NewUser>): Promise<User | null> {
+  const [updatedUser] = await db
+    .update(user)
+    .set({ ...updates, updatedAt: new Date() })
+    .where(eq(user.id, id))
+    .returning()
+  return updatedUser ?? null
+}
+```
+
+### Complex Queries with Joins
+```typescript
+// ✅ Good - Efficient joins
+export async function getUserWithPosts(userId: string) {
+  return db
+    .select({
+      user: user,
+      posts: post,
+    })
+    .from(user)
+    .leftJoin(post, eq(user.id, post.authorId))
+    .where(eq(user.id, userId))
+}
+
+// Using relations (recommended)
+export async function getUserWithPostsRelational(userId: string) {
+  return db.query.user.findFirst({
+    where: eq(user.id, userId),
+    with: {
+      posts: {
+        where: eq(post.isPublished, true),
+        orderBy: desc(post.createdAt),
+      },
+    },
+  })
+}
+```
+
+### Aggregations
+```typescript
+// ✅ Good - Aggregation queries
+export async function getUserStats(userId: string) {
+  const stats = await db
+    .select({
+      totalPosts: count(post.id),
+      publishedPosts: count(post.id).where(eq(post.isPublished, true)),
+    })
+    .from(post)
+    .where(eq(post.authorId, userId))
+    .groupBy(post.authorId)
+  
+  return stats[0] ?? { totalPosts: 0, publishedPosts: 0 }
+}
+```
+
+## Transactions
+
+### Transaction Usage
+```typescript
+// ✅ Good - Database transactions
+import { db } from '@raypx/db'
+
+export async function createUserWithProfile(userData: NewUser, profileData: NewProfile) {
+  return db.transaction(async (tx) => {
+    const [newUser] = await tx.insert(user).values(userData).returning()
+    
+    const [profile] = await tx
+      .insert(profile)
+      .values({ ...profileData, userId: newUser.id })
+      .returning()
+    
+    return { user: newUser, profile }
+  })
+}
+
+export async function transferPoints(fromUserId: string, toUserId: string, amount: number) {
+  return db.transaction(async (tx) => {
+    // Check sender balance
+    const sender = await tx.select().from(user).where(eq(user.id, fromUserId)).limit(1)
+    if (!sender[0] || sender[0].points < amount) {
+      throw new Error('Insufficient points')
+    }
+    
+    // Deduct from sender
+    await tx
+      .update(user)
+      .set({ points: sender[0].points - amount })
+      .where(eq(user.id, fromUserId))
+    
+    // Add to receiver
+    await tx
+      .update(user)
+      .set({ points: sql`${user.points} + ${amount}` })
+      .where(eq(user.id, toUserId))
+  })
+}
+```
+
+## Migrations
+
+### Migration Files
+```sql
+-- ✅ Good - Migration example (0005_add_user_points.sql)
+ALTER TABLE user ADD COLUMN points INTEGER DEFAULT 0 NOT NULL;
+
+CREATE INDEX idx_user_points ON user USING btree (points);
+
+-- Add constraint to ensure points are never negative
+ALTER TABLE user ADD CONSTRAINT user_points_positive CHECK (points >= 0);
+```
+
+### Migration Commands
+```typescript
+// drizzle.config.ts
+import type { Config } from 'drizzle-kit'
+
+export default {
+  schema: './src/schemas/**/*.ts',
+  dialect: 'postgresql',
+  dbCredentials: {
+    url: process.env.DATABASE_URL!,
+  },
+  casing: 'snake_case',
+  out: './drizzle',
+} satisfies Config
+```
+
+```bash
+# ✅ Good - Migration workflow
+# Generate migration
+pnpm --filter @raypx/db run db:generate
+
+# Apply migrations  
+pnpm --filter @raypx/db run db:migrate
+
+# Open Drizzle Studio
+pnpm --filter @raypx/db run db:studio
+
+# Seed database (development only)
+pnpm --filter @raypx/db run db:seed
+
+# Reset database (development only)
+pnpm --filter @raypx/db run db:reset
+```
+
+## Error Handling
+
+### Database Error Handling
+```typescript
+// ✅ Good - Proper error handling
+import { DatabaseError } from 'pg'
+
+export async function createUser(userData: NewUser): Promise<User | null> {
+  try {
+    const [newUser] = await db.insert(user).values(userData).returning()
+    return newUser
+  } catch (error) {
+    if (error instanceof DatabaseError) {
+      // Handle specific database errors
+      if (error.code === '23505') { // Unique violation
+        throw new Error('Email already exists')
+      }
+      if (error.code === '23503') { // Foreign key violation
+        throw new Error('Referenced record not found')
+      }
+    }
+    
+    console.error('Database error:', error)
+    throw new Error('Failed to create user')
+  }
+}
+```
+
+## Connection Management
+
+### Database Connection
+```typescript
+// ✅ Good - Connection setup
+import { drizzle } from 'drizzle-orm/postgres-js'
+import postgres from 'postgres'
+import * as schema from './schemas'
+
+const connectionString = process.env.DATABASE_URL!
+
+const client = postgres(connectionString, {
+  max: 10, // Connection pool size
+  idle_timeout: 20, // Close idle connections after 20 seconds
+  connect_timeout: 10, // Connection timeout
+})
+
+export const db = drizzle(client, { schema })
+
+// Graceful shutdown
+process.on('SIGINT', async () => {
+  await client.end()
+  process.exit(0)
+})
+```
+
+## Performance Optimization
+
+### Indexing Strategy
+```typescript
+// ✅ Good - Strategic indexing
+export const user = pgTable('user', {
+  id: uuid('id').primaryKey(),
+  email: text('email').notNull().unique(),
+  name: text('name').notNull(),
+  createdAt: timestamp('created_at').$defaultFn(() => new Date()).notNull(),
+  banned: boolean('banned'),
+}, (table) => ({
+  // Index for login queries
+  emailIndex: index('idx_user_email').on(table.email),
+  // Index for user listings
+  createdAtIndex: index('idx_user_created_at').on(table.createdAt),
+  // Partial index for active users only
+  activeUsersIndex: index('idx_user_active_only')
+    .on(table.createdAt)
+    .where(eq(table.banned, false)),
+}))
+```
+
+### Query Optimization
+```typescript
+// ✅ Good - Efficient queries
+// Use select only needed columns
+export async function getUsersList() {
+  return db.select({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+  }).from(user).where(eq(user.banned, false))
+}
+
+// Use pagination
+export async function getUsersPaginated(page: number, limit: number = 10) {
+  return db
+    .select()
+    .from(user)
+    .where(eq(user.banned, false))
+    .orderBy(desc(user.createdAt))
+    .limit(limit)
+    .offset((page - 1) * limit)
+}
+
+// Use prepared statements for repeated queries
+export const getUserByIdPrepared = db
+  .select()
+  .from(user)
+  .where(eq(user.id, placeholder('id')))
+  .prepare()
+```
+
+## Best Practices
+
+### Naming Conventions
+- Use `snake_case` for database columns and tables
+- Use descriptive names: `created_at` not `ca`
+- Prefix indexes: `idx_tablename_column`
+- Use singular table names: `user` not `users` (matches project convention)
+- Use descriptive foreign key names: `author_id` not `authorId` in database
+
+### Schema Organization
+- Group related schemas in separate files
+- Export both table definitions and inferred types
+- Define relations in separate objects
+- Use consistent column ordering (id, business columns, timestamps)
+
+### Security Practices
+- Always validate input data before database operations
+- Use parameterized queries (Drizzle handles this automatically)
+- Implement proper authorization checks
+- Never expose raw database errors to users
+- Use database constraints for data integrity
+
+### Testing
+```typescript
+// ✅ Good - Database testing
+import { beforeEach, describe, it, expect } from 'vitest'
+import { db } from '@raypx/db'
+import { user } from '@raypx/db/schemas'
+
+describe('User operations', () => {
+  beforeEach(async () => {
+    // Clean database before each test
+    await db.delete(user)
+  })
+
+  it('should create user', async () => {
+    const userData = {
+      email: 'test@example.com',
+      name: 'Test User',
+    }
+    
+    const newUser = await createUser(userData)
+    expect(newUser.email).toBe(userData.email)
+    expect(newUser.id).toBeDefined()
+  })
+})
+```
+
+Remember: Always use transactions for operations that modify multiple tables, implement proper error handling, and optimize queries with appropriate indexes.

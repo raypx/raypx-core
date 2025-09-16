@@ -1,0 +1,22 @@
+{
+  "button": {
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "confirm": "确认",
+    "back": "返回"
+  },
+  "form": {
+    "required": "此字段为必填项",
+    "invalid": "输入无效",
+    "loading": "加载中...",
+    "success": "成功",
+    "error": "发生错误"
+  },
+  "navigation": {
+    "home": "首页",
+    "about": "关于",
+    "contact": "联系我们"
+  }
+}

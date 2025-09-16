@@ -1,0 +1,783 @@
+---
+description: API Design and Development Guidelines
+globs: **/api/**/*.ts,**/app/api/**/*.ts,**/server/**/*.ts,**/*.route.ts
+alwaysApply: false
+---
+# API Design and Development Guidelines
+
+## Core Principles
+
+- Follow RESTful API design principles and conventions
+- Use consistent naming patterns and HTTP status codes
+- Implement proper error handling and validation
+- Design APIs to be stateless and idempotent where possible
+- Use TypeScript for type safety across client and server
+- Implement proper authentication and authorization
+- Follow OpenAPI/Swagger specifications for documentation
+- Design for scalability and performance from the start
+
+## Next.js App Router API Routes
+
+### Route Structure and Naming
+```typescript
+// ✅ Good - RESTful route structure
+// app/api/users/route.ts - Collection operations
+// app/api/users/[id]/route.ts - Single resource operations
+// app/api/users/[id]/posts/route.ts - Nested resources
+
+// Collection endpoint
+export async function GET() {
+  // Get all users
+}
+
+export async function POST(request: Request) {
+  // Create new user
+}
+
+// Single resource endpoint
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  // Get user by ID
+}
+
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  // Update user
+}
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  // Delete user
+}
+```
+
+### Request/Response Patterns
+```typescript
+// ✅ Good - Consistent API response structure
+interface ApiResponse<T = any> {
+  success: boolean
+  data?: T
+  error?: {
+    code: string
+    message: string
+    details?: any
+  }
+  meta?: {
+    total?: number
+    page?: number
+    limit?: number
+    hasNext?: boolean
+  }
+}
+
+// Success response helper
+export function createSuccessResponse<T>(
+  data: T,
+  meta?: ApiResponse['meta']
+): ApiResponse<T> {
+  return {
+    success: true,
+    data,
+    ...(meta && { meta }),
+  }
+}
+
+// Error response helper
+export function createErrorResponse(
+  code: string,
+  message: string,
+  details?: any
+): ApiResponse {
+  return {
+    success: false,
+    error: {
+      code,
+      message,
+      ...(details && { details }),
+    },
+  }
+}
+```
+
+### Input Validation and Error Handling
+```typescript
+// ✅ Good - Comprehensive API route with validation
+import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
+import { db } from '@raypx/db'
+import { user } from '@raypx/db/schemas'
+
+const createUserSchema = z.object({
+  email: z.string().email().toLowerCase(),
+  name: z.string().min(1).max(100),
+  role: z.enum(['user', 'admin']).default('user'),
+})
+
+export async function POST(request: NextRequest) {
+  try {
+    // Parse and validate request body
+    const body = await request.json()
+    const validatedData = createUserSchema.parse(body)
+
+    // Check for existing user
+    const existingUser = await db
+      .select()
+      .from(user)
+      .where(eq(user.email, validatedData.email))
+      .limit(1)
+
+    if (existingUser.length > 0) {
+      return NextResponse.json(
+        createErrorResponse('USER_EXISTS', 'User with this email already exists'),
+        { status: 409 }
+      )
+    }
+
+    // Create user
+    const [newUser] = await db
+      .insert(user)
+      .values(validatedData)
+      .returning({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        createdAt: user.createdAt,
+      })
+
+    return NextResponse.json(
+      createSuccessResponse(newUser),
+      { status: 201 }
+    )
+
+  } catch (error) {
+    // Handle validation errors
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        createErrorResponse('VALIDATION_ERROR', 'Invalid input data', error.errors),
+        { status: 400 }
+      )
+    }
+
+    // Handle database errors
+    if (error instanceof DatabaseError) {
+      console.error('Database error:', error)
+      return NextResponse.json(
+        createErrorResponse('DATABASE_ERROR', 'Failed to create user'),
+        { status: 500 }
+      )
+    }
+
+    // Handle unexpected errors
+    console.error('Unexpected error:', error)
+    return NextResponse.json(
+      createErrorResponse('INTERNAL_ERROR', 'An unexpected error occurred'),
+      { status: 500 }
+    )
+  }
+}
+```
+
+## Hono Server API (for packages/server)
+
+### Server Setup and Configuration
+```typescript
+// ✅ Good - Hono server setup
+import { Hono } from 'hono'
+import { cors } from 'hono/cors'
+import { logger } from 'hono/logger'
+import { secureHeaders } from 'hono/secure-headers'
+import { prettyJSON } from 'hono/pretty-json'
+
+const app = new Hono()
+
+// Middleware
+app.use(logger())
+app.use(secureHeaders())
+app.use(prettyJSON())
+app.use(
+  cors({
+    origin: ['https://raypx.com', 'https://app.raypx.com'],
+    allowHeaders: ['Content-Type', 'Authorization'],
+    allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true,
+  })
+)
+
+// Health check
+app.get('/health', (c) => {
+  return c.json({ status: 'healthy', timestamp: new Date().toISOString() })
+})
+
+export default app
+```
+
+### Route Organization and Middleware
+```typescript
+// ✅ Good - Modular route organization
+import { Hono } from 'hono'
+import { authMiddleware } from './middleware/auth'
+import { rateLimitMiddleware } from './middleware/rateLimit'
+import { validateMiddleware } from './middleware/validate'
+
+const userRoutes = new Hono()
+
+// Apply middleware to all user routes
+userRoutes.use('*', rateLimitMiddleware({ limit: 100, window: 3600 }))
+userRoutes.use('/users/*', authMiddleware)
+
+// Get all users with pagination
+userRoutes.get(
+  '/users',
+  validateMiddleware('query', paginationSchema),
+  async (c) => {
+    const { page, limit } = c.req.valid('query')
+    
+    const users = await getUsersPaginated(page, limit)
+    const total = await getUsersCount()
+    
+    return c.json(createSuccessResponse(users, {
+      page,
+      limit,
+      total,
+      hasNext: page * limit < total,
+    }))
+  }
+)
+
+// Get single user
+userRoutes.get('/users/:id', async (c) => {
+  const id = c.req.param('id')
+  const user = await getUserById(id)
+  
+  if (!user) {
+    return c.json(
+      createErrorResponse('USER_NOT_FOUND', 'User not found'),
+      404
+    )
+  }
+  
+  return c.json(createSuccessResponse(user))
+})
+
+export default userRoutes
+```
+
+### Custom Middleware
+```typescript
+// ✅ Good - Custom middleware implementations
+import { createMiddleware } from 'hono/factory'
+import { z } from 'zod'
+
+// Validation middleware
+export function validateMiddleware<T extends z.ZodSchema>(
+  target: 'json' | 'query' | 'param',
+  schema: T
+) {
+  return createMiddleware(async (c, next) => {
+    let data
+    
+    try {
+      switch (target) {
+        case 'json':
+          data = await c.req.json()
+          break
+        case 'query':
+          data = c.req.query()
+          break
+        case 'param':
+          data = c.req.param()
+          break
+      }
+      
+      const validatedData = schema.parse(data)
+      c.set('validatedData', validatedData)
+      
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return c.json(
+          createErrorResponse('VALIDATION_ERROR', 'Invalid input', error.errors),
+          400
+        )
+      }
+      throw error
+    }
+    
+    await next()
+  })
+}
+
+// Authentication middleware
+export const authMiddleware = createMiddleware(async (c, next) => {
+  const authHeader = c.req.header('Authorization')
+  
+  if (!authHeader?.startsWith('Bearer ')) {
+    return c.json(
+      createErrorResponse('UNAUTHORIZED', 'Missing or invalid authorization header'),
+      401
+    )
+  }
+  
+  const token = authHeader.slice(7)
+  
+  try {
+    const session = await verifyJWT(token)
+    c.set('user', session)
+    await next()
+  } catch (error) {
+    return c.json(
+      createErrorResponse('UNAUTHORIZED', 'Invalid or expired token'),
+      401
+    )
+  }
+})
+
+// Rate limiting middleware
+export function rateLimitMiddleware(options: { limit: number; window: number }) {
+  return createMiddleware(async (c, next) => {
+    const ip = c.req.header('x-forwarded-for') || 'unknown'
+    const result = await checkRateLimit(ip, options.limit, options.window)
+    
+    if (!result.allowed) {
+      return c.json(
+        createErrorResponse('RATE_LIMIT_EXCEEDED', 'Too many requests'),
+        429,
+        {
+          'X-RateLimit-Limit': options.limit.toString(),
+          'X-RateLimit-Remaining': '0',
+          'X-RateLimit-Reset': result.resetTime.toString(),
+        }
+      )
+    }
+    
+    await next()
+  })
+}
+```
+
+## Type Safety and OpenAPI
+
+### Type-Safe API Client
+```typescript
+// ✅ Good - Type-safe API client
+import { hc } from 'hono/client'
+
+// Define API contract types
+export type ApiRoutes = {
+  '/api/users': {
+    $get: {
+      query?: {
+        page?: number
+        limit?: number
+        search?: string
+      }
+      responses: {
+        200: {
+          success: true
+          data: User[]
+          meta: {
+            page: number
+            limit: number
+            total: number
+            hasNext: boolean
+          }
+        }
+      }
+    }
+    $post: {
+      json: {
+        email: string
+        name: string
+        role?: 'user' | 'admin'
+      }
+      responses: {
+        201: {
+          success: true
+          data: User
+        }
+        400: {
+          success: false
+          error: {
+            code: string
+            message: string
+            details?: any
+          }
+        }
+      }
+    }
+  }
+  '/api/users/:id': {
+    $get: {
+      responses: {
+        200: {
+          success: true
+          data: User
+        }
+        404: {
+          success: false
+          error: {
+            code: string
+            message: string
+          }
+        }
+      }
+    }
+  }
+}
+
+// Create type-safe client
+export const apiClient = hc<ApiRoutes>('/api')
+
+// Usage with full type safety
+export async function getUsers(params?: { page?: number; limit?: number }) {
+  const response = await apiClient.users.$get({ query: params })
+  return response.json() // Fully typed!
+}
+```
+
+### OpenAPI Documentation
+```typescript
+// ✅ Good - OpenAPI schema generation
+import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi'
+
+const app = new OpenAPIHono()
+
+const UserSchema = z.object({
+  id: z.string().openapi({ example: 'user123' }),
+  email: z.string().email().openapi({ example: 'user@example.com' }),
+  name: z.string().openapi({ example: 'John Doe' }),
+  role: z.enum(['user', 'admin']).openapi({ example: 'user' }),
+  createdAt: z.string().datetime().openapi({ example: '2024-01-01T00:00:00Z' }),
+})
+
+const getUserRoute = createRoute({
+  method: 'get',
+  path: '/users/{id}',
+  request: {
+    params: z.object({
+      id: z.string().openapi({ example: 'user123' }),
+    }),
+  },
+  responses: {
+    200: {
+      content: {
+        'application/json': {
+          schema: z.object({
+            success: z.boolean(),
+            data: UserSchema,
+          }),
+        },
+      },
+      description: 'User found',
+    },
+    404: {
+      content: {
+        'application/json': {
+          schema: z.object({
+            success: z.boolean(),
+            error: z.object({
+              code: z.string(),
+              message: z.string(),
+            }),
+          }),
+        },
+      },
+      description: 'User not found',
+    },
+  },
+})
+
+app.openapi(getUserRoute, async (c) => {
+  const { id } = c.req.valid('param')
+  const user = await getUserById(id)
+  
+  if (!user) {
+    return c.json(
+      { success: false, error: { code: 'USER_NOT_FOUND', message: 'User not found' } },
+      404
+    )
+  }
+  
+  return c.json({ success: true, data: user })
+})
+
+// Generate OpenAPI documentation
+app.doc('/doc', {
+  openapi: '3.0.0',
+  info: {
+    version: '1.0.0',
+    title: 'Raypx API',
+  },
+})
+```
+
+## Performance and Caching
+
+### Response Caching
+```typescript
+// ✅ Good - Response caching strategies
+import { Cache } from '@raypx/redis'
+
+const cache = new Cache()
+
+export async function GET(request: NextRequest) {
+  const url = new URL(request.url)
+  const cacheKey = `api:users:${url.search}`
+  
+  // Check cache first
+  const cached = await cache.get(cacheKey)
+  if (cached) {
+    return NextResponse.json(JSON.parse(cached), {
+      headers: {
+        'X-Cache': 'HIT',
+        'Cache-Control': 'public, max-age=300, stale-while-revalidate=600',
+      },
+    })
+  }
+  
+  // Fetch fresh data
+  const users = await getUsers()
+  const response = createSuccessResponse(users)
+  
+  // Cache the response
+  await cache.setex(cacheKey, 300, JSON.stringify(response))
+  
+  return NextResponse.json(response, {
+    headers: {
+      'X-Cache': 'MISS',
+      'Cache-Control': 'public, max-age=300, stale-while-revalidate=600',
+    },
+  })
+}
+```
+
+### Pagination and Filtering
+```typescript
+// ✅ Good - Efficient pagination implementation
+const querySchema = z.object({
+  page: z.coerce.number().min(1).default(1),
+  limit: z.coerce.number().min(1).max(100).default(20),
+  search: z.string().optional(),
+  sortBy: z.enum(['name', 'email', 'createdAt']).default('createdAt'),
+  sortOrder: z.enum(['asc', 'desc']).default('desc'),
+  status: z.enum(['active', 'inactive']).optional(),
+})
+
+export async function GET(request: NextRequest) {
+  const url = new URL(request.url)
+  const query = querySchema.parse(Object.fromEntries(url.searchParams))
+  
+  const { page, limit, search, sortBy, sortOrder, status } = query
+  const offset = (page - 1) * limit
+  
+  // Build dynamic query
+  let baseQuery = db.select().from(users)
+  const conditions = []
+  
+  if (search) {
+    conditions.push(
+      or(
+        ilike(users.name, `%${search}%`),
+        ilike(users.email, `%${search}%`)
+      )
+    )
+  }
+  
+  if (status) {
+    conditions.push(eq(users.status, status))
+  }
+  
+  if (conditions.length > 0) {
+    baseQuery = baseQuery.where(and(...conditions))
+  }
+  
+  // Execute query with sorting and pagination
+  const [results, totalCount] = await Promise.all([
+    baseQuery
+      .orderBy(sortOrder === 'desc' ? desc(users[sortBy]) : asc(users[sortBy]))
+      .limit(limit)
+      .offset(offset),
+    db
+      .select({ count: count() })
+      .from(users)
+      .where(conditions.length > 0 ? and(...conditions) : undefined)
+  ])
+  
+  return NextResponse.json(
+    createSuccessResponse(results, {
+      page,
+      limit,
+      total: totalCount[0].count,
+      hasNext: offset + limit < totalCount[0].count,
+      hasPrev: page > 1,
+    })
+  )
+}
+```
+
+## Testing APIs
+
+### API Route Testing
+```typescript
+// ✅ Good - API route testing
+import { describe, it, expect, beforeEach } from 'vitest'
+import { POST } from '../route'
+
+describe('/api/users', () => {
+  beforeEach(async () => {
+    await cleanupDatabase()
+  })
+
+  describe('POST', () => {
+    it('should create user successfully', async () => {
+      const userData = {
+        email: 'test@example.com',
+        name: 'Test User',
+      }
+
+      const request = new Request('http://localhost/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData),
+      })
+
+      const response = await POST(request)
+      const body = await response.json()
+
+      expect(response.status).toBe(201)
+      expect(body.success).toBe(true)
+      expect(body.data).toMatchObject({
+        email: userData.email,
+        name: userData.name,
+      })
+    })
+
+    it('should return validation error for invalid data', async () => {
+      const invalidData = {
+        email: 'invalid-email',
+        name: '',
+      }
+
+      const request = new Request('http://localhost/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(invalidData),
+      })
+
+      const response = await POST(request)
+      const body = await response.json()
+
+      expect(response.status).toBe(400)
+      expect(body.success).toBe(false)
+      expect(body.error.code).toBe('VALIDATION_ERROR')
+    })
+  })
+})
+```
+
+### Integration Testing
+```typescript
+// ✅ Good - End-to-end API testing
+import { describe, it, expect } from 'vitest'
+import { testClient } from 'hono/testing'
+
+describe('API Integration', () => {
+  it('should handle complete user workflow', async () => {
+    const client = testClient(app)
+
+    // Create user
+    const createResponse = await client.users.$post({
+      json: {
+        email: 'integration@test.com',
+        name: 'Integration Test',
+      },
+    })
+    
+    expect(createResponse.status).toBe(201)
+    const createBody = await createResponse.json()
+    const userId = createBody.data.id
+
+    // Get user
+    const getResponse = await client.users[':id'].$get({
+      param: { id: userId },
+    })
+    
+    expect(getResponse.status).toBe(200)
+    
+    // Update user
+    const updateResponse = await client.users[':id'].$put({
+      param: { id: userId },
+      json: { name: 'Updated Name' },
+    })
+    
+    expect(updateResponse.status).toBe(200)
+
+    // Delete user
+    const deleteResponse = await client.users[':id'].$delete({
+      param: { id: userId },
+    })
+    
+    expect(deleteResponse.status).toBe(204)
+  })
+})
+```
+
+## Best Practices
+
+### HTTP Status Codes
+```typescript
+// ✅ Good - Consistent HTTP status code usage
+export const HTTP_STATUS = {
+  // Success
+  OK: 200,                    // Successful GET, PUT
+  CREATED: 201,              // Successful POST
+  ACCEPTED: 202,             // Request accepted for processing
+  NO_CONTENT: 204,           // Successful DELETE
+
+  // Client Error
+  BAD_REQUEST: 400,          // Invalid request syntax
+  UNAUTHORIZED: 401,         // Authentication required
+  FORBIDDEN: 403,            // Authorization failed
+  NOT_FOUND: 404,            // Resource not found
+  METHOD_NOT_ALLOWED: 405,   // HTTP method not allowed
+  CONFLICT: 409,             // Resource conflict
+  UNPROCESSABLE_ENTITY: 422, // Validation error
+  TOO_MANY_REQUESTS: 429,    // Rate limit exceeded
+
+  // Server Error
+  INTERNAL_SERVER_ERROR: 500, // Unexpected server error
+  NOT_IMPLEMENTED: 501,       // Feature not implemented
+  BAD_GATEWAY: 502,           // Upstream server error
+  SERVICE_UNAVAILABLE: 503,   // Service temporarily unavailable
+} as const
+```
+
+### API Versioning
+```typescript
+// ✅ Good - API versioning strategies
+// app/api/v1/users/route.ts
+// app/api/v2/users/route.ts
+
+// Header-based versioning
+export async function GET(request: NextRequest) {
+  const version = request.headers.get('API-Version') || 'v1'
+  
+  switch (version) {
+    case 'v2':
+      return getV2Users()
+    default:
+      return getV1Users()
+  }
+}
+
+// URL-based versioning (preferred)
+// /api/v1/users
+// /api/v2/users
+```
+
+Remember: Design APIs that are intuitive, consistent, well-documented, and secure. Always validate inputs, handle errors gracefully, and design for scalability from the start.

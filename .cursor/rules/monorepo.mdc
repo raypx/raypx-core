@@ -10,7 +10,7 @@ alwaysApply: false
 - Use Turbo for build orchestration and caching
 - Maintain clear package boundaries and dependencies
 - Follow consistent naming conventions across packages
-- Implement proper workspace management with Bun
+- Implement proper workspace management with pnpm
 - Use shared tooling and configurations
 - Maintain consistent code quality standards
 - Implement proper version management
@@ -150,16 +150,16 @@ raypx/
 ```bash
 # ✅ Good - Development workflow
 # Start all packages in development mode
-bun dev
+pnpm dev
 
 # Build specific package
-bun --filter @raypx/ui build
+pnpm --filter @raypx/ui build
 
 # Test specific package
-bun --filter @raypx/auth test
+pnpm --filter @raypx/auth test
 
 # Clean all packages
-bun clean
+pnpm clean
 ```
 
 ### Cross-Package Dependencies
@@ -179,7 +179,7 @@ import { Button } from '../../../packages/ui/src/components/button'
 ```json
 // ✅ Good - Shared TypeScript configuration
 {
-  "extends": "@raypx/tsconfig/base.json",
+  "extends": "./tooling/tsconfig/base.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
@@ -193,7 +193,7 @@ import { Button } from '../../../packages/ui/src/components/button'
 ```json
 // ✅ Good - Package-specific TypeScript config
 {
-  "extends": "@raypx/tsconfig/nextjs.json",
+  "extends": "./tooling/tsconfig/nextjs.json",
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src"
@@ -247,8 +247,8 @@ describe('Button Component', () => {
 {
   "scripts": {
     "build": "turbo build",
-    "build:web": "bun --filter @raypx/web build",
-    "build:ui": "bun --filter @raypx/ui build",
+    "build:web": "pnpm --filter @raypx/web build",
+    "build:ui": "pnpm --filter @raypx/ui build",
     "deploy": "turbo build && vercel --prod"
   }
 }
@@ -289,8 +289,8 @@ export const env = envSchema.parse(process.env)
 {
   "husky": {
     "hooks": {
-      "pre-commit": "bun lint-staged",
-      "commit-msg": "bun commitlint --edit $1"
+      "pre-commit": "pnpm lint-staged",
+      "commit-msg": "pnpm commitlint --edit $1"
     }
   },
   "lint-staged": {

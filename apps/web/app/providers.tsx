@@ -3,9 +3,9 @@
 import { AnalyticsProvider } from "@raypx/analytics"
 import { AuthProvider } from "@raypx/auth"
 import { client } from "@raypx/auth/client"
-import { useLocale } from "@raypx/i18n"
 import { Provider } from "@raypx/ui/components/provider"
 import { useRouter } from "next/navigation"
+import { useLocale } from "next-intl"
 import { authPages } from "../config/auth.config"
 
 interface ProvidersProps {

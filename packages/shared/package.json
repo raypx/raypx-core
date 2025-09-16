@@ -18,7 +18,7 @@
     "@t3-oss/env-nextjs": "^0.13.8",
     "dayjs": "^1.11.18",
     "lodash-es": "^4.17.21",
-    "ua-parser-js": "^2.0.4",
+    "ua-parser-js": "^2.0.5",
     "zod": "catalog:"
   },
   "devDependencies": {

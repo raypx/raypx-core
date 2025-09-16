@@ -36,8 +36,8 @@
     "update:deps": "pnpm update --recursive --interactive --latest"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.2.3",
-    "@changesets/cli": "^2.29.6",
+    "@biomejs/biome": "^2.2.4",
+    "@changesets/cli": "^2.29.7",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@commitlint/types": "^19.8.1",
@@ -54,7 +54,7 @@
     "vitest": "^3.2.4",
     "zod": "catalog:"
   },
-  "packageManager": "pnpm@10.15.1",
+  "packageManager": "pnpm@10.16.1",
   "engines": {
     "node": ">=20",
     "pnpm": ">=10.0.0"

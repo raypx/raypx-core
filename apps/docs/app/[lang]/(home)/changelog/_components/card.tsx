@@ -1,10 +1,10 @@
 "use client"
 
-import { useLocale } from "@raypx/i18n"
 import { dayjs } from "@raypx/shared/utils"
 import { Badge } from "@raypx/ui/components/badge"
 import { Card, CardContent, CardHeader } from "@raypx/ui/components/card"
 import { Calendar, Tag } from "lucide-react"
+import { useLocale } from "next-intl"
 
 interface ChangelogCardProps {
   body: React.ReactNode

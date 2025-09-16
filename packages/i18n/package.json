@@ -5,21 +5,29 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./server": "./src/server.ts",
-    "./locales/*": "./locales/*.json"
+    "./server": "./src/server.ts"
   },
   "scripts": {
     "clean": "rimraf dist .turbo",
     "test": "vitest"
   },
   "dependencies": {
-    "next-intl": "^4.3.6"
+    "next-intl": "catalog:"
+  },
+  "peerDependencies": {
+    "next-intl": "catalog:"
+  },
+  "peerDependenciesMeta": {
+    "next-intl": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@raypx/tsconfig": "workspace:*",
-    "type-fest": "^4.41.0",
     "@types/node": "catalog:",
     "next": "catalog:",
+    "tsx": "^4.20.5",
+    "type-fest": "^5.0.0",
     "typescript": "catalog:"
   }
 }

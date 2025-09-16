@@ -1,0 +1,44 @@
+{
+  "footer": {
+    "tagline": "Make AI SaaS in days, simply and effortlessly",
+    "product": {
+      "title": "Product",
+      "items": {
+        "features": "Features",
+        "pricing": "Pricing",
+        "faq": "FAQ"
+      }
+    },
+    "resources": {
+      "title": "Resources",
+      "items": {
+        "blog": "Blog",
+        "docs": "Documentation",
+        "changelog": "Changelog",
+        "roadmap": "Roadmap"
+      }
+    },
+    "company": {
+      "title": "Company",
+      "items": {
+        "about": "About",
+        "contact": "Contact",
+        "waitlist": "Waitlist"
+      }
+    },
+    "legal": {
+      "title": "Legal",
+      "items": {
+        "cookiePolicy": "Cookie Policy",
+        "privacyPolicy": "Privacy Policy",
+        "termsOfService": "Terms of Service"
+      }
+    }
+  },
+  "userMenu": {
+    "dashboard": "Dashboard",
+    "billing": "Billing",
+    "credits": "Credits",
+    "settings": "Settings"
+  }
+}

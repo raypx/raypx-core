@@ -1,0 +1,22 @@
+{
+  "button": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "confirm": "Confirm",
+    "back": "Back"
+  },
+  "form": {
+    "required": "This field is required",
+    "invalid": "Invalid input",
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "An error occurred"
+  },
+  "navigation": {
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact"
+  }
+}

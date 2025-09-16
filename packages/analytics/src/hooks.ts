@@ -1,24 +1,7 @@
 "use client"
 
 import { envs } from "./envs"
-import type { PostHogInstance, PostHogReactHook } from "./types"
-
-let posthogHook: PostHogReactHook | null = null
-
-async function _loadPostHogHook(): Promise<PostHogReactHook | null> {
-  if (posthogHook) return posthogHook
-
-  try {
-    const reactModule = await import("posthog-js/react").catch(() => null)
-    if (reactModule) {
-      posthogHook = reactModule.usePostHog as PostHogReactHook
-      return posthogHook
-    }
-    return null
-  } catch (_error) {
-    return null
-  }
-}
+import type { PostHogInstance } from "./types"
 
 export function useAnalytics() {
   let posthog: PostHogInstance | null = null
@@ -56,7 +39,7 @@ export function useAnalytics() {
     // Google Analytics
     if (
       typeof window !== "undefined" &&
-      window.gtag &&
+      typeof window.gtag === "function" &&
       envs.NEXT_PUBLIC_GA_MEASUREMENT_ID
     ) {
       window.gtag("event", event, {
@@ -75,7 +58,7 @@ export function useAnalytics() {
     }
 
     // Google Analytics
-    if (typeof window !== "undefined" && window.gtag) {
+    if (typeof window !== "undefined" && typeof window.gtag === "function") {
       window.gtag("config", envs.NEXT_PUBLIC_GA_MEASUREMENT_ID, {
         user_id: userId,
         ...properties,
@@ -101,7 +84,7 @@ export function useAnalytics() {
     }
 
     // Google Analytics - set custom parameters
-    if (typeof window !== "undefined" && window.gtag) {
+    if (typeof window !== "undefined" && typeof window.gtag === "function") {
       window.gtag("config", envs.NEXT_PUBLIC_GA_MEASUREMENT_ID, {
         custom_map: properties,
       })
@@ -133,7 +116,7 @@ export function useAnalytics() {
     }
 
     // Google Analytics
-    if (typeof window !== "undefined" && window.gtag) {
+    if (typeof window !== "undefined" && typeof window.gtag === "function") {
       window.gtag("config", envs.NEXT_PUBLIC_GA_MEASUREMENT_ID, {
         page_path: url || window.location.pathname,
         page_title: title,

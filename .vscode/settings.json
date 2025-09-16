@@ -1,9 +1,14 @@
 {
   "editor.codeActionsOnSave": {
-    "source.fixAll.biome": "explicit"
+    "source.fixAll.biome": "explicit",
+    "source.organizeImports": "explicit"
   },
   "editor.defaultFormatter": "biomejs.biome",
   "editor.formatOnSave": true,
+  "editor.inlayHints.enabled": "on",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
   "npm.packageManager": "pnpm",
   "npm.scriptRunner": "pnpm",
   "search.exclude": {
@@ -12,9 +17,50 @@
     "**/pnpm-lock.yaml": true,
     "**/pnpm-workspace.yaml": true,
     "**/dist": true,
-    "**/node_modules": true
+    "**/node_modules": true,
+    "**/drizzle": true,
+    "**/.env*": true
+  },
+  "files.exclude": {
+    "**/.turbo": true,
+    "**/dist": true,
+    "**/.next": true
+  },
+  "typescript.preferences.quoteStyle": "double",
+  "typescript.preferences.includePackageJsonAutoImports": "auto",
+  "typescript.suggest.autoImports": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.inlayHints.parameterNames.enabled": "all",
+  "typescript.inlayHints.variableTypes.enabled": true,
+  "typescript.inlayHints.functionLikeReturnTypes.enabled": true,
+  "emmet.includeLanguages": {
+    "typescript": "html",
+    "typescriptreact": "html"
+  },
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ],
+  "tailwindCSS.includeLanguages": {
+    "typescript": "html",
+    "typescriptreact": "html"
   },
   "[json]": {
     "editor.defaultFormatter": "biomejs.biome"
-  }
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[sql]": {
+    "editor.defaultFormatter": "bradlc.vscode-tailwindcss"
+  },
+  "git.autofetch": true,
+  "git.enableSmartCommit": true,
+  "git.confirmSync": false
 }

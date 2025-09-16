@@ -3,28 +3,134 @@
   "tasks": [
     {
       "type": "shell",
-      "label": "Dev",
+      "label": "🚀 Dev: All",
       "command": "pnpm",
-      "args": ["run", "dev"],
+      "args": ["dev"],
       "group": {
         "kind": "build",
         "isDefault": true
       },
-      "isBackground": true
+      "isBackground": true,
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "group": "dev"
+      }
     },
     {
       "type": "shell",
-      "label": "Build",
+      "label": "🚀 Dev: Web Only",
       "command": "pnpm",
-      "args": ["run", "build"],
-      "group": "build"
+      "args": ["--filter", "@raypx/web", "dev"],
+      "group": "build",
+      "isBackground": true,
+      "presentation": {
+        "group": "dev"
+      }
     },
     {
       "type": "shell",
-      "label": "Test",
+      "label": "🏗️ Build: All",
+      "command": "pnpm",
+      "args": ["build"],
+      "group": "build",
+      "presentation": {
+        "group": "build"
+      }
+    },
+    {
+      "type": "shell",
+      "label": "🏗️ Build: Web",
+      "command": "pnpm",
+      "args": ["--filter", "@raypx/web", "build"],
+      "group": "build",
+      "presentation": {
+        "group": "build"
+      }
+    },
+    {
+      "type": "shell",
+      "label": "🧪 Test: All",
       "command": "pnpm",
       "args": ["test"],
-      "group": "test"
+      "group": "test",
+      "presentation": {
+        "group": "test"
+      }
+    },
+    {
+      "type": "shell",
+      "label": "🧪 Test: Watch",
+      "command": "pnpm",
+      "args": ["test", "--watch"],
+      "group": "test",
+      "isBackground": true,
+      "presentation": {
+        "group": "test"
+      }
+    },
+    {
+      "type": "shell",
+      "label": "🗄️ DB: Generate",
+      "command": "pnpm",
+      "args": ["--filter", "@raypx/db", "generate"],
+      "group": "build",
+      "presentation": {
+        "group": "db"
+      }
+    },
+    {
+      "type": "shell",
+      "label": "🗄️ DB: Migrate",
+      "command": "pnpm",
+      "args": ["--filter", "@raypx/db", "migrate"],
+      "group": "build",
+      "presentation": {
+        "group": "db"
+      }
+    },
+    {
+      "type": "shell",
+      "label": "🗄️ DB: Studio",
+      "command": "pnpm",
+      "args": ["--filter", "@raypx/db", "studio"],
+      "group": "build",
+      "isBackground": true,
+      "presentation": {
+        "group": "db"
+      }
+    },
+    {
+      "type": "shell",
+      "label": "🗄️ DB: Seed",
+      "command": "pnpm",
+      "args": ["--filter", "@raypx/db", "seed"],
+      "group": "build",
+      "presentation": {
+        "group": "db"
+      }
+    },
+    {
+      "type": "shell",
+      "label": "🔧 Fix: Biome",
+      "command": "pnpm",
+      "args": ["biome", "check", "--write", "."],
+      "group": "build",
+      "presentation": {
+        "group": "fix"
+      }
+    },
+    {
+      "type": "shell",
+      "label": "🧹 Clean: All",
+      "command": "pnpm",
+      "args": ["clean"],
+      "group": "build",
+      "presentation": {
+        "group": "clean"
+      }
     }
   ]
 }

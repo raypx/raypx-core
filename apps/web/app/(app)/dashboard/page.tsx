@@ -123,40 +123,43 @@ export default function ConsolePage() {
   ]
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Welcome Section */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Welcome back!</h1>
-          <p className="text-muted-foreground">
+      <div className="flex flex-col gap-3 sm:gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="space-y-1">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+            Welcome back!
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             Here's what's happening with your projects today.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Badge variant="secondary" className="text-sm">
+        <div className="flex items-center gap-2 self-start md:self-center">
+          <Badge variant="secondary" className="text-xs sm:text-sm">
             <TrendingUp className="mr-1 h-3 w-3" />
-            +12.5% from last month
+            <span className="hidden xs:inline">+12.5% from last month</span>
+            <span className="xs:hidden">+12.5%</span>
           </Badge>
         </div>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
-          <Card key={stat.title}>
+          <Card key={stat.title} className="transition-all hover:shadow-md">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-xs sm:text-sm font-medium leading-none">
                 {stat.title}
               </CardTitle>
-              <stat.icon className="h-4 w-4 text-muted-foreground" />
+              <stat.icon className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground flex-shrink-0" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <div className="flex items-center space-x-2">
+            <CardContent className="space-y-2">
+              <div className="text-lg sm:text-2xl font-bold">{stat.value}</div>
+              <div className="flex items-center space-x-1 sm:space-x-2">
                 {stat.changeType === "positive" ? (
-                  <ArrowUpRight className="h-3 w-3 text-green-600" />
+                  <ArrowUpRight className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-green-600 flex-shrink-0" />
                 ) : (
-                  <ArrowDownRight className="h-3 w-3 text-red-600" />
+                  <ArrowDownRight className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-red-600 flex-shrink-0" />
                 )}
                 <span
                   className={`text-xs ${
@@ -167,11 +170,11 @@ export default function ConsolePage() {
                 >
                   {stat.change}
                 </span>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-xs text-muted-foreground hidden sm:inline">
                   from last month
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-xs text-muted-foreground leading-relaxed hidden sm:block">
                 {stat.description}
               </p>
             </CardContent>
@@ -180,23 +183,27 @@ export default function ConsolePage() {
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
         {/* Quick Actions */}
-        <Card className="lg:col-span-1">
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>Common tasks and shortcuts</CardDescription>
+        <Card className="xl:col-span-1">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base sm:text-lg">
+              Quick Actions
+            </CardTitle>
+            <CardDescription className="text-xs sm:text-sm">
+              Common tasks and shortcuts
+            </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-2 sm:space-y-3">
             {quickActions.map((action) => (
               <Button
                 key={action.name}
                 variant={action.variant}
-                className="w-full justify-start"
+                className="w-full justify-start h-9 sm:h-10 text-xs sm:text-sm"
                 asChild
               >
                 <a href={action.href}>
-                  <action.icon className="mr-2 h-4 w-4" />
+                  <action.icon className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                   {action.name}
                 </a>
               </Button>
@@ -210,27 +217,31 @@ export default function ConsolePage() {
         </Card>
 
         {/* Recent Activity */}
-        <Card className="lg:col-span-1">
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>Latest updates and changes</CardDescription>
+        <Card className="xl:col-span-1">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base sm:text-lg">
+              Recent Activity
+            </CardTitle>
+            <CardDescription className="text-xs sm:text-sm">
+              Latest updates and changes
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {recentActivity.map((activity) => (
-                <div key={activity.id} className="flex items-center space-x-3">
-                  <div className="flex-shrink-0">
-                    <div className="h-2 w-2 rounded-full bg-primary" />
+                <div key={activity.id} className="flex items-start space-x-3">
+                  <div className="flex-shrink-0 mt-1.5">
+                    <div className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-primary" />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground truncate">
+                  <div className="flex-1 min-w-0 space-y-1">
+                    <p className="text-xs sm:text-sm font-medium text-foreground line-clamp-2">
                       {activity.action}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {activity.time}
                     </p>
                   </div>
-                  <Badge variant="outline" className="text-xs">
+                  <Badge variant="outline" className="text-xs flex-shrink-0">
                     {activity.type}
                   </Badge>
                 </div>
@@ -240,50 +251,60 @@ export default function ConsolePage() {
         </Card>
 
         {/* Analytics Overview */}
-        <Card className="lg:col-span-1">
-          <CardHeader>
-            <CardTitle>Analytics Overview</CardTitle>
-            <CardDescription>Key performance metrics</CardDescription>
+        <Card className="xl:col-span-1">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base sm:text-lg">
+              Analytics Overview
+            </CardTitle>
+            <CardDescription className="text-xs sm:text-sm">
+              Key performance metrics
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">
-                  User Growth
-                </span>
-                <span className="text-sm font-medium">+12.5%</span>
-              </div>
-              <div className="w-full bg-muted rounded-full h-2">
-                <div
-                  className="bg-primary h-2 rounded-full"
-                  style={{ width: "75%" }}
-                />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">
-                  Content Engagement
-                </span>
-                <span className="text-sm font-medium">+8.2%</span>
-              </div>
-              <div className="w-full bg-muted rounded-full h-2">
-                <div
-                  className="bg-primary h-2 rounded-full"
-                  style={{ width: "60%" }}
-                />
+            <div className="space-y-4 sm:space-y-5">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs sm:text-sm text-muted-foreground">
+                    User Growth
+                  </span>
+                  <span className="text-xs sm:text-sm font-medium">+12.5%</span>
+                </div>
+                <div className="w-full bg-muted rounded-full h-1.5 sm:h-2">
+                  <div
+                    className="bg-primary h-1.5 sm:h-2 rounded-full transition-all duration-300"
+                    style={{ width: "75%" }}
+                  />
+                </div>
               </div>
 
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">
-                  API Performance
-                </span>
-                <span className="text-sm font-medium">+23.1%</span>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs sm:text-sm text-muted-foreground">
+                    Content Engagement
+                  </span>
+                  <span className="text-xs sm:text-sm font-medium">+8.2%</span>
+                </div>
+                <div className="w-full bg-muted rounded-full h-1.5 sm:h-2">
+                  <div
+                    className="bg-primary h-1.5 sm:h-2 rounded-full transition-all duration-300"
+                    style={{ width: "60%" }}
+                  />
+                </div>
               </div>
-              <div className="w-full bg-muted rounded-full h-2">
-                <div
-                  className="bg-primary h-2 rounded-full"
-                  style={{ width: "90%" }}
-                />
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs sm:text-sm text-muted-foreground">
+                    API Performance
+                  </span>
+                  <span className="text-xs sm:text-sm font-medium">+23.1%</span>
+                </div>
+                <div className="w-full bg-muted rounded-full h-1.5 sm:h-2">
+                  <div
+                    className="bg-primary h-1.5 sm:h-2 rounded-full transition-all duration-300"
+                    style={{ width: "90%" }}
+                  />
+                </div>
               </div>
             </div>
           </CardContent>
@@ -291,21 +312,27 @@ export default function ConsolePage() {
       </div>
 
       {/* Chart Placeholder */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Performance Trends</CardTitle>
-          <CardDescription>Monthly performance overview</CardDescription>
+      <Card className="overflow-hidden">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base sm:text-lg">
+            Performance Trends
+          </CardTitle>
+          <CardDescription className="text-xs sm:text-sm">
+            Monthly performance overview
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-80 flex items-center justify-center bg-muted/50 rounded-lg">
-            <div className="text-center">
-              <BarChart3 className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
-              <p className="text-sm text-muted-foreground">
-                Chart component will be integrated here
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Showing data visualization for better insights
-              </p>
+          <div className="h-48 sm:h-64 lg:h-80 flex items-center justify-center bg-gradient-to-br from-muted/30 to-muted/60 rounded-lg border border-dashed border-muted-foreground/20">
+            <div className="text-center space-y-3">
+              <BarChart3 className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 text-muted-foreground mx-auto" />
+              <div className="space-y-1">
+                <p className="text-xs sm:text-sm text-muted-foreground font-medium">
+                  Chart component will be integrated here
+                </p>
+                <p className="text-xs text-muted-foreground/80 hidden sm:block">
+                  Showing data visualization for better insights
+                </p>
+              </div>
             </div>
           </div>
         </CardContent>

@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@raypx/shared": "workspace:*",
-    "commander": "^14.0.0"
+    "commander": "^14.0.1"
   },
   "devDependencies": {
     "@raypx/tsconfig": "workspace:*",

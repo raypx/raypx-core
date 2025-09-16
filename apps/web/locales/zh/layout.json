@@ -1,0 +1,44 @@
+{
+  "footer": {
+    "tagline": "几天内构建 AI SaaS，简单高效",
+    "product": {
+      "title": "产品",
+      "items": {
+        "features": "功能特性",
+        "pricing": "定价方案",
+        "faq": "常见问题"
+      }
+    },
+    "resources": {
+      "title": "资源",
+      "items": {
+        "blog": "博客",
+        "docs": "文档",
+        "changelog": "更新日志",
+        "roadmap": "产品路线图"
+      }
+    },
+    "company": {
+      "title": "公司",
+      "items": {
+        "about": "关于我们",
+        "contact": "联系我们",
+        "waitlist": "候补名单"
+      }
+    },
+    "legal": {
+      "title": "法律条款",
+      "items": {
+        "cookiePolicy": "Cookie 政策",
+        "privacyPolicy": "隐私政策",
+        "termsOfService": "服务条款"
+      }
+    }
+  },
+  "userMenu": {
+    "dashboard": "仪表板",
+    "billing": "账单",
+    "credits": "积分",
+    "settings": "设置"
+  }
+}

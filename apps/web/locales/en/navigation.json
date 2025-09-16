@@ -1,0 +1,137 @@
+{
+  "navbar": {
+    "features": {
+      "title": "Features"
+    },
+    "pricing": {
+      "title": "Pricing"
+    },
+    "blog": {
+      "title": "Blog"
+    },
+    "docs": {
+      "title": "Docs"
+    },
+    "ai": {
+      "title": "AI Tools",
+      "items": {
+        "text": {
+          "title": "AI Text",
+          "description": "Show how to use AI to write stunning text"
+        },
+        "image": {
+          "title": "AI Image",
+          "description": "Show how to use AI to generate beautiful images"
+        },
+        "chat": {
+          "title": "AI Chat",
+          "description": "Show how to use AI to chat with your customers"
+        },
+        "video": {
+          "title": "AI Video",
+          "description": "Show how to use AI to generate amazing videos"
+        },
+        "audio": {
+          "title": "AI Audio",
+          "description": "Show how to use AI to generate wonderful audio"
+        }
+      }
+    },
+    "pages": {
+      "title": "Pages",
+      "items": {
+        "about": {
+          "title": "About",
+          "description": "Learn more about our company, mission, and values"
+        },
+        "contact": {
+          "title": "Contact",
+          "description": "Get in touch with our team for support or inquiries"
+        },
+        "waitlist": {
+          "title": "Waitlist",
+          "description": "Join our waitlist for latest news and updates"
+        },
+        "changelog": {
+          "title": "Changelog",
+          "description": "See the latest updates to our products"
+        },
+        "roadmap": {
+          "title": "Roadmap",
+          "description": "Explore our future plans and upcoming features"
+        },
+        "cookiePolicy": {
+          "title": "Cookie Policy",
+          "description": "How we use the cookies on our website"
+        },
+        "privacyPolicy": {
+          "title": "Privacy Policy",
+          "description": "How we protect and handle your data"
+        },
+        "termsOfService": {
+          "title": "Terms of Service",
+          "description": "The legal agreement between you and our company"
+        }
+      }
+    },
+    "blocks": {
+      "title": "Blocks",
+      "items": {
+        "magicui": {
+          "title": "MagicUI Blocks"
+        },
+        "hero-section": {
+          "title": "Hero Blocks"
+        },
+        "logo-cloud": {
+          "title": "Logo Cloud Blocks"
+        },
+        "integrations": {
+          "title": "Integrations Blocks"
+        },
+        "features": {
+          "title": "Features Blocks"
+        },
+        "content": {
+          "title": "Content Blocks"
+        },
+        "stats": {
+          "title": "Stats Blocks"
+        },
+        "team": {
+          "title": "Team Blocks"
+        },
+        "testimonials": {
+          "title": "Testimonials Blocks"
+        },
+        "callToAction": {
+          "title": "Call to Action Blocks"
+        },
+        "footer": {
+          "title": "Footer Blocks"
+        },
+        "pricing": {
+          "title": "Pricing Blocks"
+        },
+        "comparator": {
+          "title": "Comparator Blocks"
+        },
+        "faq": {
+          "title": "FAQ Blocks"
+        },
+        "login": {
+          "title": "Login Blocks"
+        },
+        "signup": {
+          "title": "Signup Blocks"
+        },
+        "forgot-password": {
+          "title": "Forgot Password Blocks"
+        },
+        "contact": {
+          "title": "Contact Blocks"
+        }
+      }
+    }
+  }
+}

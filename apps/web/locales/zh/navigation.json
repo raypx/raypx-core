@@ -1,0 +1,137 @@
+{
+  "navbar": {
+    "features": {
+      "title": "功能特性"
+    },
+    "pricing": {
+      "title": "定价方案"
+    },
+    "blog": {
+      "title": "博客"
+    },
+    "docs": {
+      "title": "文档"
+    },
+    "ai": {
+      "title": "AI 工具",
+      "items": {
+        "text": {
+          "title": "AI 文本",
+          "description": "展示如何使用 AI 编写精彩的文本"
+        },
+        "image": {
+          "title": "AI 图像",
+          "description": "展示如何使用 AI 生成精美的图像"
+        },
+        "chat": {
+          "title": "AI 聊天",
+          "description": "展示如何使用 AI 与客户聊天"
+        },
+        "video": {
+          "title": "AI 视频",
+          "description": "展示如何使用 AI 生成精彩的视频"
+        },
+        "audio": {
+          "title": "AI 音频",
+          "description": "展示如何使用 AI 生成优美的音频"
+        }
+      }
+    },
+    "pages": {
+      "title": "页面",
+      "items": {
+        "about": {
+          "title": "关于我们",
+          "description": "了解更多关于我们公司的使命和价值观"
+        },
+        "contact": {
+          "title": "联系我们",
+          "description": "联系我们的团队获取支持或咨询"
+        },
+        "waitlist": {
+          "title": "候补名单",
+          "description": "加入我们的候补名单获取最新消息和更新"
+        },
+        "changelog": {
+          "title": "更新日志",
+          "description": "查看我们产品的最新更新"
+        },
+        "roadmap": {
+          "title": "产品路线图",
+          "description": "探索我们的未来计划和即将推出的功能"
+        },
+        "cookiePolicy": {
+          "title": "Cookie 政策",
+          "description": "我们如何在网站上使用 Cookie"
+        },
+        "privacyPolicy": {
+          "title": "隐私政策",
+          "description": "我们如何保护和处理您的数据"
+        },
+        "termsOfService": {
+          "title": "服务条款",
+          "description": "您与我们公司之间的法律协议"
+        }
+      }
+    },
+    "blocks": {
+      "title": "组件块",
+      "items": {
+        "magicui": {
+          "title": "MagicUI 组件块"
+        },
+        "hero-section": {
+          "title": "英雄区块"
+        },
+        "logo-cloud": {
+          "title": "Logo 云组件块"
+        },
+        "integrations": {
+          "title": "集成组件块"
+        },
+        "features": {
+          "title": "功能组件块"
+        },
+        "content": {
+          "title": "内容组件块"
+        },
+        "stats": {
+          "title": "统计组件块"
+        },
+        "team": {
+          "title": "团队组件块"
+        },
+        "testimonials": {
+          "title": "推荐组件块"
+        },
+        "callToAction": {
+          "title": "行动召唤组件块"
+        },
+        "footer": {
+          "title": "页脚组件块"
+        },
+        "pricing": {
+          "title": "定价组件块"
+        },
+        "comparator": {
+          "title": "比较组件块"
+        },
+        "faq": {
+          "title": "常见问题组件块"
+        },
+        "login": {
+          "title": "登录组件块"
+        },
+        "signup": {
+          "title": "注册组件块"
+        },
+        "forgot-password": {
+          "title": "忘记密码组件块"
+        },
+        "contact": {
+          "title": "联系组件块"
+        }
+      }
+    }
+  }
+}

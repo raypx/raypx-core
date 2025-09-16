@@ -13,7 +13,7 @@ async function loadGtag(): Promise<Gtag | null> {
   if (gtagInstance) return gtagInstance
 
   // Use global gtag if available (loaded via script)
-  if (typeof window !== "undefined" && window.gtag) {
+  if (typeof window !== "undefined" && typeof window.gtag === "function") {
     gtagInstance = window.gtag
     return gtagInstance
   }
@@ -36,7 +36,11 @@ function GoogleAnalyticsPageView() {
       gtagInstance("config", envs.NEXT_PUBLIC_GA_MEASUREMENT_ID, {
         page_path: url,
       })
-    } else if (pathname && window.gtag && envs.NEXT_PUBLIC_GA_MEASUREMENT_ID) {
+    } else if (
+      pathname &&
+      typeof window.gtag === "function" &&
+      envs.NEXT_PUBLIC_GA_MEASUREMENT_ID
+    ) {
       let url = pathname
       if (searchParams.toString()) {
         url = `${url}?${searchParams.toString()}`

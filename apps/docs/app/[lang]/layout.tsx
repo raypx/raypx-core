@@ -1,15 +1,15 @@
+import appConfig from "@/config/app.config"
+import { docsI18nConfig } from "@/lib/docs/i18n"
+import "@/styles/globals.css"
 import { AnalyticsProvider } from "@raypx/analytics"
+import { Toaster } from "@raypx/ui/components/toast"
+import { defineI18nUI } from "fumadocs-ui/i18n"
 import { RootProvider } from "fumadocs-ui/provider"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import type { ReactNode } from "react"
-import appConfig from "@/config/app.config"
-import "@/styles/globals.css"
-import { NextIntlClientProvider } from "@raypx/i18n"
-import { Toaster } from "@raypx/ui/components/toast"
-import { defineI18nUI } from "fumadocs-ui/i18n"
+import { NextIntlClientProvider } from "next-intl"
 import { getMessages } from "next-intl/server"
-import { docsI18nConfig } from "@/lib/docs/i18n"
+import type { ReactNode } from "react"
 
 const inter = Inter({
   subsets: ["latin"],

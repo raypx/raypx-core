@@ -1,0 +1,682 @@
+---
+description: Internationalization (i18n) Guidelines with next-intl
+globs: **/*.tsx,**/*.ts,**/messages/**/*.json,**/locales/**/*,**/i18n/**/*
+alwaysApply: false
+---
+# Internationalization (i18n) Guidelines
+
+## Core Principles
+
+- Use next-intl for robust internationalization support
+- Implement proper locale detection and routing
+- Organize translations with namespaced JSON structure
+- Support server-side and client-side rendering
+- Handle pluralization and number/date formatting
+- Implement fallback mechanisms for missing translations
+- Use TypeScript for translation key validation
+- Design for RTL language support when needed
+
+## next-intl Configuration
+
+### Basic Setup
+```typescript
+// i18n/config.ts
+import { notFound } from 'next/navigation'
+import { getRequestConfig } from 'next-intl/server'
+
+export const locales = ['en', 'zh', 'ja', 'es', 'fr'] as const
+export const defaultLocale = 'en' as const
+
+export type Locale = typeof locales[number]
+
+export default getRequestConfig(async ({ locale }) => {
+  if (!locales.includes(locale as Locale)) {
+    notFound()
+  }
+
+  return {
+    messages: (await import(`../messages/${locale}.json`)).default,
+    timeZone: 'UTC',
+    now: new Date(),
+  }
+})
+```
+
+### Middleware Configuration
+```typescript
+// middleware.ts
+import createMiddleware from 'next-intl/middleware'
+import { locales, defaultLocale } from './i18n/config'
+
+export default createMiddleware({
+  locales,
+  defaultLocale,
+  localeDetection: true,
+  localePrefix: 'as-needed', // Don't prefix default locale
+  alternateLinks: false,
+})
+
+export const config = {
+  matcher: [
+    // Match all pathnames except for
+    // - /api routes
+    // - /_next (Next.js internals)
+    // - /_vercel (Vercel internals)
+    // - Static files
+    '/((?!api|_next|_vercel|.*\\..*).*)',
+  ],
+}
+```
+
+### App Router Layout
+```typescript
+// app/[locale]/layout.tsx
+import { NextIntlClientProvider } from 'next-intl'
+import { getMessages, getTranslations } from 'next-intl/server'
+import { notFound } from 'next/navigation'
+import { locales } from '@/i18n/config'
+
+interface RootLayoutProps {
+  children: React.ReactNode
+  params: { locale: string }
+}
+
+export default async function RootLayout({
+  children,
+  params: { locale },
+}: RootLayoutProps) {
+  if (!locales.includes(locale as any)) {
+    notFound()
+  }
+
+  const messages = await getMessages()
+
+  return (
+    <html lang={locale} dir={locale === 'ar' || locale === 'he' ? 'rtl' : 'ltr'}>
+      <body>
+        <NextIntlClientProvider messages={messages}>
+          {children}
+        </NextIntlClientProvider>
+      </body>
+    </html>
+  )
+}
+
+export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
+  const t = await getTranslations({ locale, namespace: 'metadata' })
+
+  return {
+    title: {
+      template: `%s | ${t('title')}`,
+      default: t('title'),
+    },
+    description: t('description'),
+  }
+}
+```
+
+## Translation Structure
+
+### Message Organization
+```json
+// messages/en.json
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "actions": "Actions",
+    "noData": "No data available",
+    "confirmDelete": "Are you sure you want to delete this item?"
+  },
+  "navigation": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "users": "Users",
+    "settings": "Settings",
+    "profile": "Profile",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "signUp": "Sign Up"
+  },
+  "auth": {
+    "signIn": {
+      "title": "Sign In to Your Account",
+      "email": "Email Address",
+      "password": "Password",
+      "submit": "Sign In",
+      "forgotPassword": "Forgot your password?",
+      "noAccount": "Don't have an account?",
+      "createAccount": "Create one now"
+    },
+    "signUp": {
+      "title": "Create Your Account",
+      "name": "Full Name",
+      "email": "Email Address",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "submit": "Create Account",
+      "hasAccount": "Already have an account?",
+      "signInInstead": "Sign in instead"
+    },
+    "errors": {
+      "invalidCredentials": "Invalid email or password",
+      "emailRequired": "Email is required",
+      "passwordRequired": "Password is required",
+      "passwordTooShort": "Password must be at least 8 characters",
+      "passwordMismatch": "Passwords do not match",
+      "emailInvalid": "Please enter a valid email address"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcomeMessage": "Welcome back, {name}!",
+    "stats": {
+      "totalUsers": "Total Users",
+      "activeUsers": "Active Users",
+      "newUsers": "New Users Today",
+      "revenue": "Total Revenue"
+    }
+  },
+  "users": {
+    "title": "Users",
+    "createUser": "Create User",
+    "editUser": "Edit User",
+    "deleteUser": "Delete User",
+    "userCount": {
+      "zero": "No users",
+      "one": "1 user",
+      "other": "{count} users"
+    },
+    "table": {
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "status": "Status",
+      "createdAt": "Created",
+      "lastLogin": "Last Login"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "pending": "Pending",
+      "suspended": "Suspended"
+    }
+  },
+  "metadata": {
+    "title": "Raypx - Modern Web Application",
+    "description": "Build amazing web applications with Next.js, TypeScript, and Tailwind CSS"
+  }
+}
+```
+
+### Namespaced Translations
+```json
+// messages/zh.json
+{
+  "common": {
+    "loading": "加载中...",
+    "error": "出现错误",
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "create": "创建",
+    "search": "搜索",
+    "filter": "筛选",
+    "sort": "排序",
+    "actions": "操作",
+    "noData": "暂无数据",
+    "confirmDelete": "确定要删除此项吗？"
+  },
+  "navigation": {
+    "home": "首页",
+    "dashboard": "仪表盘",
+    "users": "用户",
+    "settings": "设置",
+    "profile": "个人资料",
+    "signIn": "登录",
+    "signOut": "退出",
+    "signUp": "注册"
+  },
+  "auth": {
+    "signIn": {
+      "title": "登录您的账户",
+      "email": "邮箱地址",
+      "password": "密码",
+      "submit": "登录",
+      "forgotPassword": "忘记密码？",
+      "noAccount": "还没有账户？",
+      "createAccount": "立即创建"
+    },
+    "errors": {
+      "invalidCredentials": "邮箱或密码无效",
+      "emailRequired": "请输入邮箱",
+      "passwordRequired": "请输入密码",
+      "passwordTooShort": "密码至少需要8个字符",
+      "passwordMismatch": "密码不匹配",
+      "emailInvalid": "请输入有效的邮箱地址"
+    }
+  },
+  "users": {
+    "userCount": {
+      "zero": "无用户",
+      "other": "{count} 个用户"
+    }
+  }
+}
+```
+
+## Component Implementation
+
+### Server Components
+```typescript
+// ✅ Good - Server component with translations
+import { getTranslations } from 'next-intl/server'
+import { Button } from '@raypx/ui/components/button'
+
+interface DashboardPageProps {
+  params: { locale: string }
+}
+
+export default async function DashboardPage({ params: { locale } }: DashboardPageProps) {
+  const t = await getTranslations('dashboard')
+  const commonT = await getTranslations('common')
+
+  return (
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-6">{t('title')}</h1>
+      
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <StatCard
+          title={t('stats.totalUsers')}
+          value="1,234"
+          loading={false}
+        />
+        <StatCard
+          title={t('stats.activeUsers')}
+          value="892"
+          loading={false}
+        />
+      </div>
+
+      <Button className="mt-6">
+        {commonT('create')}
+      </Button>
+    </div>
+  )
+}
+```
+
+### Client Components
+```typescript
+// ✅ Good - Client component with translations
+'use client'
+
+import { useTranslations } from 'next-intl'
+import { useState } from 'react'
+import { Button } from '@raypx/ui/components/button'
+import { Input } from '@raypx/ui/components/input'
+
+export function UserForm() {
+  const t = useTranslations('users')
+  const authT = useTranslations('auth')
+  const commonT = useTranslations('common')
+  
+  const [isLoading, setIsLoading] = useState(false)
+
+  return (
+    <form className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium mb-2">
+          {authT('signUp.name')}
+        </label>
+        <Input placeholder={authT('signUp.name')} />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-2">
+          {authT('signUp.email')}
+        </label>
+        <Input type="email" placeholder={authT('signUp.email')} />
+      </div>
+
+      <Button type="submit" disabled={isLoading}>
+        {isLoading ? commonT('loading') : commonT('save')}
+      </Button>
+    </form>
+  )
+}
+```
+
+### Hooks and Utilities
+```typescript
+// ✅ Good - Custom hooks for i18n
+import { useTranslations } from 'next-intl'
+
+// Hook for common translations
+export function useCommonTranslations() {
+  return useTranslations('common')
+}
+
+// Hook for navigation translations
+export function useNavigationTranslations() {
+  return useTranslations('navigation')
+}
+
+// Hook for error messages
+export function useErrorTranslations() {
+  return useTranslations('auth.errors')
+}
+
+// Usage
+export function MyComponent() {
+  const t = useCommonTranslations()
+  const navT = useNavigationTranslations()
+  const errorT = useErrorTranslations()
+
+  return (
+    <div>
+      <h1>{navT('dashboard')}</h1>
+      <button>{t('save')}</button>
+    </div>
+  )
+}
+```
+
+## Advanced Features
+
+### Pluralization
+```typescript
+// ✅ Good - Pluralization support
+import { useTranslations } from 'next-intl'
+
+export function UserCount({ count }: { count: number }) {
+  const t = useTranslations('users')
+
+  return (
+    <p>
+      {t('userCount', { count })}
+    </p>
+  )
+}
+
+// In messages
+{
+  "users": {
+    "userCount": {
+      "zero": "No users",
+      "one": "1 user", 
+      "other": "{count} users"
+    }
+  }
+}
+```
+
+### Rich Text and Formatting
+```typescript
+// ✅ Good - Rich text with formatting
+import { useTranslations } from 'next-intl'
+
+export function WelcomeMessage({ userName }: { userName: string }) {
+  const t = useTranslations('dashboard')
+
+  return (
+    <p>
+      {t.rich('welcomeMessage', {
+        name: userName,
+        strong: (chunks) => <strong className="font-bold">{chunks}</strong>,
+      })}
+    </p>
+  )
+}
+
+// In messages
+{
+  "dashboard": {
+    "welcomeMessage": "Welcome back, <strong>{name}</strong>!"
+  }
+}
+```
+
+### Date and Number Formatting
+```typescript
+// ✅ Good - Locale-aware formatting
+import { useLocale, useFormatter } from 'next-intl'
+
+export function FormattedData() {
+  const locale = useLocale()
+  const format = useFormatter()
+
+  const date = new Date()
+  const price = 1234.56
+  const percentage = 0.875
+
+  return (
+    <div>
+      <p>Date: {format.dateTime(date, { dateStyle: 'medium' })}</p>
+      <p>Price: {format.number(price, { style: 'currency', currency: 'USD' })}</p>
+      <p>Percentage: {format.number(percentage, { style: 'percent' })}</p>
+      <p>Relative: {format.relativeTime(date, new Date(Date.now() - 1000 * 60 * 60))}</p>
+    </div>
+  )
+}
+```
+
+### Locale Switching
+```typescript
+// ✅ Good - Locale switcher component
+'use client'
+
+import { useLocale, useTranslations } from 'next-intl'
+import { usePathname, useRouter } from 'next/navigation'
+import { locales } from '@/i18n/config'
+
+const localeNames = {
+  en: 'English',
+  zh: '中文',
+  ja: '日本語',
+  es: 'Español',
+  fr: 'Français',
+}
+
+export function LanguageSwitcher() {
+  const t = useTranslations('common')
+  const locale = useLocale()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const handleLocaleChange = (newLocale: string) => {
+    // Remove current locale from pathname
+    const pathnameWithoutLocale = pathname.replace(`/${locale}`, '') || '/'
+    const newPath = newLocale === 'en' ? pathnameWithoutLocale : `/${newLocale}${pathnameWithoutLocale}`
+    
+    router.push(newPath)
+  }
+
+  return (
+    <select
+      value={locale}
+      onChange={(e) => handleLocaleChange(e.target.value)}
+      className="px-3 py-2 border rounded-md"
+      aria-label={t('selectLanguage')}
+    >
+      {locales.map((loc) => (
+        <option key={loc} value={loc}>
+          {localeNames[loc]}
+        </option>
+      ))}
+    </select>
+  )
+}
+```
+
+## Type Safety
+
+### TypeScript Integration
+```typescript
+// ✅ Good - Type-safe translations
+import { AbstractIntlMessages } from 'next-intl'
+
+// Generate types from your messages
+type Messages = typeof import('../messages/en.json')
+
+declare global {
+  interface IntlMessages extends Messages {}
+}
+
+// Type-safe translation function
+export function createTypedTranslations<T extends keyof IntlMessages>(namespace: T) {
+  return (key: keyof IntlMessages[T]) => {
+    // Implementation
+  }
+}
+
+// Usage with full type safety
+const t = createTypedTranslations('auth')
+t('signIn.title') // ✅ Type-safe
+t('invalid.key')  // ❌ TypeScript error
+```
+
+### Validation Helpers
+```typescript
+// ✅ Good - Translation validation utilities
+export function validateTranslations(locale: string, messages: any) {
+  const requiredKeys = [
+    'common.loading',
+    'common.error',
+    'navigation.home',
+    'auth.signIn.title',
+  ]
+
+  const missingKeys = requiredKeys.filter(key => {
+    const value = key.split('.').reduce((obj, prop) => obj?.[prop], messages)
+    return !value
+  })
+
+  if (missingKeys.length > 0) {
+    console.warn(`Missing translations for ${locale}:`, missingKeys)
+  }
+
+  return missingKeys.length === 0
+}
+```
+
+## SEO and Metadata
+
+### Localized Metadata
+```typescript
+// ✅ Good - Localized metadata
+import { getTranslations } from 'next-intl/server'
+import type { Metadata } from 'next'
+
+interface GenerateMetadataProps {
+  params: { locale: string }
+}
+
+export async function generateMetadata({ params: { locale } }: GenerateMetadataProps): Promise<Metadata> {
+  const t = await getTranslations({ locale, namespace: 'metadata' })
+
+  return {
+    title: t('title'),
+    description: t('description'),
+    alternates: {
+      canonical: `https://raypx.com/${locale}`,
+      languages: {
+        'en': 'https://raypx.com/en',
+        'zh': 'https://raypx.com/zh',
+        'ja': 'https://raypx.com/ja',
+        'x-default': 'https://raypx.com',
+      },
+    },
+    openGraph: {
+      title: t('title'),
+      description: t('description'),
+      locale: locale,
+      alternateLocale: ['en', 'zh', 'ja'].filter(l => l !== locale),
+    },
+  }
+}
+```
+
+### Structured Data
+```typescript
+// ✅ Good - Localized structured data
+export function generateStructuredData(locale: string) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: locale === 'zh' ? 'Raypx 应用' : 'Raypx App',
+    description: locale === 'zh' ? '现代化网页应用程序' : 'Modern web application',
+    inLanguage: locale,
+    url: `https://raypx.com/${locale}`,
+  }
+}
+```
+
+## Testing i18n
+
+### Translation Testing
+```typescript
+// ✅ Good - Testing translations
+import { describe, it, expect } from 'vitest'
+import { NextIntlClientProvider } from 'next-intl'
+import { render, screen } from '@testing-library/react'
+
+const messages = {
+  common: {
+    save: 'Save',
+    loading: 'Loading...',
+  },
+}
+
+function renderWithIntl(component: React.ReactNode) {
+  return render(
+    <NextIntlClientProvider messages={messages} locale="en">
+      {component}
+    </NextIntlClientProvider>
+  )
+}
+
+describe('UserForm', () => {
+  it('should display translated text', () => {
+    renderWithIntl(<UserForm />)
+    
+    expect(screen.getByText('Save')).toBeInTheDocument()
+    expect(screen.getByText('Loading...')).toBeInTheDocument()
+  })
+})
+```
+
+## Best Practices
+
+### Translation Guidelines
+- Keep translations concise and user-friendly
+- Use consistent terminology across the application
+- Provide context for translators when needed
+- Handle pluralization correctly for each locale
+- Test all languages in different screen sizes
+- Use proper date/time/number formatting
+- Consider cultural differences in UX
+- Implement proper fallback mechanisms
+
+### Performance Optimization
+- Load only required translations for each page
+- Use code splitting for locale-specific code
+- Implement proper caching for translation files
+- Minimize bundle size impact of i18n
+
+### Accessibility Considerations
+- Set proper `lang` attribute on HTML elements
+- Support RTL languages when needed
+- Ensure proper keyboard navigation
+- Test screen reader compatibility
+
+Remember: Internationalization should be considered from the beginning of the project, not added as an afterthought. Design your components and data structures to accommodate multiple languages and cultural differences.
