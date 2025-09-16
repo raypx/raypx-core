@@ -7,12 +7,12 @@
     "build": "pnpm with-env next build",
     "clean": "rimraf .next .source",
     "dev": "pnpm with-env next dev --turbo --port 3003",
-    "postinstall": "fumadocs-mdx",
+    "fumadocs-mdx": "fumadocs-mdx",
     "start": "pnpm with-env next start",
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@orama/tokenizers": "^3.1.13",
+    "@orama/tokenizers": "^3.1.14",
     "@raypx/analytics": "workspace:*",
     "@raypx/auth": "workspace:*",
     "@raypx/db": "workspace:*",

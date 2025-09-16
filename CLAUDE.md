@@ -182,6 +182,51 @@ DATABASE_URL=postgresql://...
 NEXTAUTH_SECRET=your-secret-key
 ```
 
+### Claude Code Configuration
+
+**Automatic Setup:**
+The project automatically creates and maintains local Claude Code settings during installation with an interactive progress display:
+- `.claude/settings.json` - Shared team configuration (checked into git)
+- `.claude/settings.local.json` - Personal local overrides (gitignored)
+
+**Enhanced Installation Experience:**
+- 🔧 **Interactive Progress Bar**: Visual feedback using listr2 task runner
+- ⚙️ **Step-by-Step Display**: Clear indication of each setup phase
+- 💡 **Contextual Messages**: Helpful tips based on the action performed
+- ⏱️ **Timing Information**: Shows duration for each step
+
+**Intelligent Merging:**
+The setup script uses `deepmerge` to intelligently combine settings:
+- **First time**: Creates local settings from base settings
+- **Updates**: Merges base settings with your local customizations
+- **Arrays**: Concatenates and deduplicates (e.g., permissions.allow)
+- **Objects**: Deep merges with local taking priority
+- **Preserves**: All your custom environment variables and settings
+
+**Manual Setup:**
+```bash
+# If you need to recreate local settings
+cp .claude/settings.json .claude/settings.local.json
+```
+
+**Customization Examples:**
+```json
+{
+  "permissions": {
+    "allow": [
+      // Base permissions are automatically included
+      "Bash(yarn:*)",          // Add your preferred tools
+      "Bash(npm:*)",
+      "WebFetch(domain:my-custom-domain.com)"
+    ]
+  },
+  "env": {
+    "MY_CUSTOM_VAR": "local-value",
+    "DEBUG": "true"
+  }
+}
+```
+
 ### Production Checklist
 - [ ] Environment variables configured in deployment platform
 - [ ] Database migrations run successfully

@@ -26,7 +26,7 @@
     "coverage": "vitest --coverage",
     "dedupe": "pnpm dedupe",
     "dev": "turbo dev",
-    "format": "biome check --write",
+    "format": "raypx-scripts format",
     "preinstall": "npx only-allow pnpm",
     "postinstall": "raypx-scripts postinstall",
     "prepare": "husky",
