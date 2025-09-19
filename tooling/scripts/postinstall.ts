@@ -14,7 +14,7 @@ const mergeOptions = {
   ],
 }
 
-async function main() {
+export default async function postinstall() {
   const tasks = new Listr(
     [
       {
@@ -72,5 +72,3 @@ async function main() {
     process.exit(1)
   }
 }
-
-main().catch(console.error)

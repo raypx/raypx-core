@@ -28,7 +28,7 @@
     "@types/node": "catalog:",
     "next": "catalog:",
     "tsx": "^4.20.5",
-    "type-fest": "^5.0.0",
+    "type-fest": "catalog:",
     "typescript": "catalog:"
   }
 }

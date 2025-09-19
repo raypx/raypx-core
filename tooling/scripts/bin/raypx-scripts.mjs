@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 
-import { execSync } from "node:child_process"
 import { existsSync } from "node:fs"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
+import "tsx"
+
+const cli = (await import("../cli")).default
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url))
 
@@ -16,13 +18,7 @@ if (!name || !existsSync(scriptsPath) || name.startsWith(".")) {
 }
 
 try {
-  execSync(
-    `pnpm exec tsx "${scriptsPath}" ${args.map((arg) => `"${arg}"`).join(" ")}`,
-    {
-      env: { ...process.env, NODE_NO_WARNINGS: "1" },
-      stdio: "inherit",
-    },
-  )
+  cli(name, args)
 } catch (error) {
   process.exit(error.status || 1)
 }

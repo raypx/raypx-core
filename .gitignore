@@ -1,6 +1,9 @@
 # dependencies
 node_modules
 
+# temp files
+/temp
+
 # output
 out
 dist
@@ -50,4 +53,3 @@ next-env.d.ts
 .claude/auth.json
 .claude/cache/
 .claude/logs/
-

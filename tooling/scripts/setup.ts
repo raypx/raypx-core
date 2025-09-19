@@ -14,7 +14,7 @@ const mergeOptions = {
   ],
 }
 
-async function main() {
+export default async function setup() {
   console.log("🚀 Setting up development environment...")
 
   const tasks = new Listr(
@@ -100,5 +100,3 @@ async function main() {
     process.exit(1)
   }
 }
-
-main().catch(console.error)

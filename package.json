@@ -2,7 +2,6 @@
   "name": "raypx",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "description": "A modern web application built with Next.js and TypeScript",
   "homepage": "https://raypx.com",
   "bugs": {
@@ -22,7 +21,7 @@
     "build": "turbo build",
     "changeset": "changeset",
     "check": "biome check",
-    "clean": "turbo clean && git clean -xdf node_modules dist .next",
+    "clean": "turbo clean && git clean -xdf dist .next",
     "coverage": "vitest --coverage",
     "dedupe": "pnpm dedupe",
     "dev": "turbo dev",
@@ -51,12 +50,12 @@
     "rimraf": "^6.0.1",
     "tsx": "^4.20.5",
     "turbo": "^2.5.6",
-    "typescript": "^5.9.2",
+    "typescript": "catalog:",
     "vite": "catalog:",
-    "vitest": "^3.2.4",
+    "vitest": "catalog:",
     "zod": "catalog:"
   },
-  "packageManager": "pnpm@10.16.1",
+  "packageManager": "pnpm@10.17.0",
   "engines": {
     "node": ">=20",
     "pnpm": ">=10.0.0"

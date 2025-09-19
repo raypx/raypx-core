@@ -7,4 +7,6 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url))
 
 const root = join(__dirname, "..")
 
-execSync("pnpm exec biome check --write", { cwd: root })
+export default function format() {
+  execSync("pnpm exec biome check --write", { cwd: root })
+}
