@@ -2,12 +2,13 @@ import { createEnv, z } from "@raypx/shared";
 
 export const envs = () =>
   createEnv({
-    client: {},
     shared: {
-      NODE_ENV: z.enum(["development", "production"]).default("development"),
+      NEXT_PUBLIC_SUPABASE_URL: z.url(),
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string(),
     },
     server: {},
     runtimeEnv: {
-      NODE_ENV: process.env.NODE_ENV,
+      NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     },
   });
