@@ -1,15 +1,15 @@
 import type { AuthViewPaths } from "@raypx/auth";
 
 export const authPages: Partial<AuthViewPaths> = {
-  CALLBACK: "callback",
-  EMAIL_OTP: "email-otp",
-  FORGOT_PASSWORD: "forgot-password",
-  MAGIC_LINK: "magic-link",
-  RECOVER_ACCOUNT: "recover-account",
-  RESET_PASSWORD: "reset-password",
-  SIGN_IN: "sign-in",
-  SIGN_OUT: "sign-out",
-  SIGN_UP: "sign-up",
-  TWO_FACTOR: "two-factor",
-  ACCEPT_INVITATION: "accept-invitation",
+  CALLBACK: "auth/callback",
+  EMAIL_OTP: "auth/email-otp",
+  FORGOT_PASSWORD: "auth/forgot-password",
+  MAGIC_LINK: "auth/magic-link",
+  RECOVER_ACCOUNT: "auth/recover-account",
+  RESET_PASSWORD: "auth/reset-password",
+  SIGN_IN: "auth/sign-in",
+  SIGN_OUT: "auth/sign-out",
+  SIGN_UP: "auth/sign-up",
+  TWO_FACTOR: "auth/two-factor",
+  ACCEPT_INVITATION: "auth/accept-invitation",
 };
