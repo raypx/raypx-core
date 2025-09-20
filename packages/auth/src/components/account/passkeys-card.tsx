@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
-import { CardContent } from "@raypx/ui/components/card"
-import { Form } from "@raypx/ui/components/form"
-import type { SettingsCardClassNames } from "@raypx/ui/components/settings"
-import { SettingsCard } from "@raypx/ui/components/settings"
-import { cn } from "@raypx/ui/lib/utils"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { useAuth } from "../../core/hooks/use-auth"
-import { getLocalizedError } from "../../core/lib/utils"
-import { SessionFreshnessDialog } from "../core/session-freshness-dialog"
-import { PasskeyCell } from "./passkey-cell"
+import { CardContent } from "@raypx/ui/components/card";
+import { Form } from "@raypx/ui/components/form";
+import type { SettingsCardClassNames } from "@raypx/ui/components/settings";
+import { SettingsCard } from "@raypx/ui/components/settings";
+import { cn } from "@raypx/ui/lib/utils";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useAuth } from "../../core/hooks/use-auth";
+import { getLocalizedError } from "../../core/lib/utils";
+import { SessionFreshnessDialog } from "../core/session-freshness-dialog";
+import { PasskeyCell } from "./passkey-cell";
 
 export interface PasskeysCardProps {
-  className?: string
-  classNames?: SettingsCardClassNames
+  className?: string;
+  classNames?: SettingsCardClassNames;
 }
 
 export function PasskeysCard({ className, classNames }: PasskeysCardProps) {
@@ -24,39 +24,39 @@ export function PasskeysCard({ className, classNames }: PasskeysCardProps) {
     hooks: { useListPasskeys, useSession },
     t,
     toast,
-  } = useAuth()
+  } = useAuth();
 
-  const { data: passkeys, isPending, refetch } = useListPasskeys()
+  const { data: passkeys, isPending, refetch } = useListPasskeys();
 
-  const { data: sessionData } = useSession()
-  const session = sessionData?.session
+  const { data: sessionData } = useSession();
+  const session = sessionData?.session;
   const isFresh = session
     ? Date.now() - new Date(session?.createdAt).getTime() < freshAge * 1000
-    : false
+    : false;
 
-  const [showFreshnessDialog, setShowFreshnessDialog] = useState(false)
+  const [showFreshnessDialog, setShowFreshnessDialog] = useState(false);
 
   const addPasskey = async () => {
     // If session isn't fresh, show the freshness dialog
     if (!isFresh) {
-      setShowFreshnessDialog(true)
-      return
+      setShowFreshnessDialog(true);
+      return;
     }
 
     try {
       await authClient.passkey.addPasskey({
         fetchOptions: { throw: true },
-      })
-      await refetch?.()
+      });
+      await refetch?.();
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
-  }
+  };
 
-  const form = useForm()
+  const form = useForm();
 
   return (
     <>
@@ -80,11 +80,7 @@ export function PasskeysCard({ className, classNames }: PasskeysCardProps) {
             {passkeys && passkeys.length > 0 && (
               <CardContent className={cn("grid gap-4", classNames?.content)}>
                 {passkeys?.map((passkey) => (
-                  <PasskeyCell
-                    key={passkey.id}
-                    classNames={classNames}
-                    passkey={passkey}
-                  />
+                  <PasskeyCell key={passkey.id} classNames={classNames} passkey={passkey} />
                 ))}
               </CardContent>
             )}
@@ -92,5 +88,5 @@ export function PasskeysCard({ className, classNames }: PasskeysCardProps) {
         </form>
       </Form>
     </>
-  )
+  );
 }

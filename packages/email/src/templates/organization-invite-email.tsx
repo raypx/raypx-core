@@ -1,13 +1,13 @@
-import { Button, Text } from "@react-email/components"
-import { EmailLayout } from "./layout-email"
+import { Button, Text } from "@react-email/components";
+import { EmailLayout } from "./layout-email";
 
 export interface OrganizationInviteEmailProps {
-  inviterName: string
-  inviterEmail: string
-  organizationName: string
-  role: string
-  inviteUrl: string
-  expiresIn?: string
+  inviterName: string;
+  inviterEmail: string;
+  organizationName: string;
+  role: string;
+  inviteUrl: string;
+  expiresIn?: string;
 }
 
 const OrganizationInviteEmail = ({
@@ -25,8 +25,8 @@ const OrganizationInviteEmail = ({
       </Text>
 
       <Text className="text-gray-600">
-        {inviterName} ({inviterEmail}) has invited you to join{" "}
-        <strong>{organizationName}</strong> as a <strong>{role}</strong>.
+        {inviterName} ({inviterEmail}) has invited you to join <strong>{organizationName}</strong>{" "}
+        as a <strong>{role}</strong>.
       </Text>
 
       <Text className="text-gray-600">
@@ -41,19 +41,18 @@ const OrganizationInviteEmail = ({
       </Button>
 
       <Text className="text-gray-500 text-sm mt-6">
-        This invitation will expire in {expiresIn}. If you don't want to join
-        this organization, you can safely ignore this email.
+        This invitation will expire in {expiresIn}. If you don't want to join this organization, you
+        can safely ignore this email.
       </Text>
 
       <Text className="text-gray-500 text-sm">
-        If the button doesn't work, you can copy and paste this link into your
-        browser:
+        If the button doesn't work, you can copy and paste this link into your browser:
         <br />
         <span className="break-all">{inviteUrl}</span>
       </Text>
     </EmailLayout>
-  )
-}
+  );
+};
 
 OrganizationInviteEmail.PreviewProps = {
   inviterName: "John Doe",
@@ -61,6 +60,6 @@ OrganizationInviteEmail.PreviewProps = {
   organizationName: "Acme Inc.",
   role: "Admin",
   inviteUrl: "https://example.com/invite",
-}
+};
 
-export { OrganizationInviteEmail }
+export { OrganizationInviteEmail };

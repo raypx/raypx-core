@@ -2,20 +2,20 @@
  * Email package main exports
  */
 
-export { EmailAnalytics } from "./analytics"
+export { EmailAnalytics } from "./analytics";
 // Client utilities
-export type { EmailClientOptions, EmailClientResponse } from "./client"
-export { DEFAULT_EMAIL_CLIENT_OPTIONS } from "./client"
+export type { EmailClientOptions, EmailClientResponse } from "./client";
+export { DEFAULT_EMAIL_CLIENT_OPTIONS } from "./client";
 // Environment configuration
-export { envs } from "./envs"
+export { envs } from "./envs";
 // Core services
 export {
   getEmailById,
   getEmailEvents,
   sendEmail,
   trackEmailEvent,
-} from "./server"
-export * from "./templates"
+} from "./server";
+export * from "./templates";
 // Core types
 export type {
   EmailAnalyticsFilter,
@@ -27,7 +27,7 @@ export type {
   SendEmailOptions,
   SendEmailResult,
   WebhookEvent,
-} from "./types"
+} from "./types";
 // Core enums
 // Utility functions and constants
 export {
@@ -44,7 +44,7 @@ export {
   isValidEmailStatus,
   RESEND_WEBHOOK_EVENT_TYPES,
   ResendWebhookEventType,
-} from "./types"
+} from "./types";
 // Additional utility functions
 export {
   EVENT_TYPE_MAP,
@@ -56,5 +56,5 @@ export {
   isValidStatus,
   PROVIDER_MAP,
   STATUS_MAP,
-} from "./utils"
-export { EmailWebhookHandler } from "./webhooks"
+} from "./utils";
+export { EmailWebhookHandler } from "./webhooks";

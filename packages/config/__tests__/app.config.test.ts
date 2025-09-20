@@ -1,8 +1,8 @@
-import { beforeEach, describe, expect, it, vi } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // We need to import and test the schema logic, but since the actual config
 // depends on process.env, we'll test the parsing logic with mock data
-const { z } = await import("zod")
+const { z } = await import("zod");
 
 describe("app config schema", () => {
   // Create the schema here for testing
@@ -23,14 +23,13 @@ describe("app config schema", () => {
       (schema) => {
         const isProductionDeployment =
           (schema.production && process.env.VERCEL_ENV === "production") ||
-          (process.env.NODE_ENV === "production" &&
-            !schema.url.includes("localhost"))
+          (process.env.NODE_ENV === "production" && !schema.url.includes("localhost"));
 
         if (!isProductionDeployment) {
-          return true
+          return true;
         }
 
-        return !schema.url.startsWith("http:")
+        return !schema.url.startsWith("http:");
       },
       {
         message: `Please provide a valid HTTPS URL for production deployment. Set the variable NEXT_PUBLIC_SITE_URL with a valid URL, such as: 'https://example.com'`,
@@ -39,17 +38,17 @@ describe("app config schema", () => {
     )
     .refine(
       (schema) => {
-        return schema.themeColor !== schema.themeColorDark
+        return schema.themeColor !== schema.themeColorDark;
       },
       {
         message: `Please provide different theme colors for light and dark themes.`,
         path: ["themeColor"],
       },
-    )
+    );
 
   beforeEach(() => {
-    vi.resetAllMocks()
-  })
+    vi.resetAllMocks();
+  });
 
   it("should validate valid app config", () => {
     const validConfig = {
@@ -63,10 +62,10 @@ describe("app config schema", () => {
       themeColor: "#3b82f6",
       themeColorDark: "#1e40af",
       version: "1.0.0",
-    }
+    };
 
-    expect(() => AppConfigSchema.parse(validConfig)).not.toThrow()
-  })
+    expect(() => AppConfigSchema.parse(validConfig)).not.toThrow();
+  });
 
   it("should require name to be non-empty", () => {
     const invalidConfig = {
@@ -79,10 +78,10 @@ describe("app config schema", () => {
       production: false,
       themeColor: "#3b82f6",
       themeColorDark: "#1e40af",
-    }
+    };
 
-    expect(() => AppConfigSchema.parse(invalidConfig)).toThrow()
-  })
+    expect(() => AppConfigSchema.parse(invalidConfig)).toThrow();
+  });
 
   it("should require valid URL format", () => {
     const invalidConfig = {
@@ -95,10 +94,10 @@ describe("app config schema", () => {
       production: false,
       themeColor: "#3b82f6",
       themeColorDark: "#1e40af",
-    }
+    };
 
-    expect(() => AppConfigSchema.parse(invalidConfig)).toThrow()
-  })
+    expect(() => AppConfigSchema.parse(invalidConfig)).toThrow();
+  });
 
   it("should enforce different theme colors", () => {
     const invalidConfig = {
@@ -111,12 +110,12 @@ describe("app config schema", () => {
       production: false,
       themeColor: "#3b82f6",
       themeColorDark: "#3b82f6", // Same color
-    }
+    };
 
     expect(() => AppConfigSchema.parse(invalidConfig)).toThrow(
       /Please provide different theme colors/,
-    )
-  })
+    );
+  });
 
   it("should validate theme enum values", () => {
     const invalidConfig = {
@@ -129,10 +128,10 @@ describe("app config schema", () => {
       production: false,
       themeColor: "#3b82f6",
       themeColorDark: "#1e40af",
-    }
+    };
 
-    expect(() => AppConfigSchema.parse(invalidConfig)).toThrow()
-  })
+    expect(() => AppConfigSchema.parse(invalidConfig)).toThrow();
+  });
 
   it("should default locale to en", () => {
     const config = {
@@ -144,11 +143,11 @@ describe("app config schema", () => {
       production: false,
       themeColor: "#3b82f6",
       themeColorDark: "#1e40af",
-    }
+    };
 
-    const parsed = AppConfigSchema.parse(config)
-    expect(parsed.locale).toBe("en")
-  })
+    const parsed = AppConfigSchema.parse(config);
+    expect(parsed.locale).toBe("en");
+  });
 
   it("should allow version to be optional", () => {
     const configWithoutVersion = {
@@ -161,9 +160,9 @@ describe("app config schema", () => {
       production: false,
       themeColor: "#3b82f6",
       themeColorDark: "#1e40af",
-    }
+    };
 
-    const parsed = AppConfigSchema.parse(configWithoutVersion)
-    expect(parsed.version).toBeUndefined()
-  })
-})
+    const parsed = AppConfigSchema.parse(configWithoutVersion);
+    expect(parsed.version).toBeUndefined();
+  });
+});

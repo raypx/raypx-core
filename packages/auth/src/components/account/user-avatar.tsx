@@ -1,31 +1,27 @@
-"use client"
+"use client";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@raypx/ui/components/avatar"
-import { UserRoundIcon } from "@raypx/ui/components/icons"
-import { Skeleton } from "@raypx/ui/components/skeleton"
-import { cn } from "@raypx/ui/lib/utils"
-import type { ComponentProps } from "react"
-import { useAuth } from "../../core/hooks/use-auth"
-import { getGravatarUrl } from "../../core/lib/gravatar-utils"
-import type { Profile } from "../../types"
+import { Avatar, AvatarFallback, AvatarImage } from "@raypx/ui/components/avatar";
+import { UserRoundIcon } from "@raypx/ui/components/icons";
+import { Skeleton } from "@raypx/ui/components/skeleton";
+import { cn } from "@raypx/ui/lib/utils";
+import type { ComponentProps } from "react";
+import { useAuth } from "../../core/hooks/use-auth";
+import { getGravatarUrl } from "../../core/lib/gravatar-utils";
+import type { Profile } from "../../types";
 
 export interface UserAvatarClassNames {
-  base?: string
-  image?: string
-  fallback?: string
-  fallbackIcon?: string
-  skeleton?: string
+  base?: string;
+  image?: string;
+  fallback?: string;
+  fallbackIcon?: string;
+  skeleton?: string;
 }
 
 export interface UserAvatarProps {
-  classNames?: UserAvatarClassNames
-  isPending?: boolean
-  size?: "sm" | "default" | "lg" | "xl" | null
-  user?: Profile | null
+  classNames?: UserAvatarClassNames;
+  isPending?: boolean;
+  size?: "sm" | "default" | "lg" | "xl" | null;
+  user?: Profile | null;
 }
 
 /**
@@ -44,7 +40,7 @@ export function UserAvatar({
   user,
   ...props
 }: UserAvatarProps & ComponentProps<typeof Avatar>) {
-  const { gravatar, avatar, t } = useAuth()
+  const { gravatar, avatar, t } = useAuth();
 
   const name =
     user?.displayName ||
@@ -53,16 +49,16 @@ export function UserAvatar({
     user?.firstName ||
     user?.displayUsername ||
     user?.username ||
-    user?.email
-  const userImage = user?.image || user?.avatar || user?.avatarUrl
+    user?.email;
+  const userImage = user?.image || user?.avatar || user?.avatarUrl;
 
   // Calculate gravatar URL synchronously
   const gravatarUrl =
     gravatar && user?.email
       ? getGravatarUrl(user.email, gravatar === true ? undefined : gravatar)
-      : null
+      : null;
 
-  const src = gravatar ? gravatarUrl : userImage
+  const src = gravatar ? gravatarUrl : userImage;
 
   if (isPending) {
     return (
@@ -81,37 +77,23 @@ export function UserAvatar({
           classNames?.skeleton,
         )}
       />
-    )
+    );
   }
 
   return (
     <Avatar
       className={cn(
         "bg-muted",
-        size === "sm"
-          ? "size-6"
-          : size === "lg"
-            ? "size-10"
-            : size === "xl"
-              ? "size-12"
-              : "size-8",
+        size === "sm" ? "size-6" : size === "lg" ? "size-10" : size === "xl" ? "size-12" : "size-8",
         className,
         classNames?.base,
       )}
       {...props}
     >
       {avatar?.Image ? (
-        <avatar.Image
-          alt={name || t("USER")}
-          className={classNames?.image}
-          src={src || ""}
-        />
+        <avatar.Image alt={name || t("USER")} className={classNames?.image} src={src || ""} />
       ) : (
-        <AvatarImage
-          alt={name || t("USER")}
-          className={classNames?.image}
-          src={src || undefined}
-        />
+        <AvatarImage alt={name || t("USER")} className={classNames?.image} src={src || undefined} />
       )}
 
       <AvatarFallback
@@ -119,13 +101,11 @@ export function UserAvatar({
         delayMs={src ? 600 : undefined}
       >
         {firstTwoCharacters(name) || (
-          <UserRoundIcon
-            className={cn("size-[50%]", classNames?.fallbackIcon)}
-          />
+          <UserRoundIcon className={cn("size-[50%]", classNames?.fallbackIcon)} />
         )}
       </AvatarFallback>
     </Avatar>
-  )
+  );
 }
 
-const firstTwoCharacters = (name?: string | null) => name?.slice(0, 2)
+const firstTwoCharacters = (name?: string | null) => name?.slice(0, 2);

@@ -17,7 +17,7 @@
     "@raypx/auth": "workspace:*",
     "@raypx/db": "workspace:*",
     "@raypx/shared": "workspace:*",
-    "@scalar/hono-api-reference": "^0.9.18",
+    "@scalar/hono-api-reference": "^0.9.19",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.44.5",
     "drizzle-zod": "^0.8.3",

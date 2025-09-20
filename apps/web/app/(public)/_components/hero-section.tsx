@@ -1,45 +1,45 @@
-"use client"
+"use client";
 
-import { useAnalytics } from "@raypx/analytics"
-import { useAuth } from "@raypx/auth/core"
-import { Badge } from "@raypx/ui/components/badge"
-import { Button } from "@raypx/ui/components/button"
-import { ArrowRight, Shield, Sparkles, Zap } from "lucide-react"
-import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useAnalytics } from "@raypx/analytics";
+import { useAuth } from "@raypx/auth/core";
+import { Badge } from "@raypx/ui/components/badge";
+import { Button } from "@raypx/ui/components/button";
+import { ArrowRight, Shield, Sparkles, Zap } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export function HeroSection() {
-  const { track } = useAnalytics()
+  const { track } = useAnalytics();
   const {
     viewPaths: pages,
     hooks: { useSession },
-  } = useAuth()
-  const { data: session } = useSession()
-  const [mounted, setMounted] = useState(false)
+  } = useAuth();
+  const { data: session } = useSession();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   const handleGetStartedClick = () => {
     track("hero_get_started_clicked", {
       section: "hero",
       user_authenticated: !!session?.session,
-    })
-  }
+    });
+  };
 
   const handleSignInClick = () => {
     track("hero_sign_in_clicked", {
       section: "hero",
-    })
-  }
+    });
+  };
 
   const handleConsoleClick = () => {
     track("hero_console_clicked", {
       section: "hero",
       user_id: session?.session?.userId,
-    })
-  }
+    });
+  };
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
@@ -83,28 +83,22 @@ export function HeroSection() {
       )}
       <div className="relative max-w-7xl mx-auto px-6 py-24 lg:py-32">
         <div className="text-center space-y-8">
-          <Badge
-            variant="outline"
-            className="inline-flex items-center gap-2 px-4 py-2"
-          >
+          <Badge variant="outline" className="inline-flex items-center gap-2 px-4 py-2">
             <Sparkles className="h-4 w-4" />
             Built for modern development
           </Badge>
 
           <div className="space-y-4">
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight">
-              <span className="inline-block animate-fade-in-up">
-                Build AI-Powered
-              </span>
+              <span className="inline-block animate-fade-in-up">Build AI-Powered</span>
               <span className="block bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent animate-fade-in-up delay-200 animate-gradient-x">
                 Applications
               </span>
             </h1>
 
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed animate-fade-in-up delay-300">
-              Raypx is the complete platform for building, deploying, and
-              scaling AI-powered applications with enterprise-grade security and
-              performance.
+              Raypx is the complete platform for building, deploying, and scaling AI-powered
+              applications with enterprise-grade security and performance.
             </p>
           </div>
 
@@ -115,9 +109,7 @@ export function HeroSection() {
                   size="lg"
                   className="min-w-48 gap-2 group relative overflow-hidden bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/25 text-white"
                 >
-                  <span className="relative z-10 text-white">
-                    Go to Console
-                  </span>
+                  <span className="relative z-10 text-white">Go to Console</span>
                   <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1 text-white" />
                   <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </Button>
@@ -129,9 +121,7 @@ export function HeroSection() {
                     size="lg"
                     className="min-w-48 gap-2 group relative overflow-hidden bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/25 text-white"
                   >
-                    <span className="relative z-10 text-white">
-                      Get Started Free
-                    </span>
+                    <span className="relative z-10 text-white">Get Started Free</span>
                     <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1 text-white" />
                     <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </Button>
@@ -173,5 +163,5 @@ export function HeroSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

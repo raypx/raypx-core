@@ -1,30 +1,22 @@
-import { Button } from "@raypx/ui/components/button"
-import { LockIcon, MailIcon } from "@raypx/ui/components/icons"
-import { cn } from "@raypx/ui/lib/utils"
-import { useAuth } from "../../core/hooks/use-auth"
-import type { AuthViewPath } from "../../core/lib/view-paths"
-import type { AuthViewClassNames } from "./auth-view"
+import { Button } from "@raypx/ui/components/button";
+import { LockIcon, MailIcon } from "@raypx/ui/components/icons";
+import { cn } from "@raypx/ui/lib/utils";
+import { useAuth } from "../../core/hooks/use-auth";
+import type { AuthViewPath } from "../../core/lib/view-paths";
+import type { AuthViewClassNames } from "./auth-view";
 
 interface MagicLinkButtonProps {
-  classNames?: AuthViewClassNames
-  isSubmitting?: boolean
-  view: AuthViewPath
+  classNames?: AuthViewClassNames;
+  isSubmitting?: boolean;
+  view: AuthViewPath;
 }
 
-export function MagicLinkButton({
-  classNames,
-  isSubmitting,
-  view,
-}: MagicLinkButtonProps) {
-  const { viewPaths, navigate, basePath, credentials, t } = useAuth()
+export function MagicLinkButton({ classNames, isSubmitting, view }: MagicLinkButtonProps) {
+  const { viewPaths, navigate, basePath, credentials, t } = useAuth();
 
   return (
     <Button
-      className={cn(
-        "w-full",
-        classNames?.form?.button,
-        classNames?.form?.secondaryButton,
-      )}
+      className={cn("w-full", classNames?.form?.button, classNames?.form?.secondaryButton)}
       disabled={isSubmitting}
       type="button"
       variant="secondary"
@@ -39,8 +31,7 @@ export function MagicLinkButton({
       ) : (
         <MailIcon className={classNames?.form?.icon} />
       )}
-      {t("SIGN_IN_WITH")}{" "}
-      {view === "MAGIC_LINK" ? t("PASSWORD") : t("MAGIC_LINK")}
+      {t("SIGN_IN_WITH")} {view === "MAGIC_LINK" ? t("PASSWORD") : t("MAGIC_LINK")}
     </Button>
-  )
+  );
 }

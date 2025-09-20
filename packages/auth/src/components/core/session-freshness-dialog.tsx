@@ -1,4 +1,4 @@
-import { Button } from "@raypx/ui/components/button"
+import { Button } from "@raypx/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -6,17 +6,16 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@raypx/ui/components/dialog"
-import type { SettingsCardClassNames } from "@raypx/ui/components/settings"
-import { cn } from "@raypx/ui/lib/utils"
-import type { ComponentProps } from "react"
-import { useAuth } from "../../core/hooks/use-auth"
+} from "@raypx/ui/components/dialog";
+import type { SettingsCardClassNames } from "@raypx/ui/components/settings";
+import { cn } from "@raypx/ui/lib/utils";
+import type { ComponentProps } from "react";
+import { useAuth } from "../../core/hooks/use-auth";
 
-export interface SessionFreshnessDialogProps
-  extends ComponentProps<typeof Dialog> {
-  classNames?: SettingsCardClassNames
-  title?: string
-  description?: string
+export interface SessionFreshnessDialogProps extends ComponentProps<typeof Dialog> {
+  classNames?: SettingsCardClassNames;
+  title?: string;
+  description?: string;
 }
 
 export function SessionFreshnessDialog({
@@ -26,12 +25,12 @@ export function SessionFreshnessDialog({
   onOpenChange,
   ...props
 }: SessionFreshnessDialogProps) {
-  const { basePath, t, viewPaths, navigate } = useAuth()
+  const { basePath, t, viewPaths, navigate } = useAuth();
 
   const handleSignOut = () => {
-    navigate(`${basePath}/${viewPaths.SIGN_OUT}`)
-    onOpenChange?.(false)
-  }
+    navigate(`${basePath}/${viewPaths.SIGN_OUT}`);
+    onOpenChange?.(false);
+  };
 
   return (
     <Dialog onOpenChange={onOpenChange} {...props}>
@@ -41,9 +40,7 @@ export function SessionFreshnessDialog({
             {title || t("SESSION_EXPIRED") || "Session Expired"}
           </DialogTitle>
 
-          <DialogDescription
-            className={cn("text-xs md:text-sm", classNames?.description)}
-          >
+          <DialogDescription className={cn("text-xs md:text-sm", classNames?.description)}>
             {description || t("SESSION_NOT_FRESH")}
           </DialogDescription>
         </DialogHeader>
@@ -68,5 +65,5 @@ export function SessionFreshnessDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

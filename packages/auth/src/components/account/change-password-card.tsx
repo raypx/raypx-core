@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { CardContent } from "@raypx/ui/components/card"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CardContent } from "@raypx/ui/components/card";
 import {
   Form,
   FormControl,
@@ -9,27 +9,24 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@raypx/ui/components/form"
-import { PasswordField } from "@raypx/ui/components/password-field"
-import {
-  SettingsCard,
-  type SettingsCardClassNames,
-} from "@raypx/ui/components/settings"
-import { cn } from "@raypx/ui/lib/utils"
-import { useForm } from "react-hook-form"
-import { z } from "zod/v4"
-import { useAuth } from "../../core/hooks/use-auth"
-import { getLocalizedError, getPasswordSchema } from "../../core/lib/utils"
-import type { PasswordValidation } from "../../types"
-import { InputFieldSkeleton } from "./input-field-skeleton"
+} from "@raypx/ui/components/form";
+import { PasswordField } from "@raypx/ui/components/password-field";
+import { SettingsCard, type SettingsCardClassNames } from "@raypx/ui/components/settings";
+import { cn } from "@raypx/ui/lib/utils";
+import { useForm } from "react-hook-form";
+import { z } from "zod/v4";
+import { useAuth } from "../../core/hooks/use-auth";
+import { getLocalizedError, getPasswordSchema } from "../../core/lib/utils";
+import type { PasswordValidation } from "../../types";
+import { InputFieldSkeleton } from "./input-field-skeleton";
 
 export interface ChangePasswordCardProps {
-  className?: string
-  classNames?: SettingsCardClassNames
-  accounts?: { provider: string }[] | null
-  isPending?: boolean
-  skipHook?: boolean
-  passwordValidation?: PasswordValidation
+  className?: string;
+  classNames?: SettingsCardClassNames;
+  accounts?: { provider: string }[] | null;
+  isPending?: boolean;
+  skipHook?: boolean;
+  passwordValidation?: PasswordValidation;
 }
 
 export function ChangePasswordCard({
@@ -49,19 +46,19 @@ export function ChangePasswordCard({
     t,
     viewPaths,
     toast,
-  } = useAuth()
+  } = useAuth();
 
-  const confirmPasswordEnabled = credentials?.confirmPassword
-  const contextPasswordValidation = credentials?.passwordValidation
+  const confirmPasswordEnabled = credentials?.confirmPassword;
+  const contextPasswordValidation = credentials?.passwordValidation;
 
-  passwordValidation = { ...contextPasswordValidation, ...passwordValidation }
+  passwordValidation = { ...contextPasswordValidation, ...passwordValidation };
 
-  const { data: sessionData } = useSession()
+  const { data: sessionData } = useSession();
 
   if (!skipHook) {
-    const result = useListAccounts()
-    accounts = result.data
-    isPending = result.isPending
+    const result = useListAccounts();
+    accounts = result.data;
+    isPending = result.isPending;
   }
 
   const formSchema = z
@@ -87,14 +84,10 @@ export function ChangePasswordCard({
           })
         : z.string().optional(),
     })
-    .refine(
-      (data) =>
-        !confirmPasswordEnabled || data.newPassword === data.confirmPassword,
-      {
-        message: t("PASSWORDS_DO_NOT_MATCH"),
-        path: ["confirmPassword"],
-      },
-    )
+    .refine((data) => !confirmPasswordEnabled || data.newPassword === data.confirmPassword, {
+      message: t("PASSWORDS_DO_NOT_MATCH"),
+      path: ["confirmPassword"],
+    });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -103,64 +96,59 @@ export function ChangePasswordCard({
       newPassword: "",
       confirmPassword: "",
     },
-  })
+  });
 
-  const setPasswordForm = useForm()
+  const setPasswordForm = useForm();
 
-  const { isSubmitting } = form.formState
+  const { isSubmitting } = form.formState;
 
   const setPassword = async () => {
-    if (!sessionData) return
-    const email = sessionData?.user.email
+    if (!sessionData) return;
+    const email = sessionData?.user.email;
 
     try {
       await authClient.requestPasswordReset({
         email,
         redirectTo: `${baseURL}${basePath}/${viewPaths.RESET_PASSWORD}`,
         fetchOptions: { throw: true },
-      })
+      });
 
       toast({
         variant: "success",
         message: t("FORGOT_PASSWORD_EMAIL"),
-      })
+      });
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
-  }
+  };
 
-  const changePassword = async ({
-    currentPassword,
-    newPassword,
-  }: z.infer<typeof formSchema>) => {
+  const changePassword = async ({ currentPassword, newPassword }: z.infer<typeof formSchema>) => {
     try {
       await authClient.changePassword({
         currentPassword,
         newPassword,
         revokeOtherSessions: true,
         fetchOptions: { throw: true },
-      })
+      });
 
       toast({
         variant: "success",
         message: t("CHANGE_PASSWORD_SUCCESS"),
-      })
+      });
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
 
-    form.reset()
-  }
+    form.reset();
+  };
 
-  const credentialsLinked = accounts?.some(
-    (acc) => acc.provider === "credential",
-  )
+  const credentialsLinked = accounts?.some((acc) => acc.provider === "credential");
 
   if (!isPending && !credentialsLinked) {
     return (
@@ -176,7 +164,7 @@ export function ChangePasswordCard({
           />
         </form>
       </Form>
-    )
+    );
   }
 
   return (
@@ -197,9 +185,7 @@ export function ChangePasswordCard({
                 <InputFieldSkeleton classNames={classNames} />
                 <InputFieldSkeleton classNames={classNames} />
 
-                {confirmPasswordEnabled && (
-                  <InputFieldSkeleton classNames={classNames} />
-                )}
+                {confirmPasswordEnabled && <InputFieldSkeleton classNames={classNames} />}
               </>
             ) : (
               <>
@@ -208,9 +194,7 @@ export function ChangePasswordCard({
                   name="currentPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className={classNames?.label}>
-                        {t("CURRENT_PASSWORD")}
-                      </FormLabel>
+                      <FormLabel className={classNames?.label}>{t("CURRENT_PASSWORD")}</FormLabel>
 
                       <FormControl>
                         <PasswordField
@@ -232,9 +216,7 @@ export function ChangePasswordCard({
                   name="newPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className={classNames?.label}>
-                        {t("NEW_PASSWORD")}
-                      </FormLabel>
+                      <FormLabel className={classNames?.label}>{t("NEW_PASSWORD")}</FormLabel>
 
                       <FormControl>
                         <PasswordField
@@ -257,9 +239,7 @@ export function ChangePasswordCard({
                     name="confirmPassword"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className={classNames?.label}>
-                          {t("CONFIRM_PASSWORD")}
-                        </FormLabel>
+                        <FormLabel className={classNames?.label}>{t("CONFIRM_PASSWORD")}</FormLabel>
 
                         <FormControl>
                           <PasswordField
@@ -282,5 +262,5 @@ export function ChangePasswordCard({
         </SettingsCard>
       </form>
     </Form>
-  )
+  );
 }

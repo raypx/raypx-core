@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import type { SettingsCardProps } from "@raypx/ui/components/settings"
-import { SettingsCard } from "@raypx/ui/components/settings"
-import type { Organization } from "better-auth/plugins/organization"
-import { useState } from "react"
-import { useAuth } from "../../core/hooks/use-auth"
-import { useCurrentOrganization } from "../../core/hooks/use-current-organization"
-import { DeleteOrganizationDialog } from "./delete-organization-dialog"
+import type { SettingsCardProps } from "@raypx/ui/components/settings";
+import { SettingsCard } from "@raypx/ui/components/settings";
+import type { Organization } from "better-auth/plugins/organization";
+import { useState } from "react";
+import { useAuth } from "../../core/hooks/use-auth";
+import { useCurrentOrganization } from "../../core/hooks/use-current-organization";
+import { DeleteOrganizationDialog } from "./delete-organization-dialog";
 
 export function DeleteOrganizationCard({
   className,
@@ -14,9 +14,9 @@ export function DeleteOrganizationCard({
   slug,
   ...props
 }: SettingsCardProps & { slug?: string }) {
-  const { t } = useAuth()
+  const { t } = useAuth();
 
-  const { data: organization } = useCurrentOrganization({ slug })
+  const { data: organization } = useCurrentOrganization({ slug });
 
   if (!organization)
     return (
@@ -29,7 +29,7 @@ export function DeleteOrganizationCard({
         title={t("DELETE_ORGANIZATION")}
         variant="destructive"
       />
-    )
+    );
 
   return (
     <DeleteOrganizationForm
@@ -38,7 +38,7 @@ export function DeleteOrganizationCard({
       organization={organization}
       {...props}
     />
-  )
+  );
 }
 
 function DeleteOrganizationForm({
@@ -49,18 +49,18 @@ function DeleteOrganizationForm({
   const {
     hooks: { useHasPermission },
     t,
-  } = useAuth()
+  } = useAuth();
 
   const { data: hasPermission, isPending } = useHasPermission({
     organizationId: organization.id,
     permissions: {
       organization: ["delete"],
     },
-  })
+  });
 
-  const [showDialog, setShowDialog] = useState(false)
+  const [showDialog, setShowDialog] = useState(false);
 
-  if (!hasPermission?.success) return null
+  if (!hasPermission?.success) return null;
 
   return (
     <>
@@ -82,5 +82,5 @@ function DeleteOrganizationForm({
         organization={organization}
       />
     </>
-  )
+  );
 }

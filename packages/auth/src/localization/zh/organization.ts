@@ -64,10 +64,9 @@ export const organization = {
   REJECT: "拒绝",
   INVITATION_EXPIRED: "此邀请已过期",
   DELETE_ORGANIZATION: "删除组织",
-  DELETE_ORGANIZATION_DESCRIPTION:
-    "永久删除您的组织及其所有内容。此操作不可逆转——请谨慎继续。",
+  DELETE_ORGANIZATION_DESCRIPTION: "永久删除您的组织及其所有内容。此操作不可逆转——请谨慎继续。",
   DELETE_ORGANIZATION_SUCCESS: "组织删除成功",
   DELETE_ORGANIZATION_INSTRUCTIONS: "输入组织简称以继续：",
   SLUG_REQUIRED: "需要组织简称",
   SLUG_DOES_NOT_MATCH: "简称不匹配",
-}
+};

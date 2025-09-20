@@ -1,13 +1,13 @@
-import { z } from "zod"
+import { z } from "zod";
 
-const BillingProviderSchema = z.enum(["stripe", "lemon-squeezy", "paddle"])
+const BillingProviderSchema = z.enum(["stripe", "lemon-squeezy", "paddle"]);
 
 const LineItemSchema = z.object({
   id: z.string(),
   name: z.string(),
   cost: z.number(),
   type: z.enum(["flat", "per_seat", "metered"]),
-})
+});
 
 const PlanSchema = z.object({
   id: z.string(),
@@ -15,7 +15,7 @@ const PlanSchema = z.object({
   paymentType: z.enum(["one_time", "recurring"]),
   interval: z.enum(["month", "year"]).optional(),
   lineItems: LineItemSchema.array(),
-})
+});
 
 const ProductSchema = z.object({
   id: z.string(),
@@ -26,12 +26,12 @@ const ProductSchema = z.object({
   highlighted: z.boolean().optional(),
   plans: PlanSchema.array(),
   features: z.string().array(),
-})
+});
 
 const BillingConfigSchema = z.object({
   provider: BillingProviderSchema,
   products: ProductSchema.array(),
-})
+});
 
 // Sample billing configuration - replace with your actual configuration
 const billingConfig = BillingConfigSchema.parse({
@@ -73,12 +73,7 @@ const billingConfig = BillingConfigSchema.parse({
           ],
         },
       ],
-      features: [
-        "Up to 5 projects",
-        "Basic analytics",
-        "Email support",
-        "10GB storage",
-      ],
+      features: ["Up to 5 projects", "Basic analytics", "Email support", "10GB storage"],
     },
     {
       id: "pro",
@@ -158,7 +153,7 @@ const billingConfig = BillingConfigSchema.parse({
       ],
     },
   ],
-})
+});
 
-export default billingConfig
-export { BillingProviderSchema }
+export default billingConfig;
+export { BillingProviderSchema };

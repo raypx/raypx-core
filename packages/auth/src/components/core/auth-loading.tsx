@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import type { ReactNode } from "react"
-import { useAuth } from "../../core/hooks/use-auth"
+import type { ReactNode } from "react";
+import { useAuth } from "../../core/hooks/use-auth";
 
 /**
  * Conditionally renders content during authentication loading state
@@ -14,8 +14,8 @@ import { useAuth } from "../../core/hooks/use-auth"
 export function AuthLoading({ children }: { children: ReactNode }) {
   const {
     hooks: { useSession },
-  } = useAuth()
-  const { isPending } = useSession()
+  } = useAuth();
+  const { isPending } = useSession();
 
-  return isPending ? children : null
+  return isPending ? children : null;
 }

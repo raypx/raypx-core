@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Button } from "@raypx/ui/components/button"
+import { Button } from "@raypx/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -8,20 +8,20 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@raypx/ui/components/dialog"
-import { Loader2 } from "@raypx/ui/components/icons"
-import type { SettingsCardClassNames } from "@raypx/ui/components/settings"
-import { cn } from "@raypx/ui/lib/utils"
-import type { User } from "better-auth"
-import type { Member } from "better-auth/plugins/organization"
-import { type ComponentProps, useState } from "react"
-import { useAuth } from "../../core/hooks/use-auth"
-import { getLocalizedError } from "../../core/lib/utils"
-import { MemberCell } from "./member-cell"
+} from "@raypx/ui/components/dialog";
+import { Loader2 } from "@raypx/ui/components/icons";
+import type { SettingsCardClassNames } from "@raypx/ui/components/settings";
+import { cn } from "@raypx/ui/lib/utils";
+import type { User } from "better-auth";
+import type { Member } from "better-auth/plugins/organization";
+import { type ComponentProps, useState } from "react";
+import { useAuth } from "../../core/hooks/use-auth";
+import { getLocalizedError } from "../../core/lib/utils";
+import { MemberCell } from "./member-cell";
 
 export interface RemoveMemberDialogProps extends ComponentProps<typeof Dialog> {
-  classNames?: SettingsCardClassNames
-  member: Member & { user?: Partial<User> | null }
+  classNames?: SettingsCardClassNames;
+  member: Member & { user?: Partial<User> | null };
 }
 
 export function RemoveMemberDialog({
@@ -35,41 +35,41 @@ export function RemoveMemberDialog({
     hooks: { useListMembers },
     t,
     toast,
-  } = useAuth()
+  } = useAuth();
 
   const { refetch } = useListMembers({
     query: { organizationId: member.organizationId },
-  })
+  });
 
-  const [isRemoving, setIsRemoving] = useState(false)
+  const [isRemoving, setIsRemoving] = useState(false);
 
   const removeMember = async () => {
-    setIsRemoving(true)
+    setIsRemoving(true);
 
     try {
       await authClient.organization.removeMember({
         memberIdOrEmail: member.id,
         organizationId: member.organizationId,
         fetchOptions: { throw: true },
-      })
+      });
 
       toast({
         variant: "success",
         message: t("REMOVE_MEMBER_SUCCESS"),
-      })
+      });
 
-      await refetch?.()
+      await refetch?.();
 
-      onOpenChange?.(false)
+      onOpenChange?.(false);
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
 
-    setIsRemoving(false)
-  }
+    setIsRemoving(false);
+  };
 
   return (
     <Dialog onOpenChange={onOpenChange} {...props}>
@@ -82,9 +82,7 @@ export function RemoveMemberDialog({
             {t("REMOVE_MEMBER")}
           </DialogTitle>
 
-          <DialogDescription
-            className={cn("text-xs md:text-sm", classNames?.description)}
-          >
+          <DialogDescription className={cn("text-xs md:text-sm", classNames?.description)}>
             {t("REMOVE_MEMBER_CONFIRM")}
           </DialogDescription>
         </DialogHeader>
@@ -116,5 +114,5 @@ export function RemoveMemberDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

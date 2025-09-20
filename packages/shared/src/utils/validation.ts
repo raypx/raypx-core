@@ -8,8 +8,8 @@
  * @returns true if email format is valid
  */
 export function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(email)
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
 }
 
 /**
@@ -19,10 +19,10 @@ export function isValidEmail(email: string): boolean {
  */
 export function isValidUrl(url: string): boolean {
   try {
-    new URL(url)
-    return true
+    new URL(url);
+    return true;
   } catch {
-    return false
+    return false;
   }
 }
 
@@ -32,5 +32,5 @@ export function isValidUrl(url: string): boolean {
  * @returns true if string is not empty
  */
 export function isNotEmpty(value: string): boolean {
-  return value.trim().length > 0
+  return value.trim().length > 0;
 }

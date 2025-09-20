@@ -1,29 +1,26 @@
-"use client"
+"use client";
 
-import { Skeleton } from "@raypx/ui/components/skeleton"
-import { cn } from "@raypx/ui/lib/utils"
-import type { Organization } from "better-auth/plugins/organization"
-import { useAuth } from "../../core/hooks/use-auth"
-import {
-  OrganizationLogo,
-  type OrganizationLogoClassNames,
-} from "./organization-logo"
+import { Skeleton } from "@raypx/ui/components/skeleton";
+import { cn } from "@raypx/ui/lib/utils";
+import type { Organization } from "better-auth/plugins/organization";
+import { useAuth } from "../../core/hooks/use-auth";
+import { OrganizationLogo, type OrganizationLogoClassNames } from "./organization-logo";
 
 export interface OrganizationViewClassNames {
-  base?: string
-  avatar?: OrganizationLogoClassNames
-  content?: string
-  title?: string
-  subtitle?: string
-  skeleton?: string
+  base?: string;
+  avatar?: OrganizationLogoClassNames;
+  content?: string;
+  title?: string;
+  subtitle?: string;
+  skeleton?: string;
 }
 
 export interface OrganizationViewProps {
-  className?: string
-  classNames?: OrganizationViewClassNames
-  isPending?: boolean
-  size?: "sm" | "default" | "lg" | null
-  organization?: Organization | null
+  className?: string;
+  classNames?: OrganizationViewClassNames;
+  isPending?: boolean;
+  size?: "sm" | "default" | "lg" | null;
+  organization?: Organization | null;
 }
 
 export function OrganizationCellView({
@@ -33,16 +30,10 @@ export function OrganizationCellView({
   size,
   organization,
 }: OrganizationViewProps) {
-  const { t } = useAuth()
+  const { t } = useAuth();
 
   return (
-    <div
-      className={cn(
-        "flex items-center gap-2 truncate",
-        className,
-        classNames?.base,
-      )}
-    >
+    <div className={cn("flex items-center gap-2 truncate", className, classNames?.base)}>
       <OrganizationLogo
         className={cn(size !== "sm" && "my-0.5")}
         classNames={classNames?.avatar}
@@ -50,12 +41,7 @@ export function OrganizationCellView({
         organization={organization}
         size={size}
       />
-      <div
-        className={cn(
-          "flex flex-col truncate text-left leading-tight",
-          classNames?.content,
-        )}
-      >
+      <div className={cn("flex flex-col truncate text-left leading-tight", classNames?.content)}>
         {isPending ? (
           <>
             <Skeleton
@@ -105,5 +91,5 @@ export function OrganizationCellView({
         )}
       </div>
     </div>
-  )
+  );
 }

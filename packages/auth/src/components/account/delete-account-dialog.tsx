@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button } from "@raypx/ui/components/button"
-import { Card } from "@raypx/ui/components/card"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@raypx/ui/components/button";
+import { Card } from "@raypx/ui/components/card";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +10,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@raypx/ui/components/dialog"
+} from "@raypx/ui/components/dialog";
 import {
   Form,
   FormControl,
@@ -18,22 +18,21 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@raypx/ui/components/form"
-import { Loader2 } from "@raypx/ui/components/icons"
-import { Input } from "@raypx/ui/components/input"
-import type { SettingsCardClassNames } from "@raypx/ui/components/settings"
-import { cn } from "@raypx/ui/lib/utils"
-import type { ComponentProps } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod/v4"
-import { useAuth } from "../../core/hooks/use-auth"
-import { getLocalizedError } from "../../core/lib/utils"
-import { UserView } from "./user-view"
+} from "@raypx/ui/components/form";
+import { Loader2 } from "@raypx/ui/components/icons";
+import { Input } from "@raypx/ui/components/input";
+import type { SettingsCardClassNames } from "@raypx/ui/components/settings";
+import { cn } from "@raypx/ui/lib/utils";
+import type { ComponentProps } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod/v4";
+import { useAuth } from "../../core/hooks/use-auth";
+import { getLocalizedError } from "../../core/lib/utils";
+import { UserView } from "./user-view";
 
-export interface DeleteAccountDialogProps
-  extends ComponentProps<typeof Dialog> {
-  classNames?: SettingsCardClassNames
-  accounts?: { provider: string }[] | null
+export interface DeleteAccountDialogProps extends ComponentProps<typeof Dialog> {
+  classNames?: SettingsCardClassNames;
+  accounts?: { provider: string }[] | null;
 }
 
 export function DeleteAccountDialog({
@@ -53,46 +52,44 @@ export function DeleteAccountDialog({
     viewPaths,
     navigate,
     toast,
-  } = useAuth()
+  } = useAuth();
 
-  const { data: sessionData } = useSession()
-  const session = sessionData?.session
-  const user = sessionData?.user
+  const { data: sessionData } = useSession();
+  const session = sessionData?.session;
+  const user = sessionData?.user;
 
   const isFresh = session
     ? Date.now() - new Date(session?.createdAt).getTime() < freshAge * 1000
-    : false
-  const credentialsLinked = accounts?.some(
-    (acc) => acc.provider === "credential",
-  )
+    : false;
+  const credentialsLinked = accounts?.some((acc) => acc.provider === "credential");
 
   const formSchema = z.object({
     password: credentialsLinked
       ? z.string().min(1, { message: t("PASSWORD_REQUIRED") })
       : z.string().optional(),
-  })
+  });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       password: "",
     },
-  })
+  });
 
-  const { isSubmitting } = form.formState
+  const { isSubmitting } = form.formState;
 
   const deleteAccount = async ({ password }: z.infer<typeof formSchema>) => {
-    const params = {} as Record<string, string>
+    const params = {} as Record<string, string>;
 
     if (credentialsLinked) {
-      params.password = password || ""
+      params.password = password || "";
     } else if (!isFresh) {
-      navigate(`${basePath}/${viewPaths.SIGN_OUT}`)
-      return
+      navigate(`${basePath}/${viewPaths.SIGN_OUT}`);
+      return;
     }
 
     if (deleteUser?.verification) {
-      params.callbackURL = `${baseURL}${basePath}/${viewPaths.SIGN_OUT}`
+      params.callbackURL = `${baseURL}${basePath}/${viewPaths.SIGN_OUT}`;
     }
 
     try {
@@ -101,29 +98,29 @@ export function DeleteAccountDialog({
         fetchOptions: {
           throw: true,
         },
-      })
+      });
 
       if (deleteUser?.verification) {
         toast({
           variant: "success",
           message: t("DELETE_ACCOUNT_VERIFY"),
-        })
+        });
       } else {
         toast({
           variant: "success",
           message: t("DELETE_ACCOUNT_SUCCESS"),
-        })
-        navigate(`${basePath}/${viewPaths.SIGN_OUT}`)
+        });
+        navigate(`${basePath}/${viewPaths.SIGN_OUT}`);
       }
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
 
-    onOpenChange?.(false)
-  }
+    onOpenChange?.(false);
+  };
 
   return (
     <Dialog onOpenChange={onOpenChange} {...props}>
@@ -133,12 +130,8 @@ export function DeleteAccountDialog({
             {t("DELETE_ACCOUNT")}
           </DialogTitle>
 
-          <DialogDescription
-            className={cn("text-xs md:text-sm", classNames?.description)}
-          >
-            {isFresh
-              ? t("DELETE_ACCOUNT_INSTRUCTIONS")
-              : t("SESSION_NOT_FRESH")}
+          <DialogDescription className={cn("text-xs md:text-sm", classNames?.description)}>
+            {isFresh ? t("DELETE_ACCOUNT_INSTRUCTIONS") : t("SESSION_NOT_FRESH")}
           </DialogDescription>
         </DialogHeader>
 
@@ -147,19 +140,14 @@ export function DeleteAccountDialog({
         </Card>
 
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(deleteAccount)}
-            className="grid gap-6"
-          >
+          <form onSubmit={form.handleSubmit(deleteAccount)} className="grid gap-6">
             {credentialsLinked && (
               <FormField
                 control={form.control}
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className={classNames?.label}>
-                      {t("PASSWORD")}
-                    </FormLabel>
+                    <FormLabel className={classNames?.label}>{t("PASSWORD")}</FormLabel>
 
                     <FormControl>
                       <Input
@@ -188,10 +176,7 @@ export function DeleteAccountDialog({
               </Button>
 
               <Button
-                className={cn(
-                  classNames?.button,
-                  classNames?.destructiveButton,
-                )}
+                className={cn(classNames?.button, classNames?.destructiveButton)}
                 disabled={isSubmitting}
                 variant="destructive"
                 type="submit"
@@ -204,5 +189,5 @@ export function DeleteAccountDialog({
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

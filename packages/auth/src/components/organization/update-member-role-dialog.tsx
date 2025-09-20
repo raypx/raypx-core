@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Button } from "@raypx/ui/components/button"
+import { Button } from "@raypx/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -8,28 +8,27 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@raypx/ui/components/dialog"
-import { Loader2 } from "@raypx/ui/components/icons"
+} from "@raypx/ui/components/dialog";
+import { Loader2 } from "@raypx/ui/components/icons";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@raypx/ui/components/select"
-import type { SettingsCardClassNames } from "@raypx/ui/components/settings"
-import { cn } from "@raypx/ui/lib/utils"
-import type { User } from "better-auth"
-import type { Member } from "better-auth/plugins/organization"
-import { type ComponentProps, useState } from "react"
-import { useAuth } from "../../core/hooks/use-auth"
-import { getLocalizedError } from "../../core/lib/utils"
-import { MemberCell } from "./member-cell"
+} from "@raypx/ui/components/select";
+import type { SettingsCardClassNames } from "@raypx/ui/components/settings";
+import { cn } from "@raypx/ui/lib/utils";
+import type { User } from "better-auth";
+import type { Member } from "better-auth/plugins/organization";
+import { type ComponentProps, useState } from "react";
+import { useAuth } from "../../core/hooks/use-auth";
+import { getLocalizedError } from "../../core/lib/utils";
+import { MemberCell } from "./member-cell";
 
-export interface UpdateMemberRoleDialogProps
-  extends ComponentProps<typeof Dialog> {
-  classNames?: SettingsCardClassNames
-  member: Member & { user?: Partial<User> | null }
+export interface UpdateMemberRoleDialogProps extends ComponentProps<typeof Dialog> {
+  classNames?: SettingsCardClassNames;
+  member: Member & { user?: Partial<User> | null };
 }
 
 export function UpdateMemberRoleDialog({
@@ -44,54 +43,52 @@ export function UpdateMemberRoleDialog({
     t,
     organization,
     toast,
-  } = useAuth()
+  } = useAuth();
 
   const { data, refetch } = useListMembers({
     query: { organizationId: member.organizationId },
-  })
+  });
 
-  const members = data?.members
+  const members = data?.members;
 
-  const { data: sessionData } = useSession()
+  const { data: sessionData } = useSession();
 
-  const [isUpdating, setIsUpdating] = useState(false)
-  const [selectedRole, setSelectedRole] = useState(member.role)
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(member.role);
 
   const builtInRoles = [
     { role: "owner", label: t("OWNER") },
     { role: "admin", label: t("ADMIN") },
     { role: "member", label: t("MEMBER") },
-  ]
+  ];
 
-  const roles = [...builtInRoles, ...(organization?.customRoles || [])]
+  const roles = [...builtInRoles, ...(organization?.customRoles || [])];
 
-  const currentUserRole = members?.find(
-    (m) => m.user?.id === sessionData?.user.id,
-  )?.role
+  const currentUserRole = members?.find((m) => m.user?.id === sessionData?.user.id)?.role;
 
   const availableRoles = roles.filter((role) => {
     if (role.role === "owner") {
-      return currentUserRole === "owner"
+      return currentUserRole === "owner";
     }
 
     if (role.role === "admin") {
-      return currentUserRole === "owner" || currentUserRole === "admin"
+      return currentUserRole === "owner" || currentUserRole === "admin";
     }
 
-    return true
-  })
+    return true;
+  });
 
   const updateMemberRole = async () => {
     if (selectedRole === member.role) {
       toast({
         variant: "error",
         message: `${t("ROLE")} ${t("IS_THE_SAME")}`,
-      })
+      });
 
-      return
+      return;
     }
 
-    setIsUpdating(true)
+    setIsUpdating(true);
 
     try {
       await authClient.organization.updateMemberRole({
@@ -101,25 +98,25 @@ export function UpdateMemberRoleDialog({
         fetchOptions: {
           throw: true,
         },
-      })
+      });
 
       toast({
         variant: "success",
         message: t("MEMBER_ROLE_UPDATED"),
-      })
+      });
 
-      await refetch?.()
+      await refetch?.();
 
-      onOpenChange?.(false)
+      onOpenChange?.(false);
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
 
-    setIsUpdating(false)
-  }
+    setIsUpdating(false);
+  };
 
   return (
     <Dialog onOpenChange={onOpenChange} {...props}>
@@ -132,19 +129,13 @@ export function UpdateMemberRoleDialog({
             {t("UPDATE_ROLE")}
           </DialogTitle>
 
-          <DialogDescription
-            className={cn("text-xs md:text-sm", classNames?.description)}
-          >
+          <DialogDescription className={cn("text-xs md:text-sm", classNames?.description)}>
             {t("UPDATE_ROLE_DESCRIPTION")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-6 py-4">
-          <MemberCell
-            className={classNames?.cell}
-            member={member}
-            hideActions
-          />
+          <MemberCell className={classNames?.cell} member={member} hideActions />
 
           <Select value={selectedRole} onValueChange={setSelectedRole}>
             <SelectTrigger className="w-full">
@@ -185,5 +176,5 @@ export function UpdateMemberRoleDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

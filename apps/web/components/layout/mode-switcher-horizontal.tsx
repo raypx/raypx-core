@@ -1,24 +1,24 @@
-"use client"
+"use client";
 
-import { Button } from "@raypx/ui/components/button"
-import { cn } from "@raypx/ui/lib/utils"
-import { LaptopIcon, MoonIcon, SunIcon } from "lucide-react"
-import { useTranslations } from "next-intl"
-import { useTheme } from "next-themes"
-import { useEffect, useState } from "react"
+import { Button } from "@raypx/ui/components/button";
+import { cn } from "@raypx/ui/lib/utils";
+import { LaptopIcon, MoonIcon, SunIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 /**
  * Mode switcher component, used in the footer
  */
 export function ModeSwitcherHorizontal() {
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-  const t = useTranslations("common.mode")
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const t = useTranslations("common.mode");
 
   // Only show the UI after hydration to prevent hydration mismatch
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   if (!mounted) {
     return (
@@ -27,7 +27,7 @@ export function ModeSwitcherHorizontal() {
         <div className="size-6 px-0 rounded-full" />
         <div className="size-6 px-0 rounded-full" />
       </div>
-    )
+    );
   }
 
   return (
@@ -71,5 +71,5 @@ export function ModeSwitcherHorizontal() {
         <LaptopIcon className="size-4" />
       </Button>
     </div>
-  )
+  );
 }

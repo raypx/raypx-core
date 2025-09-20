@@ -1,34 +1,34 @@
-"use client"
+"use client";
 
-import { cn } from "@raypx/ui/lib/utils"
-import { type RefObject, useEffect } from "react"
-import ReCAPTCHA from "react-google-recaptcha"
-import { useAuth } from "../../core/hooks/use-auth"
-import { useLang } from "../../core/hooks/use-lang"
-import { useTheme } from "../../core/hooks/use-theme"
+import { cn } from "@raypx/ui/lib/utils";
+import { type RefObject, useEffect } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import { useAuth } from "../../core/hooks/use-auth";
+import { useLang } from "../../core/hooks/use-lang";
+import { useTheme } from "../../core/hooks/use-theme";
 
 declare global {
   interface Window {
     recaptchaOptions: {
-      useRecaptchaNet?: boolean
-      enterprise?: boolean
-    }
+      useRecaptchaNet?: boolean;
+      enterprise?: boolean;
+    };
   }
 }
 
 export function RecaptchaV2({ ref }: { ref: RefObject<ReCAPTCHA | null> }) {
-  const { captcha } = useAuth()
-  const { resolvedTheme } = useTheme()
-  const { lang } = useLang()
+  const { captcha } = useAuth();
+  const { resolvedTheme } = useTheme();
+  const { lang } = useLang();
 
   useEffect(() => {
     window.recaptchaOptions = {
       useRecaptchaNet: captcha?.recaptchaNet,
       enterprise: captcha?.enterprise,
-    }
-  }, [captcha])
+    };
+  }, [captcha]);
 
-  if (!captcha) return null
+  if (!captcha) return null;
 
   return (
     <>
@@ -52,11 +52,7 @@ export function RecaptchaV2({ ref }: { ref: RefObject<ReCAPTCHA | null> }) {
         sitekey={captcha.siteKey}
         theme={resolvedTheme}
         hl={lang}
-        size={
-          captcha.provider === "google-recaptcha-v2-invisible"
-            ? "invisible"
-            : "normal"
-        }
+        size={captcha.provider === "google-recaptcha-v2-invisible" ? "invisible" : "normal"}
         className={cn(
           captcha.provider === "google-recaptcha-v2-invisible"
             ? "absolute"
@@ -64,5 +60,5 @@ export function RecaptchaV2({ ref }: { ref: RefObject<ReCAPTCHA | null> }) {
         )}
       />
     </>
-  )
+  );
 }

@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { useAuth } from "@raypx/auth/core"
-import { Button } from "@raypx/ui/components/button"
-import { cn } from "@raypx/ui/lib/utils"
-import { Menu, X } from "lucide-react"
-import Link from "next/link"
-import React from "react"
-import { Logo } from "@/components/layout/logo"
+import { useAuth } from "@raypx/auth/core";
+import { Button } from "@raypx/ui/components/button";
+import { cn } from "@raypx/ui/lib/utils";
+import { Menu, X } from "lucide-react";
+import Link from "next/link";
+import React from "react";
+import { Logo } from "@/components/layout/logo";
 
 const menuItems = [
   { name: "Features", href: "#link" },
@@ -14,20 +14,20 @@ const menuItems = [
   { name: "Pricing", href: "#link" },
   { name: "About", href: "#link" },
   { name: "Docs", href: "https://docs.raypx.com" },
-]
+];
 
 export const Header = () => {
-  const [menuState, setMenuState] = React.useState(false)
-  const [isScrolled, setIsScrolled] = React.useState(false)
-  const { viewPaths: pages } = useAuth()
+  const [menuState, setMenuState] = React.useState(false);
+  const [isScrolled, setIsScrolled] = React.useState(false);
+  const { viewPaths: pages } = useAuth();
 
   React.useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
-    }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <header>
@@ -35,17 +35,12 @@ export const Header = () => {
         <div
           className={cn(
             "mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12",
-            isScrolled &&
-              "bg-background/50 max-w-4xl rounded-2xl border backdrop-blur-lg lg:px-5",
+            isScrolled && "bg-background/50 max-w-4xl rounded-2xl border backdrop-blur-lg lg:px-5",
           )}
         >
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
             <div className="flex w-full justify-between lg:w-auto">
-              <Link
-                href="/"
-                aria-label="home"
-                className="flex items-center space-x-2"
-              >
+              <Link href="/" aria-label="home" className="flex items-center space-x-2">
                 <Logo />
               </Link>
 
@@ -100,20 +95,12 @@ export const Header = () => {
                     <span>Login</span>
                   </Link>
                 </Button>
-                <Button
-                  asChild
-                  size="sm"
-                  className={cn(isScrolled && "lg:hidden")}
-                >
+                <Button asChild size="sm" className={cn(isScrolled && "lg:hidden")}>
                   <Link href={pages.SIGN_UP}>
                     <span>Sign Up</span>
                   </Link>
                 </Button>
-                <Button
-                  asChild
-                  size="sm"
-                  className={cn(isScrolled ? "lg:inline-flex" : "hidden")}
-                >
+                <Button asChild size="sm" className={cn(isScrolled ? "lg:inline-flex" : "hidden")}>
                   <Link href={pages.SIGN_UP}>
                     <span>Get Started</span>
                   </Link>
@@ -124,5 +111,5 @@ export const Header = () => {
         </div>
       </nav>
     </header>
-  )
-}
+  );
+};

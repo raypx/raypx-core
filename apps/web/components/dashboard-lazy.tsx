@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { Skeleton } from "@raypx/ui/components/skeleton"
-import dynamic from "next/dynamic"
+import { Skeleton } from "@raypx/ui/components/skeleton";
+import dynamic from "next/dynamic";
 
 export const DashboardLayout = dynamic(
   () =>
@@ -59,4 +59,4 @@ export const DashboardLayout = dynamic(
       </div>
     ),
   },
-)
+);

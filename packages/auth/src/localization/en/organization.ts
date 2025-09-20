@@ -1,8 +1,7 @@
 export const organization = {
   API_KEYS: "API Keys",
   API_KEYS_DESCRIPTION: "Manage your API keys for secure access.",
-  API_KEYS_INSTRUCTIONS:
-    "Generate API keys to access your account programmatically.",
+  API_KEYS_INSTRUCTIONS: "Generate API keys to access your account programmatically.",
   CREATE_API_KEY: "Create API Key",
   CREATE_API_KEY_DESCRIPTION:
     "Enter a unique name for your API key to differentiate it from other keys.",
@@ -29,23 +28,19 @@ export const organization = {
   CREATE_ORGANIZATION_SUCCESS: "Organization created successfully",
   ORGANIZATIONS: "Organizations",
   ORGANIZATIONS_DESCRIPTION: "Manage your organizations and memberships.",
-  ORGANIZATIONS_INSTRUCTIONS:
-    "Create an organization to collaborate with other users.",
+  ORGANIZATIONS_INSTRUCTIONS: "Create an organization to collaborate with other users.",
   LEAVE_ORGANIZATION: "Leave Organization",
-  LEAVE_ORGANIZATION_CONFIRM:
-    "Are you sure you want to leave this organization?",
+  LEAVE_ORGANIZATION_CONFIRM: "Are you sure you want to leave this organization?",
   LEAVE_ORGANIZATION_SUCCESS: "You have successfully left the organization.",
   MANAGE_ORGANIZATION: "Manage Organization",
   REMOVE_MEMBER: "Remove Member",
-  REMOVE_MEMBER_CONFIRM:
-    "Are you sure you want to remove this member from the organization?",
+  REMOVE_MEMBER_CONFIRM: "Are you sure you want to remove this member from the organization?",
   REMOVE_MEMBER_SUCCESS: "Member removed successfully",
   INVITE_MEMBER: "Invite Member",
   MEMBERS: "Members",
   MEMBERS_DESCRIPTION: "Add or remove members and manage their roles.",
   MEMBERS_INSTRUCTIONS: "Invite new members to your organization.",
-  INVITE_MEMBER_DESCRIPTION:
-    "Send an invitation to add a new member to your organization.",
+  INVITE_MEMBER_DESCRIPTION: "Send an invitation to add a new member to your organization.",
   ROLE: "Role",
   SELECT_ROLE: "Select a role",
   ADMIN: "Admin",
@@ -58,15 +53,12 @@ export const organization = {
   SEND_INVITATION: "Send Invitation",
   SEND_INVITATION_SUCCESS: "Invitation sent successfully",
   PENDING_INVITATIONS: "Pending Invitations",
-  PENDING_INVITATIONS_DESCRIPTION:
-    "Manage pending invitations to your organization.",
-  PENDING_USER_INVITATIONS_DESCRIPTION:
-    "Invitations you've received from organizations.",
+  PENDING_INVITATIONS_DESCRIPTION: "Manage pending invitations to your organization.",
+  PENDING_USER_INVITATIONS_DESCRIPTION: "Invitations you've received from organizations.",
   CANCEL_INVITATION: "Cancel Invitation",
   INVITATION_CANCELLED: "Invitation cancelled successfully",
   ACCEPT_INVITATION: "Accept Invitation",
-  ACCEPT_INVITATION_DESCRIPTION:
-    "You have been invited to join an organization.",
+  ACCEPT_INVITATION_DESCRIPTION: "You have been invited to join an organization.",
   INVITATION_ACCEPTED: "Invitation accepted successfully",
   INVITATION_REJECTED: "Invitation rejected successfully",
   ACCEPT: "Accept",
@@ -79,4 +71,4 @@ export const organization = {
   DELETE_ORGANIZATION_INSTRUCTIONS: "Enter the organization slug to continue:",
   SLUG_REQUIRED: "Organization slug is required",
   SLUG_DOES_NOT_MATCH: "The slug does not match",
-}
+};

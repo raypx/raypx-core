@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import type { ReactNode } from "react"
-import { useAuth } from "../../core/hooks/use-auth"
+import type { ReactNode } from "react";
+import { useAuth } from "../../core/hooks/use-auth";
 
 /**
  * Conditionally renders content for unauthenticated users only
@@ -13,8 +13,8 @@ import { useAuth } from "../../core/hooks/use-auth"
 export function SignedOut({ children }: { children: ReactNode }) {
   const {
     hooks: { useSession },
-  } = useAuth()
-  const { data, isPending } = useSession()
+  } = useAuth();
+  const { data, isPending } = useSession();
 
-  return !data && !isPending ? children : null
+  return !data && !isPending ? children : null;
 }

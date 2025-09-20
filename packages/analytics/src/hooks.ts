@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { envs } from "./envs"
-import type { PostHogInstance } from "./types"
+import { envs } from "./envs";
+import type { PostHogInstance } from "./types";
 
 export function useAnalytics() {
-  let posthog: PostHogInstance | null = null
+  let posthog: PostHogInstance | null = null;
 
   // Try to get PostHog instance if available
   if (typeof window !== "undefined" && envs.NEXT_PUBLIC_POSTHOG_KEY) {
     try {
       // If PostHog is loaded globally, use it
       if (window.posthog) {
-        posthog = window.posthog
+        posthog = window.posthog;
       }
     } catch (_error) {
       // Silent fail
@@ -21,19 +21,18 @@ export function useAnalytics() {
   const track = (event: string, properties?: Record<string, unknown>) => {
     if (
       envs.NEXT_PUBLIC_ANALYTICS_DISABLED ||
-      (process.env.NODE_ENV !== "production" &&
-        !envs.NEXT_PUBLIC_ANALYTICS_DEBUG)
+      (process.env.NODE_ENV !== "production" && !envs.NEXT_PUBLIC_ANALYTICS_DEBUG)
     ) {
-      return
+      return;
     }
 
     if (envs.NEXT_PUBLIC_ANALYTICS_DEBUG) {
-      console.log("[Analytics] Track:", event, properties)
+      console.log("[Analytics] Track:", event, properties);
     }
 
     // PostHog
     if (posthog?.capture) {
-      posthog.capture(event, properties)
+      posthog.capture(event, properties);
     }
 
     // Google Analytics
@@ -45,16 +44,16 @@ export function useAnalytics() {
       window.gtag("event", event, {
         ...properties,
         send_to: envs.NEXT_PUBLIC_GA_MEASUREMENT_ID,
-      })
+      });
     }
-  }
+  };
 
   const identify = (userId: string, properties?: Record<string, unknown>) => {
-    if (process.env.NODE_ENV !== "production") return
+    if (process.env.NODE_ENV !== "production") return;
 
     // PostHog
     if (posthog?.identify) {
-      posthog.identify(userId, properties)
+      posthog.identify(userId, properties);
     }
 
     // Google Analytics
@@ -62,57 +61,53 @@ export function useAnalytics() {
       window.gtag("config", envs.NEXT_PUBLIC_GA_MEASUREMENT_ID, {
         user_id: userId,
         ...properties,
-      })
+      });
     }
-  }
+  };
 
   const reset = () => {
-    if (process.env.NODE_ENV !== "production") return
+    if (process.env.NODE_ENV !== "production") return;
 
     // PostHog
     if (posthog?.reset) {
-      posthog.reset()
+      posthog.reset();
     }
-  }
+  };
 
   const setPersonProperties = (properties: Record<string, unknown>) => {
-    if (process.env.NODE_ENV !== "production") return
+    if (process.env.NODE_ENV !== "production") return;
 
     // PostHog
     if (posthog?.setPersonProperties) {
-      posthog.setPersonProperties(properties)
+      posthog.setPersonProperties(properties);
     }
 
     // Google Analytics - set custom parameters
     if (typeof window !== "undefined" && typeof window.gtag === "function") {
       window.gtag("config", envs.NEXT_PUBLIC_GA_MEASUREMENT_ID, {
         custom_map: properties,
-      })
+      });
     }
-  }
+  };
 
-  const group = (
-    groupType: string,
-    groupKey: string,
-    properties?: Record<string, unknown>,
-  ) => {
-    if (process.env.NODE_ENV !== "production") return
+  const group = (groupType: string, groupKey: string, properties?: Record<string, unknown>) => {
+    if (process.env.NODE_ENV !== "production") return;
 
     // PostHog
     if (posthog?.group) {
-      posthog.group(groupType, groupKey, properties)
+      posthog.group(groupType, groupKey, properties);
     }
-  }
+  };
 
   const pageView = (url?: string, title?: string) => {
-    if (process.env.NODE_ENV !== "production") return
+    if (process.env.NODE_ENV !== "production") return;
 
     // PostHog
     if (posthog?.capture) {
       posthog.capture("$pageview", {
         $current_url: url || window.location.href,
         title,
-      })
+      });
     }
 
     // Google Analytics
@@ -120,36 +115,33 @@ export function useAnalytics() {
       window.gtag("config", envs.NEXT_PUBLIC_GA_MEASUREMENT_ID, {
         page_path: url || window.location.pathname,
         page_title: title,
-      })
+      });
     }
-  }
+  };
 
   // AI-specific tracking helpers
   const trackAIInteraction = (
     action: string,
     metadata?: {
-      model?: string
-      tokens?: number
-      latency?: number
-      success?: boolean
-      error?: string
+      model?: string;
+      tokens?: number;
+      latency?: number;
+      success?: boolean;
+      error?: string;
     },
   ) => {
     track("ai_interaction", {
       action,
       ...metadata,
-    })
-  }
+    });
+  };
 
-  const trackFeatureUsage = (
-    feature: string,
-    properties?: Record<string, unknown>,
-  ) => {
+  const trackFeatureUsage = (feature: string, properties?: Record<string, unknown>) => {
     track("feature_usage", {
       feature,
       ...properties,
-    })
-  }
+    });
+  };
 
   const trackUserAction = (
     action: string,
@@ -160,8 +152,8 @@ export function useAnalytics() {
       action,
       context,
       ...properties,
-    })
-  }
+    });
+  };
 
   return {
     // Core analytics functions
@@ -179,12 +171,9 @@ export function useAnalytics() {
 
     // Raw instances for advanced usage
     posthog:
-      process.env.NODE_ENV === "production" || envs.NEXT_PUBLIC_ANALYTICS_DEBUG
-        ? posthog
-        : null,
+      process.env.NODE_ENV === "production" || envs.NEXT_PUBLIC_ANALYTICS_DEBUG ? posthog : null,
     gtag:
-      (process.env.NODE_ENV === "production" ||
-        envs.NEXT_PUBLIC_ANALYTICS_DEBUG) &&
+      (process.env.NODE_ENV === "production" || envs.NEXT_PUBLIC_ANALYTICS_DEBUG) &&
       typeof window !== "undefined"
         ? window.gtag
         : null,
@@ -192,8 +181,7 @@ export function useAnalytics() {
     // Utility functions
     isEnabled:
       !envs.NEXT_PUBLIC_ANALYTICS_DISABLED &&
-      (process.env.NODE_ENV === "production" ||
-        envs.NEXT_PUBLIC_ANALYTICS_DEBUG),
+      (process.env.NODE_ENV === "production" || envs.NEXT_PUBLIC_ANALYTICS_DEBUG),
     isDebug: envs.NEXT_PUBLIC_ANALYTICS_DEBUG || false,
-  }
+  };
 }

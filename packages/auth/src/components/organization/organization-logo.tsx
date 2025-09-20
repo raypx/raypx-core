@@ -1,30 +1,26 @@
-"use client"
+"use client";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@raypx/ui/components/avatar"
-import { BuildingIcon } from "@raypx/ui/components/icons"
-import { Skeleton } from "@raypx/ui/components/skeleton"
-import { cn } from "@raypx/ui/lib/utils"
-import type { Organization } from "better-auth/plugins/organization"
-import type { ComponentProps } from "react"
-import { useAuth } from "../../core/hooks/use-auth"
+import { Avatar, AvatarFallback, AvatarImage } from "@raypx/ui/components/avatar";
+import { BuildingIcon } from "@raypx/ui/components/icons";
+import { Skeleton } from "@raypx/ui/components/skeleton";
+import { cn } from "@raypx/ui/lib/utils";
+import type { Organization } from "better-auth/plugins/organization";
+import type { ComponentProps } from "react";
+import { useAuth } from "../../core/hooks/use-auth";
 
 export interface OrganizationLogoClassNames {
-  base?: string
-  image?: string
-  fallback?: string
-  fallbackIcon?: string
-  skeleton?: string
+  base?: string;
+  image?: string;
+  fallback?: string;
+  fallbackIcon?: string;
+  skeleton?: string;
 }
 
 export interface OrganizationLogoProps {
-  classNames?: OrganizationLogoClassNames
-  isPending?: boolean
-  size?: "sm" | "default" | "lg" | "xl" | null
-  organization?: Partial<Organization> | null
+  classNames?: OrganizationLogoClassNames;
+  isPending?: boolean;
+  size?: "sm" | "default" | "lg" | "xl" | null;
+  organization?: Partial<Organization> | null;
 }
 
 /**
@@ -42,10 +38,10 @@ export function OrganizationLogo({
   organization,
   ...props
 }: OrganizationLogoProps & ComponentProps<typeof Avatar>) {
-  const { t, avatar } = useAuth()
+  const { t, avatar } = useAuth();
 
-  const name = organization?.name
-  const src = organization?.logo
+  const name = organization?.name;
+  const src = organization?.logo;
 
   if (isPending) {
     return (
@@ -64,20 +60,14 @@ export function OrganizationLogo({
           classNames?.skeleton,
         )}
       />
-    )
+    );
   }
 
   return (
     <Avatar
       className={cn(
         "bg-muted",
-        size === "sm"
-          ? "size-6"
-          : size === "lg"
-            ? "size-10"
-            : size === "xl"
-              ? "size-12"
-              : "size-8",
+        size === "sm" ? "size-6" : size === "lg" ? "size-10" : size === "xl" ? "size-12" : "size-8",
         className,
         classNames?.base,
       )}
@@ -104,5 +94,5 @@ export function OrganizationLogo({
         <BuildingIcon className={cn("size-[50%]", classNames?.fallbackIcon)} />
       </AvatarFallback>
     </Avatar>
-  )
+  );
 }

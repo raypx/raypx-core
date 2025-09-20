@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   BuildingIcon,
@@ -12,10 +12,10 @@ import {
   ShieldCheckIcon,
   SquareKanbanIcon,
   SquarePenIcon,
-} from "lucide-react"
-import { useTranslations } from "next-intl"
-import type { NestedMenuItem } from "@/config/footer.config"
-import { Routes } from "@/config/routes.config"
+} from "lucide-react";
+import { useTranslations } from "next-intl";
+import type { NestedMenuItem } from "@/config/footer.config";
+import { Routes } from "@/config/routes.config";
 
 /**
  * Get navbar config with translations
@@ -28,7 +28,7 @@ import { Routes } from "@/config/routes.config"
  * @returns The navbar config with translated titles and descriptions
  */
 export function getNavbarLinks(): NestedMenuItem[] {
-  const t = useTranslations("navigation.navbar")
+  const t = useTranslations("navigation.navbar");
 
   return [
     {
@@ -265,5 +265,5 @@ export function getNavbarLinks(): NestedMenuItem[] {
     //     },
     //   ],
     // },
-  ]
+  ];
 }

@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import { CardContent } from "@raypx/ui/components/card"
-import type { SettingsCardProps } from "@raypx/ui/components/settings"
-import { SettingsCard } from "@raypx/ui/components/settings"
-import { cn } from "@raypx/ui/lib/utils"
-import type { Organization } from "better-auth/plugins/organization"
-import { useState } from "react"
-import { useAuth } from "../../core/hooks/use-auth"
-import { useCurrentOrganization } from "../../core/hooks/use-current-organization"
-import { InviteMemberDialog } from "./invite-member-dialog"
-import { MemberCell } from "./member-cell"
+import { CardContent } from "@raypx/ui/components/card";
+import type { SettingsCardProps } from "@raypx/ui/components/settings";
+import { SettingsCard } from "@raypx/ui/components/settings";
+import { cn } from "@raypx/ui/lib/utils";
+import type { Organization } from "better-auth/plugins/organization";
+import { useState } from "react";
+import { useAuth } from "../../core/hooks/use-auth";
+import { useCurrentOrganization } from "../../core/hooks/use-current-organization";
+import { InviteMemberDialog } from "./invite-member-dialog";
+import { MemberCell } from "./member-cell";
 
 export function OrganizationMembersCard({
   className,
@@ -17,11 +17,11 @@ export function OrganizationMembersCard({
   slug: slugProp,
   ...props
 }: SettingsCardProps & { slug?: string }) {
-  const { t, organization: organizationOptions } = useAuth()
+  const { t, organization: organizationOptions } = useAuth();
 
-  const slug = slugProp || organizationOptions?.slug
+  const slug = slugProp || organizationOptions?.slug;
 
-  const { data: organization } = useCurrentOrganization({ slug })
+  const { data: organization } = useCurrentOrganization({ slug });
 
   if (!organization) {
     return (
@@ -35,7 +35,7 @@ export function OrganizationMembersCard({
         isPending
         {...props}
       />
-    )
+    );
   }
 
   return (
@@ -45,7 +45,7 @@ export function OrganizationMembersCard({
       organization={organization}
       {...props}
     />
-  )
+  );
 }
 
 function OrganizationMembersContent({
@@ -57,33 +57,31 @@ function OrganizationMembersContent({
   const {
     hooks: { useHasPermission, useListMembers },
     t,
-  } = useAuth()
+  } = useAuth();
 
-  const { data: hasPermissionInvite, isPending: isPendingInvite } =
-    useHasPermission({
-      organizationId: organization.id,
-      permissions: {
-        invitation: ["create"],
-      },
-    })
+  const { data: hasPermissionInvite, isPending: isPendingInvite } = useHasPermission({
+    organizationId: organization.id,
+    permissions: {
+      invitation: ["create"],
+    },
+  });
 
-  const { data: hasPermissionUpdateMember, isPending: isPendingUpdateMember } =
-    useHasPermission({
-      organizationId: organization.id,
-      permission: {
-        member: ["update"],
-      },
-    })
+  const { data: hasPermissionUpdateMember, isPending: isPendingUpdateMember } = useHasPermission({
+    organizationId: organization.id,
+    permission: {
+      member: ["update"],
+    },
+  });
 
-  const isPending = isPendingInvite || isPendingUpdateMember
+  const isPending = isPendingInvite || isPendingUpdateMember;
 
   const { data } = useListMembers({
     query: { organizationId: organization.id },
-  })
+  });
 
-  const members = data?.members
+  const members = data?.members;
 
-  const [inviteDialogOpen, setInviteDialogOpen] = useState(false)
+  const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
 
   return (
     <>
@@ -102,11 +100,7 @@ function OrganizationMembersContent({
         {!isPending && members && members.length > 0 && (
           <CardContent className={cn("grid gap-4", classNames?.content)}>
             {members
-              .sort(
-                (a, b) =>
-                  new Date(a.createdAt).getTime() -
-                  new Date(b.createdAt).getTime(),
-              )
+              .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
               .map((member) => (
                 <MemberCell
                   key={member.id}
@@ -126,5 +120,5 @@ function OrganizationMembersContent({
         organization={organization}
       />
     </>
-  )
+  );
 }

@@ -1,2 +1,2 @@
 // Backward compatibility re-export
-export * from "./utils/gravatar-utils"
+export * from "./utils/gravatar-utils";

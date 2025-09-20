@@ -1,35 +1,35 @@
-"use client"
+"use client";
 
-import { setUserLocale } from "@raypx/i18n"
-import { Button } from "@raypx/ui/components/button"
+import { setUserLocale } from "@raypx/i18n";
+import { Button } from "@raypx/ui/components/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@raypx/ui/components/dropdown-menu"
-import { cn } from "@raypx/ui/lib/utils"
-import { Check, ChevronDown } from "lucide-react"
-import { useLocale } from "next-intl"
-import { useState } from "react"
+} from "@raypx/ui/components/dropdown-menu";
+import { cn } from "@raypx/ui/lib/utils";
+import { Check, ChevronDown } from "lucide-react";
+import { useLocale } from "next-intl";
+import { useState } from "react";
 
 const locales = [
   { code: "en", name: "English", flag: "🇺🇸", nativeName: "English" },
   { code: "zh", name: "Chinese", flag: "🇨🇳", nativeName: "中文" },
-] as const
+] as const;
 
 export const LangSwitcher = () => {
-  const locale = useLocale()
-  const [isOpen, setIsOpen] = useState(false)
+  const locale = useLocale();
+  const [isOpen, setIsOpen] = useState(false);
 
-  const currentLocale = locales.find((l) => l.code === locale)
+  const currentLocale = locales.find((l) => l.code === locale);
 
   const handleLocaleChange = (newLocale: string) => {
-    if (newLocale === locale) return
+    if (newLocale === locale) return;
 
-    setIsOpen(false)
-    setUserLocale(newLocale)
-  }
+    setIsOpen(false);
+    setUserLocale(newLocale);
+  };
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
@@ -56,9 +56,7 @@ export const LangSwitcher = () => {
               <span className="text-lg">{loc.flag}</span>
               <div className="flex flex-col">
                 <span className="text-sm font-medium">{loc.nativeName}</span>
-                <span className="text-xs text-muted-foreground">
-                  {loc.name}
-                </span>
+                <span className="text-xs text-muted-foreground">{loc.name}</span>
               </div>
             </div>
             {locale === loc.code && <Check className="h-4 w-4 text-primary" />}
@@ -66,5 +64,5 @@ export const LangSwitcher = () => {
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
-  )
-}
+  );
+};

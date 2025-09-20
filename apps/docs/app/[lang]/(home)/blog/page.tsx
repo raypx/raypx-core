@@ -1,52 +1,43 @@
-import { dayjs } from "@raypx/shared/utils"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@raypx/ui/components/card"
-import type { Metadata } from "next"
-import Link from "next/link"
-import { notFound } from "next/navigation"
-import appConfig from "@/config/app.config"
-import { blogSource } from "@/lib/source"
+import { dayjs } from "@raypx/shared/utils";
+import { Card, CardContent, CardHeader, CardTitle } from "@raypx/ui/components/card";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import appConfig from "@/config/app.config";
+import { blogSource } from "@/lib/source";
 
 interface BlogPageProps {
-  params: Promise<{ lang: string }>
+  params: Promise<{ lang: string }>;
 }
 
-export async function generateMetadata({
-  params,
-}: BlogPageProps): Promise<Metadata> {
-  const { lang } = await params
+export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
+  const { lang } = await params;
 
-  const title = lang === "zh" ? "博客" : "Blog"
+  const title = lang === "zh" ? "博客" : "Blog";
   const description =
     lang === "zh"
       ? `${appConfig.name} 的最新文章和技术分享`
-      : `Latest articles and tech insights from ${appConfig.name}`
+      : `Latest articles and tech insights from ${appConfig.name}`;
 
   return {
     title,
     description,
-  }
+  };
 }
 
 export default async function BlogPage({ params }: BlogPageProps) {
-  const { lang } = await params
+  const { lang } = await params;
 
   // Get all blog posts
-  const posts = blogSource.getPages(lang)
+  const posts = blogSource.getPages(lang);
 
   if (!posts.length) {
-    notFound()
+    notFound();
   }
 
-  const title = lang === "zh" ? "博客" : "Blog"
+  const title = lang === "zh" ? "博客" : "Blog";
   const description =
-    lang === "zh"
-      ? "最新的技术文章和产品动态"
-      : "Latest technical articles and product updates"
+    lang === "zh" ? "最新的技术文章和产品动态" : "Latest technical articles and product updates";
 
   return (
     <div className="container max-w-6xl py-12">
@@ -57,7 +48,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {posts.map((post) => {
-          const formattedDate = dayjs(post.data.date).locale(lang).format("LL")
+          const formattedDate = dayjs(post.data.date).locale(lang).format("LL");
           return (
             <Link
               key={post.url}
@@ -66,25 +57,19 @@ export default async function BlogPage({ params }: BlogPageProps) {
             >
               <Card className="h-full">
                 <CardHeader>
-                  <CardTitle className="line-clamp-2">
-                    {post.data.title}
-                  </CardTitle>
-                  <p className="text-sm text-muted-foreground">
-                    {formattedDate}
-                  </p>
+                  <CardTitle className="line-clamp-2">{post.data.title}</CardTitle>
+                  <p className="text-sm text-muted-foreground">{formattedDate}</p>
                 </CardHeader>
                 {post.data.description && (
                   <CardContent>
-                    <p className="line-clamp-3 text-muted-foreground">
-                      {post.data.description}
-                    </p>
+                    <p className="line-clamp-3 text-muted-foreground">{post.data.description}</p>
                   </CardContent>
                 )}
               </Card>
             </Link>
-          )
+          );
         })}
       </div>
     </div>
-  )
+  );
 }

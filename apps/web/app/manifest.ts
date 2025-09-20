@@ -1,5 +1,5 @@
-import type { MetadataRoute } from "next"
-import appConfig from "@/config/app.config"
+import type { MetadataRoute } from "next";
+import appConfig from "@/config/app.config";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
@@ -25,5 +25,5 @@ export default function manifest(): MetadataRoute.Manifest {
         type: "image/png",
       },
     ],
-  }
+  };
 }

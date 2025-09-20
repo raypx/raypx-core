@@ -1,64 +1,62 @@
-"use client"
+"use client";
 
-import { usePathname, useSearchParams } from "next/navigation"
-import Script from "next/script"
-import type { FC, ReactNode } from "react"
-import { useEffect, useState } from "react"
-import { envs } from "./envs"
-import type { Gtag } from "./types"
+import { usePathname, useSearchParams } from "next/navigation";
+import Script from "next/script";
+import type { FC, ReactNode } from "react";
+import { useEffect, useState } from "react";
+import { envs } from "./envs";
+import type { Gtag } from "./types";
 
-let gtagInstance: Gtag | null = null
+let gtagInstance: Gtag | null = null;
 
 async function loadGtag(): Promise<Gtag | null> {
-  if (gtagInstance) return gtagInstance
+  if (gtagInstance) return gtagInstance;
 
   // Use global gtag if available (loaded via script)
   if (typeof window !== "undefined" && typeof window.gtag === "function") {
-    gtagInstance = window.gtag
-    return gtagInstance
+    gtagInstance = window.gtag;
+    return gtagInstance;
   }
 
   // Silent fail - gtag is optional
-  return null
+  return null;
 }
 
 function GoogleAnalyticsPageView() {
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (pathname && gtagInstance && envs.NEXT_PUBLIC_GA_MEASUREMENT_ID) {
-      let url = pathname
+      let url = pathname;
       if (searchParams.toString()) {
-        url = `${url}?${searchParams.toString()}`
+        url = `${url}?${searchParams.toString()}`;
       }
 
       gtagInstance("config", envs.NEXT_PUBLIC_GA_MEASUREMENT_ID, {
         page_path: url,
-      })
+      });
     } else if (
       pathname &&
       typeof window.gtag === "function" &&
       envs.NEXT_PUBLIC_GA_MEASUREMENT_ID
     ) {
-      let url = pathname
+      let url = pathname;
       if (searchParams.toString()) {
-        url = `${url}?${searchParams.toString()}`
+        url = `${url}?${searchParams.toString()}`;
       }
 
       window.gtag("config", envs.NEXT_PUBLIC_GA_MEASUREMENT_ID, {
         page_path: url,
-      })
+      });
     }
-  }, [pathname, searchParams])
+  }, [pathname, searchParams]);
 
-  return null
+  return null;
 }
 
-export const GoogleAnalyticsProvider: FC<{ children: ReactNode }> = ({
-  children,
-}) => {
-  const [isLoaded, setIsLoaded] = useState(false)
+export const GoogleAnalyticsProvider: FC<{ children: ReactNode }> = ({ children }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     if (
@@ -68,20 +66,17 @@ export const GoogleAnalyticsProvider: FC<{ children: ReactNode }> = ({
     ) {
       loadGtag().then((gtag) => {
         if (gtag) {
-          gtagInstance = gtag
+          gtagInstance = gtag;
         }
-        setIsLoaded(true)
-      })
+        setIsLoaded(true);
+      });
     } else {
-      setIsLoaded(true)
+      setIsLoaded(true);
     }
-  }, [])
+  }, []);
 
-  if (
-    !envs.NEXT_PUBLIC_GA_MEASUREMENT_ID ||
-    process.env.NODE_ENV !== "production"
-  ) {
-    return <>{children}</>
+  if (!envs.NEXT_PUBLIC_GA_MEASUREMENT_ID || process.env.NODE_ENV !== "production") {
+    return <>{children}</>;
   }
 
   return (
@@ -103,5 +98,5 @@ export const GoogleAnalyticsProvider: FC<{ children: ReactNode }> = ({
       {children}
       {isLoaded && <GoogleAnalyticsPageView />}
     </>
-  )
-}
+  );
+};

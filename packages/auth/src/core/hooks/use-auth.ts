@@ -1,8 +1,5 @@
-import { useContext } from "react"
-import {
-  AuthContext,
-  type AuthContextType,
-} from "../../components/core/auth-provider"
+import { useContext } from "react";
+import { AuthContext, type AuthContextType } from "../../components/core/auth-provider";
 
 /**
  * Hook to access the authentication context
@@ -29,6 +26,6 @@ import {
  * ```
  */
 export function useAuth(): AuthContextType {
-  const auth = useContext(AuthContext)
-  return auth
+  const auth = useContext(AuthContext);
+  return auth;
 }

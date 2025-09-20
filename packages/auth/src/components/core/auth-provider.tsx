@@ -1,21 +1,18 @@
-"use client"
+"use client";
 
-import { toast } from "@raypx/ui/components/toast"
-import { useLocale } from "next-intl"
-import { createContext, type ReactNode, useMemo } from "react"
-import { useAuthData } from "../../core/hooks/use-auth-data"
-import {
-  type AuthTranslations,
-  useAuthTranslations,
-} from "../../core/hooks/use-auth-translations"
-import { processSocialConfig } from "../../core/lib/social-providers"
-import type { AuthViewPaths } from "../../core/lib/utils/view-paths"
+import { toast } from "@raypx/ui/components/toast";
+import { useLocale } from "next-intl";
+import { createContext, type ReactNode, useMemo } from "react";
+import { useAuthData } from "../../core/hooks/use-auth-data";
+import { type AuthTranslations, useAuthTranslations } from "../../core/hooks/use-auth-translations";
+import { processSocialConfig } from "../../core/lib/social-providers";
+import type { AuthViewPaths } from "../../core/lib/utils/view-paths";
 import {
   accountViewPaths,
   authViewPaths,
   organizationViewPaths,
-} from "../../core/lib/utils/view-paths"
-import { authFeatures } from "../../features"
+} from "../../core/lib/utils/view-paths";
+import { authFeatures } from "../../features";
 import type {
   AccountOptions,
   AccountOptionsContext,
@@ -35,49 +32,49 @@ import type {
   RenderToast,
   SignUpOptions,
   SocialOptions,
-} from "../../types"
-import { OrganizationRefetcher } from "./organization-refetcher"
-import { RecaptchaV3 } from "./recaptcha-v3"
+} from "../../types";
+import { OrganizationRefetcher } from "./organization-refetcher";
+import { RecaptchaV3 } from "./recaptcha-v3";
 
 const defaultNavigate = (href: string) => {
-  window.location.href = href
-}
+  window.location.href = href;
+};
 
 const defaultReplace = (href: string) => {
-  window.location.replace(href)
-}
+  window.location.replace(href);
+};
 
 const defaultToast: RenderToast = ({ variant = "default", message }) => {
   if (variant === "default") {
-    toast(message)
+    toast(message);
   } else {
-    toast[variant](message)
+    toast[variant](message);
   }
-}
+};
 
 // Inline utility functions to simplify boolean/object property handling
 const normalizeAvatar = (
   prop: boolean | Partial<AvatarOptions> | undefined,
 ): AvatarOptions | undefined => {
-  if (!prop) return undefined
-  if (prop === true) return { extension: "png", size: 128 }
+  if (!prop) return undefined;
+  if (prop === true) return { extension: "png", size: 128 };
   return {
     upload: prop.upload,
     delete: prop.delete,
     extension: prop.extension || "png",
     size: prop.size || (prop.upload ? 256 : 128),
-  }
-}
+  };
+};
 
 const normalizeDeleteUser = (
   prop: DeleteUserOptions | boolean | undefined,
 ): DeleteUserOptions | undefined => {
-  if (!prop) return undefined
-  return prop === true ? {} : prop
-}
+  if (!prop) return undefined;
+  return prop === true ? {} : prop;
+};
 
 const removeTrailingSlash = (path: string): string =>
-  path === "/" || !path.endsWith("/") ? path : path.slice(0, -1)
+  path === "/" || !path.endsWith("/") ? path : path.slice(0, -1);
 
 // Factory functions for better performance
 const createDefaultMutators = (authClient: AuthClient): AuthMutators =>
@@ -112,14 +109,13 @@ const createDefaultMutators = (authClient: AuthClient): AuthMutators =>
         ...params,
         fetchOptions: { throw: true },
       }),
-    updateUser: (params) =>
-      authClient.updateUser({ ...params, fetchOptions: { throw: true } }),
+    updateUser: (params) => authClient.updateUser({ ...params, fetchOptions: { throw: true } }),
     unlinkAccount: (params) =>
       authClient.unlinkAccount({
         ...params,
         fetchOptions: { throw: true },
       }),
-  }) as AuthMutators
+  }) as AuthMutators;
 
 const createDefaultHooks = (authClient: AuthClient): AuthHooks =>
   ({
@@ -192,14 +188,14 @@ const createDefaultHooks = (authClient: AuthClient): AuthHooks =>
           ),
         cacheKey: `listMembers:${JSON.stringify(params)}`,
       }),
-  }) as AuthHooks
+  }) as AuthHooks;
 
 export type AuthContextType = {
-  authClient: AuthClient
+  authClient: AuthClient;
   /**
    * Additional fields for users
    */
-  additionalFields?: AdditionalFields
+  additionalFields?: AdditionalFields;
   /**
    * API Key plugin configuration
    */
@@ -208,235 +204,235 @@ export type AuthContextType = {
         /**
          * Prefix for API Keys
          */
-        prefix?: string
+        prefix?: string;
         /**
          * Metadata for API Keys
          */
-        metadata?: Record<string, unknown>
+        metadata?: Record<string, unknown>;
       }
-    | boolean
+    | boolean;
   /**
    * Avatar configuration
    * @default undefined
    */
-  avatar?: AvatarOptions
+  avatar?: AvatarOptions;
   /**
    * Base path for the auth views
    * @default "/auth"
    */
-  basePath: string
+  basePath: string;
   /**
    * Front end base URL for auth API callbacks
    */
-  baseURL?: string
+  baseURL?: string;
   /**
    * Captcha configuration
    */
-  captcha?: CaptchaOptions
-  credentials?: CredentialsOptions
+  captcha?: CaptchaOptions;
+  credentials?: CredentialsOptions;
   /**
    * Default redirect URL after authenticating
    * @default "/"
    */
-  redirectTo: string
+  redirectTo: string;
   /**
    * Enable or disable user change email support
    * @default true
    */
 
-  changeEmail?: boolean
+  changeEmail?: boolean;
   /**
    * User Account deletion configuration
    * @default undefined
    */
-  deleteUser?: DeleteUserOptions
+  deleteUser?: DeleteUserOptions;
   /**
    * Show Verify Email card for unverified emails
    */
-  emailVerification?: boolean
+  emailVerification?: boolean;
   /**
    * Freshness age for Session data
    * @default 60 * 60 * 24
    */
-  freshAge: number
+  freshAge: number;
   /**
    * Generic OAuth provider configuration
    */
-  genericOAuth?: GenericOAuthOptions
+  genericOAuth?: GenericOAuthOptions;
   /**
    * Gravatar configuration
    */
-  gravatar?: boolean | GravatarOptions
+  gravatar?: boolean | GravatarOptions;
   /**
    * Customize the Localization translations
    * @remarks `AuthTranslations["t"]`
    */
-  t: AuthTranslations["t"]
+  t: AuthTranslations["t"];
   /**
    * ADVANCED: Custom hooks for fetching auth data
    */
-  hooks: AuthHooks
+  hooks: AuthHooks;
   /**
    * Enable or disable Magic Link support
    * @default false
    */
-  magicLink?: boolean
+  magicLink?: boolean;
   /**
    * Enable or disable Email OTP support
    * @default false
    */
-  emailOTP?: boolean
+  emailOTP?: boolean;
   /**
    * Enable or disable Multi Session support
    * @default false
    */
-  multiSession?: boolean
+  multiSession?: boolean;
   /**
    * ADVANCED: Custom mutators for updating auth data
    */
-  mutators: AuthMutators
+  mutators: AuthMutators;
   /**
    * Whether the name field should be required
    * @default true
    */
-  nameRequired?: boolean
+  nameRequired?: boolean;
   /**
    * Enable or disable One Tap support
    * @default false
    */
-  oneTap?: boolean
+  oneTap?: boolean;
   /**
    * Perform some User updates optimistically
    * @default false
    */
-  optimistic?: boolean
+  optimistic?: boolean;
   /**
    * Organization configuration
    */
-  organization?: OrganizationOptionsContext
+  organization?: OrganizationOptionsContext;
   /**
    * Enable or disable Passkey support
    * @default false
    */
-  passkey?: boolean
+  passkey?: boolean;
   /**
    * Forces better-auth-tanstack to refresh the Session on the auth callback page
    * @default false
    */
-  persistClient?: boolean
+  persistClient?: boolean;
   /**
    * Account configuration
    */
-  account?: AccountOptionsContext
+  account?: AccountOptionsContext;
   /**
    * Sign Up configuration
    */
-  signUp?: SignUpOptions
+  signUp?: SignUpOptions;
   /**
    * Social provider configuration
    */
-  social?: SocialOptions
+  social?: SocialOptions;
   /**
    * Render custom Toasts
    * @default Sonner
    */
-  toast: RenderToast
+  toast: RenderToast;
   /**
    * Enable or disable two-factor authentication support
    * @default undefined
    */
-  twoFactor?: ("otp" | "totp")[]
+  twoFactor?: ("otp" | "totp")[];
   /**
    * Customize the paths for the auth views
    * @default authViewPaths
    * @remarks `AuthViewPaths`
    */
-  viewPaths: AuthViewPaths
+  viewPaths: AuthViewPaths;
   /**
    * Navigate to a new URL
    * @default window.location.href
    */
-  navigate: (href: string) => void
+  navigate: (href: string) => void;
   /**
    * Called whenever the Session changes
    */
-  onSessionChange?: () => void | Promise<void>
+  onSessionChange?: () => void | Promise<void>;
   /**
    * Replace the current URL
    * @default navigate
    */
-  replace: (href: string) => void
+  replace: (href: string) => void;
   /**
    * locale
    */
-  locale: string
-}
+  locale: string;
+};
 
 export type AuthProviderProps = {
-  children: ReactNode
+  children: ReactNode;
   /**
    * Better Auth client returned from createAuthClient
    * @default Required
    * @remarks `AuthClient`
    */
-  authClient: AnyAuthClient
+  authClient: AnyAuthClient;
   /**
    * Enable account view & account configuration
    * @default { fields: ["image", "name"] }
    */
-  account?: boolean | Partial<AccountOptions>
+  account?: boolean | Partial<AccountOptions>;
   /**
    * Avatar configuration
    * @default undefined
    */
-  avatar?: boolean | Partial<AvatarOptions>
+  avatar?: boolean | Partial<AvatarOptions>;
   /**
    * User Account deletion configuration
    * @default undefined
    */
-  deleteUser?: DeleteUserOptions | boolean
+  deleteUser?: DeleteUserOptions | boolean;
   /**
    * ADVANCED: Custom hooks for fetching auth data
    */
-  hooks?: Partial<AuthHooks>
+  hooks?: Partial<AuthHooks>;
   /**
    * Customize the paths for the auth views
    * @default authViewPaths
    * @remarks `AuthViewPaths`
    */
-  viewPaths?: Partial<AuthViewPaths>
+  viewPaths?: Partial<AuthViewPaths>;
   /**
    * Render custom Toasts
    * @default Sonner
    */
-  toast?: RenderToast
+  toast?: RenderToast;
   /**
    * Customize the Localization translations
    * @remarks `AuthTranslations["t"]`
    */
-  t?: AuthTranslations["t"]
+  t?: AuthTranslations["t"];
   /**
    * ADVANCED: Custom mutators for updating auth data
    */
-  mutators?: Partial<AuthMutators>
+  mutators?: Partial<AuthMutators>;
   /**
    * Organization plugin configuration
    */
-  organization?: OrganizationOptions | boolean
+  organization?: OrganizationOptions | boolean;
   /**
    * Enable or disable Credentials support
    * @default { forgotPassword: true }
    */
-  credentials?: boolean | CredentialsOptions
+  credentials?: boolean | CredentialsOptions;
   /**
    * Enable or disable Sign Up form
    * @default { fields: ["name"] }
    */
-  signUp?: SignUpOptions | boolean
+  signUp?: SignUpOptions | boolean;
   /**
    * locale
    */
-  locale?: string
+  locale?: string;
 } & Partial<
   Omit<
     AuthContextType,
@@ -453,11 +449,9 @@ export type AuthProviderProps = {
     | "signUp"
     | "organization"
   >
->
+>;
 
-export const AuthContext = createContext<AuthContextType>(
-  {} as unknown as AuthContextType,
-)
+export const AuthContext = createContext<AuthContextType>({} as unknown as AuthContextType);
 
 export const AuthProvider = ({
   children,
@@ -489,122 +483,108 @@ export const AuthProvider = ({
   locale: localeProp,
   ...props
 }: AuthProviderProps) => {
-  const authClient = authClientProp as AuthClient
-  const lang = useLocale()
-  const avatar = useMemo(() => normalizeAvatar(avatarProp), [avatarProp])
-  const { t } = useAuthTranslations()
+  const authClient = authClientProp as AuthClient;
+  const lang = useLocale();
+  const avatar = useMemo(() => normalizeAvatar(avatarProp), [avatarProp]);
+  const { t } = useAuthTranslations();
 
   const account = useMemo<AccountOptionsContext | undefined>(() => {
-    if (accountProp === false) return undefined
+    if (accountProp === false) return undefined;
     if (accountProp === true || accountProp === undefined) {
       return {
         basePath: "/account",
         fields: ["image", "name"],
         viewPaths: accountViewPaths,
-      }
+      };
     }
-    const basePath = removeTrailingSlash(accountProp.basePath || "/account")
+    const basePath = removeTrailingSlash(accountProp.basePath || "/account");
     return {
       basePath,
       fields: accountProp.fields || ["image", "name"],
       viewPaths: { ...accountViewPaths, ...accountProp.viewPaths },
-    }
-  }, [accountProp])
+    };
+  }, [accountProp]);
 
-  const locale = useMemo(() => localeProp || lang, [localeProp, lang])
+  const locale = useMemo(() => localeProp || lang, [localeProp, lang]);
 
-  const deleteUser = useMemo(
-    () => normalizeDeleteUser(deleteUserProp),
-    [deleteUserProp],
-  )
+  const deleteUser = useMemo(() => normalizeDeleteUser(deleteUserProp), [deleteUserProp]);
 
   const credentials = useMemo<CredentialsOptions | undefined>(() => {
-    if (credentialsProp === false) return undefined
-    if (credentialsProp === true) return { forgotPassword: true }
+    if (credentialsProp === false) return undefined;
+    if (credentialsProp === true) return { forgotPassword: true };
     return {
       ...credentialsProp,
       forgotPassword: credentialsProp?.forgotPassword ?? true,
-    }
-  }, [credentialsProp])
+    };
+  }, [credentialsProp]);
 
   const signUp = useMemo<SignUpOptions | undefined>(() => {
-    if (signUpProp === false) return undefined
-    if (signUpProp === true || signUpProp === undefined)
-      return { fields: ["name"] }
-    return { fields: signUpProp.fields || ["name"] }
-  }, [signUpProp])
+    if (signUpProp === false) return undefined;
+    if (signUpProp === true || signUpProp === undefined) return { fields: ["name"] };
+    return { fields: signUpProp.fields || ["name"] };
+  }, [signUpProp]);
 
   const organization = useMemo<OrganizationOptionsContext | undefined>(() => {
-    if (!organizationProp) return undefined
+    if (!organizationProp) return undefined;
     if (organizationProp === true) {
       return {
         basePath: "/organization",
         viewPaths: organizationViewPaths,
         customRoles: [],
-      }
+      };
     }
 
-    let logo: OrganizationOptionsContext["logo"] | undefined
+    let logo: OrganizationOptionsContext["logo"] | undefined;
     if (organizationProp.logo === true) {
-      logo = { extension: "png", size: 128 }
+      logo = { extension: "png", size: 128 };
     } else if (organizationProp.logo) {
       logo = {
         upload: organizationProp.logo.upload,
         delete: organizationProp.logo.delete,
         extension: organizationProp.logo.extension || "png",
-        size:
-          organizationProp.logo.size ||
-          (organizationProp.logo.upload ? 256 : 128),
-      }
+        size: organizationProp.logo.size || (organizationProp.logo.upload ? 256 : 128),
+      };
     }
 
     return {
       ...organizationProp,
       logo,
-      basePath: removeTrailingSlash(
-        organizationProp.basePath || "/organization",
-      ),
+      basePath: removeTrailingSlash(organizationProp.basePath || "/organization"),
       customRoles: organizationProp.customRoles || [],
       viewPaths: { ...organizationViewPaths, ...organizationProp.viewPaths },
       apiKey: (authFeatures.apiKey ?? true) && organizationProp.apiKey,
-    }
-  }, [organizationProp])
+    };
+  }, [organizationProp]);
 
-  const defaultMutators = useMemo(
-    () => createDefaultMutators(authClient),
-    [authClient],
-  )
+  const defaultMutators = useMemo(() => createDefaultMutators(authClient), [authClient]);
 
-  const defaultHooks = useMemo(
-    () => createDefaultHooks(authClient),
-    [authClient],
-  )
+  const defaultHooks = useMemo(() => createDefaultHooks(authClient), [authClient]);
 
   const viewPaths = useMemo(() => {
-    return { ...authViewPaths, ...viewPathsProp }
-  }, [viewPathsProp])
+    return { ...authViewPaths, ...viewPathsProp };
+  }, [viewPathsProp]);
 
   const hooks = useMemo(() => {
-    return { ...defaultHooks, ...hooksProp }
-  }, [defaultHooks, hooksProp])
+    return { ...defaultHooks, ...hooksProp };
+  }, [defaultHooks, hooksProp]);
 
   const mutators = useMemo(() => {
-    return { ...defaultMutators, ...mutatorsProp }
-  }, [defaultMutators, mutatorsProp])
+    return { ...defaultMutators, ...mutatorsProp };
+  }, [defaultMutators, mutatorsProp]);
 
-  const normalizedBaseURL = removeTrailingSlash(baseURL)
-  const normalizedBasePath = removeTrailingSlash(basePath)
+  const normalizedBaseURL = removeTrailingSlash(baseURL);
+  const normalizedBasePath = removeTrailingSlash(basePath);
 
   const social = useMemo(() => {
-    return processSocialConfig(socialProp)
-  }, [socialProp])
+    return processSocialConfig(socialProp);
+  }, [socialProp]);
 
-  const { data: sessionData } = hooks.useSession()
+  const { data: sessionData } = hooks.useSession();
 
   const hasSocialProviders = useMemo(
     () => Object.values(authFeatures.social).some((enabled) => enabled),
     [],
-  )
+  );
 
   const featureConfig = useMemo(
     () => ({
@@ -629,7 +609,7 @@ export const AuthProvider = ({
       magicLink,
       hasSocialProviders,
     ],
-  )
+  );
 
   return (
     <AuthContext.Provider
@@ -664,5 +644,5 @@ export const AuthProvider = ({
         children
       )}
     </AuthContext.Provider>
-  )
-}
+  );
+};

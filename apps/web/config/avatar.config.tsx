@@ -1,13 +1,9 @@
-"use client"
+"use client";
 
-import {
-  CreditCardIcon,
-  LayoutDashboardIcon,
-  Settings2Icon,
-} from "lucide-react"
-import { useTranslations } from "next-intl"
-import type { MenuItem } from "@/config/footer.config"
-import { Routes } from "@/config/routes.config"
+import { CreditCardIcon, LayoutDashboardIcon, Settings2Icon } from "lucide-react";
+import { useTranslations } from "next-intl";
+import type { MenuItem } from "@/config/footer.config";
+import { Routes } from "@/config/routes.config";
 
 /**
  * Get avatar config with translations
@@ -20,7 +16,7 @@ import { Routes } from "@/config/routes.config"
  * @returns The avatar config with translated titles
  */
 export function getAvatarLinks(): MenuItem[] {
-  const t = useTranslations("layout.userMenu")
+  const t = useTranslations("layout.userMenu");
 
   return [
     {
@@ -38,5 +34,5 @@ export function getAvatarLinks(): MenuItem[] {
       href: Routes.SettingsProfile,
       icon: <Settings2Icon className="size-4 shrink-0" />,
     },
-  ]
+  ];
 }

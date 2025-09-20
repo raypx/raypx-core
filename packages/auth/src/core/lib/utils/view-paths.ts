@@ -21,9 +21,9 @@ export const authViewPaths = {
   TWO_FACTOR: "two-factor",
   /** @default "accept-invitation" */
   ACCEPT_INVITATION: "accept-invitation",
-} as const
+} as const;
 
-export type AuthViewPaths = typeof authViewPaths
+export type AuthViewPaths = typeof authViewPaths;
 
 // Account-scoped views (signed-in user)
 export const accountViewPaths = {
@@ -35,9 +35,9 @@ export const accountViewPaths = {
   API_KEYS: "api-keys",
   /** @default "organizations" */
   ORGANIZATIONS: "organizations",
-} as const
+} as const;
 
-export type AccountViewPaths = typeof accountViewPaths
+export type AccountViewPaths = typeof accountViewPaths;
 
 // Organization-scoped views
 export const organizationViewPaths = {
@@ -47,9 +47,9 @@ export const organizationViewPaths = {
   MEMBERS: "members",
   /** @default "api-keys" */
   API_KEYS: "api-keys",
-} as const
+} as const;
 
-export type OrganizationViewPaths = typeof organizationViewPaths
-export type AuthViewPath = keyof AuthViewPaths
-export type AccountViewPath = keyof AccountViewPaths
-export type OrganizationViewPath = keyof OrganizationViewPaths
+export type OrganizationViewPaths = typeof organizationViewPaths;
+export type AuthViewPath = keyof AuthViewPaths;
+export type AccountViewPath = keyof AccountViewPaths;
+export type OrganizationViewPath = keyof OrganizationViewPaths;

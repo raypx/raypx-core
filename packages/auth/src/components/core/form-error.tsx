@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
-import { Alert, AlertDescription, AlertTitle } from "@raypx/ui/components/alert"
-import { AlertCircle } from "@raypx/ui/components/icons"
-import { cn } from "@raypx/ui/lib/utils"
-import { useFormState } from "react-hook-form"
-import type { AuthFormClassNames } from "./auth-form"
+import { Alert, AlertDescription, AlertTitle } from "@raypx/ui/components/alert";
+import { AlertCircle } from "@raypx/ui/components/icons";
+import { cn } from "@raypx/ui/lib/utils";
+import { useFormState } from "react-hook-form";
+import type { AuthFormClassNames } from "./auth-form";
 
 export interface FormErrorProps {
-  title?: string
-  classNames?: AuthFormClassNames
+  title?: string;
+  classNames?: AuthFormClassNames;
 }
 
 export function FormError({ title, classNames }: FormErrorProps) {
-  const { errors } = useFormState()
+  const { errors } = useFormState();
 
-  if (!errors.root?.message) return null
+  if (!errors.root?.message) return null;
 
   return (
     <Alert variant="destructive" className={cn(classNames?.error)}>
@@ -22,5 +22,5 @@ export function FormError({ title, classNames }: FormErrorProps) {
       <AlertTitle>{title || "Error"}</AlertTitle>
       <AlertDescription>{errors.root.message}</AlertDescription>
     </Alert>
-  )
+  );
 }

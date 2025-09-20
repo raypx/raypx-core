@@ -1,34 +1,31 @@
-import { dayjs } from "@raypx/shared/utils"
-import type { Metadata } from "next"
-import { notFound } from "next/navigation"
-import appConfig from "@/config/app.config"
-import { pagesSource } from "@/lib/source"
-import { getMDXComponents } from "@/mdx-components"
+import { dayjs } from "@raypx/shared/utils";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import appConfig from "@/config/app.config";
+import { pagesSource } from "@/lib/source";
+import { getMDXComponents } from "@/mdx-components";
 
 interface PageProps {
   params: Promise<{
-    lang: string
-    slug: string[]
-  }>
+    lang: string;
+    slug: string[];
+  }>;
 }
 
 export async function generateStaticParams() {
-  return pagesSource.generateParams()
+  return pagesSource.generateParams();
 }
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
-  const { lang, slug } = await params
-  const page = pagesSource.getPage(slug, lang)
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { lang, slug } = await params;
+  const page = pagesSource.getPage(slug, lang);
 
   if (!page) {
-    notFound()
+    notFound();
   }
 
-  const title = `${page.data.title} | ${appConfig.name}`
-  const description =
-    page.data.description || `${page.data.title} - ${appConfig.name}`
+  const title = `${page.data.title} | ${appConfig.name}`;
+  const description = page.data.description || `${page.data.title} - ${appConfig.name}`;
 
   return {
     title,
@@ -37,19 +34,17 @@ export async function generateMetadata({
       title,
       description,
       type: "article",
-      publishedTime: page.data.date
-        ? dayjs(page.data.date).locale(lang).format("LL")
-        : undefined,
+      publishedTime: page.data.date ? dayjs(page.data.date).locale(lang).format("LL") : undefined,
     },
-  }
+  };
 }
 
 export default async function Page({ params }: PageProps) {
-  const { slug, lang } = await params
-  const page = pagesSource.getPage(slug, lang)
+  const { slug, lang } = await params;
+  const page = pagesSource.getPage(slug, lang);
 
   if (!page) {
-    notFound()
+    notFound();
   }
 
   return (
@@ -59,9 +54,7 @@ export default async function Page({ params }: PageProps) {
         <h1 className="mb-4 text-4xl font-bold">{page.data.title}</h1>
 
         {page.data.description && (
-          <p className="text-lg text-muted-foreground">
-            {page.data.description}
-          </p>
+          <p className="text-lg text-muted-foreground">{page.data.description}</p>
         )}
 
         {page.data.date && (
@@ -76,5 +69,5 @@ export default async function Page({ params }: PageProps) {
         <page.data.body components={getMDXComponents()} />
       </article>
     </div>
-  )
+  );
 }

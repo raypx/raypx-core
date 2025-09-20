@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { Skeleton } from "@raypx/ui/components/skeleton"
-import { cn } from "@raypx/ui/lib/utils"
-import { useAuth } from "../../core/hooks/use-auth"
-import type { UserViewProps } from "../account/user-view"
-import { UserAvatar } from "./user-avatar"
+import { Skeleton } from "@raypx/ui/components/skeleton";
+import { cn } from "@raypx/ui/lib/utils";
+import { useAuth } from "../../core/hooks/use-auth";
+import type { UserViewProps } from "../account/user-view";
+import { UserAvatar } from "./user-avatar";
 
 /**
  * Displays user information with avatar and details in a compact view for personal accounts
@@ -23,7 +23,7 @@ export function PersonalAccountView({
   size,
   user,
 }: UserViewProps) {
-  const { t } = useAuth()
+  const { t } = useAuth();
 
   return (
     <div className={cn("flex items-center gap-2", className, classNames?.base)}>
@@ -35,12 +35,7 @@ export function PersonalAccountView({
         user={user}
       />
 
-      <div
-        className={cn(
-          "grid flex-1 text-left leading-tight",
-          classNames?.content,
-        )}
-      >
+      <div className={cn("grid flex-1 text-left leading-tight", classNames?.content)}>
         {isPending ? (
           <>
             <Skeleton
@@ -97,5 +92,5 @@ export function PersonalAccountView({
         )}
       </div>
     </div>
-  )
+  );
 }

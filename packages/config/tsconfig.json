@@ -3,10 +3,6 @@
   "compilerOptions": {
     "outDir": "dist"
   },
-  "include": [
-    "src/**/*",
-    "__tests__/app.config.test.ts",
-    "__tests__/paths.config.test.ts"
-  ],
+  "include": ["src/**/*", "__tests__/app.config.test.ts", "__tests__/paths.config.test.ts"],
   "exclude": ["node_modules", "dist"]
 }

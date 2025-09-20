@@ -1,4 +1,4 @@
-import type { NextSeoProps } from "next-seo"
+import type { NextSeoProps } from "next-seo";
 import {
   ArticleJsonLd,
   BreadcrumbJsonLd,
@@ -6,23 +6,23 @@ import {
   OrganizationJsonLd,
   SiteLinksSearchBoxJsonLd,
   WebPageJsonLd,
-} from "next-seo"
-import type { ReactNode } from "react"
-import type { SEOConfig } from "./metadata"
-import { createSEOProps } from "./metadata"
-import type { StructuredDataType } from "./structured-data"
+} from "next-seo";
+import type { ReactNode } from "react";
+import type { SEOConfig } from "./metadata";
+import { createSEOProps } from "./metadata";
+import type { StructuredDataType } from "./structured-data";
 
 export interface ArticleProps {
-  title: string
-  description: string
-  url: string
-  datePublished: string
-  dateModified?: string
-  authorName: string
-  publisherName?: string
-  publisherLogo?: string
-  images?: string[]
-  children?: ReactNode
+  title: string;
+  description: string;
+  url: string;
+  datePublished: string;
+  dateModified?: string;
+  authorName: string;
+  publisherName?: string;
+  publisherLogo?: string;
+  images?: string[];
+  children?: ReactNode;
 }
 
 export function Article({
@@ -52,16 +52,16 @@ export function Article({
       />
       {children}
     </>
-  )
+  );
 }
 
 export interface BreadcrumbProps {
   itemListElements: Array<{
-    position: number
-    name: string
-    item: string
-  }>
-  children?: ReactNode
+    position: number;
+    name: string;
+    item: string;
+  }>;
+  children?: ReactNode;
 }
 
 export function Breadcrumb({ itemListElements, children }: BreadcrumbProps) {
@@ -70,23 +70,23 @@ export function Breadcrumb({ itemListElements, children }: BreadcrumbProps) {
       <BreadcrumbJsonLd itemListElements={itemListElements} />
       {children}
     </>
-  )
+  );
 }
 
 export interface OrganizationProps {
-  type?: string
-  id?: string
-  name: string
-  url: string
-  logo?: string
-  sameAs?: string[]
+  type?: string;
+  id?: string;
+  name: string;
+  url: string;
+  logo?: string;
+  sameAs?: string[];
   contactPoints?: Array<{
-    telephone: string
-    contactType: string
-    areaServed?: string[]
-    availableLanguage?: string[]
-  }>
-  children?: ReactNode
+    telephone: string;
+    contactType: string;
+    areaServed?: string[];
+    availableLanguage?: string[];
+  }>;
+  children?: ReactNode;
 }
 
 export function Organization({
@@ -112,27 +112,21 @@ export function Organization({
       />
       {children}
     </>
-  )
+  );
 }
 
 export interface WebPageProps {
-  url: string
-  description: string
-  lastReviewed?: string
+  url: string;
+  description: string;
+  lastReviewed?: string;
   reviewedBy?: {
-    type: string
-    name: string
-  }
-  children?: ReactNode
+    type: string;
+    name: string;
+  };
+  children?: ReactNode;
 }
 
-export function WebPage({
-  url,
-  description,
-  lastReviewed,
-  reviewedBy,
-  children,
-}: WebPageProps) {
+export function WebPage({ url, description, lastReviewed, reviewedBy, children }: WebPageProps) {
   return (
     <>
       <WebPageJsonLd
@@ -143,12 +137,12 @@ export function WebPage({
       />
       {children}
     </>
-  )
+  );
 }
 
 export interface SiteSearchProps {
-  url: string
-  children?: ReactNode
+  url: string;
+  children?: ReactNode;
 }
 
 export function SiteSearch({ url, children }: SiteSearchProps) {
@@ -165,21 +159,17 @@ export function SiteSearch({ url, children }: SiteSearchProps) {
       />
       {children}
     </>
-  )
+  );
 }
 
 // Core SEO components from components.tsx
 export interface SEOProviderProps extends SEOConfig {
-  children?: ReactNode
-  structuredData?: StructuredDataType[]
+  children?: ReactNode;
+  structuredData?: StructuredDataType[];
 }
 
-export function SEOProvider({
-  children,
-  structuredData = [],
-  ...seoConfig
-}: SEOProviderProps) {
-  const seoProps = createSEOProps(seoConfig)
+export function SEOProvider({ children, structuredData = [], ...seoConfig }: SEOProviderProps) {
+  const seoProps = createSEOProps(seoConfig);
 
   return (
     <>
@@ -193,11 +183,11 @@ export function SEOProvider({
       ))}
       {children}
     </>
-  )
+  );
 }
 
 export interface PageSEOProps extends NextSeoProps {
-  structuredData?: StructuredDataType[]
+  structuredData?: StructuredDataType[];
 }
 
 export function PageSEO({ structuredData = [], ...seoProps }: PageSEOProps) {
@@ -212,15 +202,15 @@ export function PageSEO({ structuredData = [], ...seoProps }: PageSEOProps) {
         />
       ))}
     </>
-  )
+  );
 }
 
 export interface ArticleSEOProps extends SEOConfig {
-  structuredData?: StructuredDataType[]
-  datePublished: string
-  dateModified?: string
-  author?: string
-  url: string
+  structuredData?: StructuredDataType[];
+  datePublished: string;
+  dateModified?: string;
+  author?: string;
+  url: string;
 }
 
 export function ArticleSEO({
@@ -237,7 +227,7 @@ export function ArticleSEO({
       type: "article",
       ...seoConfig.openGraph,
     },
-  })
+  });
 
   return (
     <>
@@ -260,20 +250,17 @@ export function ArticleSEO({
         />
       ))}
     </>
-  )
+  );
 }
 
 export interface JsonLdProps {
-  data: StructuredDataType
+  data: StructuredDataType;
 }
 
 export function JsonLd({ data }: JsonLdProps) {
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
-    />
-  )
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
+  );
 }
 
 // Re-export all next-seo JSON-LD components
@@ -308,4 +295,4 @@ export {
   VideoGameJsonLd,
   VideoJsonLd,
   WebPageJsonLd,
-} from "next-seo"
+} from "next-seo";

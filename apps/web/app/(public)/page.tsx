@@ -1,13 +1,13 @@
-import { createMetadata } from "@raypx/seo"
-import type { Metadata } from "next"
-import appConfig from "@/config/app.config"
+import { createMetadata } from "@raypx/seo";
+import type { Metadata } from "next";
+import appConfig from "@/config/app.config";
 // import { Footer } from "./_components/footer"
-import { Footer } from "../../layouts/landing/footer"
+import { Footer } from "../../layouts/landing/footer";
 // import { Navbar } from "../../layouts/landing/navbar"
-import { Header } from "../../layouts/landing/header"
-import { CTASection } from "./_components/cta-section"
-import { FeaturesSection } from "./_components/features-section"
-import { HeroSection } from "./_components/hero-section"
+import { Header } from "../../layouts/landing/header";
+import { CTASection } from "./_components/cta-section";
+import { FeaturesSection } from "./_components/features-section";
+import { HeroSection } from "./_components/hero-section";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return createMetadata({
@@ -21,8 +21,8 @@ export const generateMetadata = async (): Promise<Metadata> => {
       "machine learning",
       "enterprise",
     ],
-  })
-}
+  });
+};
 
 export default async function LandingPage() {
   return (
@@ -35,5 +35,5 @@ export default async function LandingPage() {
       </main>
       <Footer />
     </div>
-  )
+  );
 }

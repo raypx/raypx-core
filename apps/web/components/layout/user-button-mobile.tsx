@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useAuth } from "@raypx/auth/core"
+import { useAuth } from "@raypx/auth/core";
 import {
   Drawer,
   DrawerContent,
@@ -9,44 +9,44 @@ import {
   DrawerPortal,
   DrawerTitle,
   DrawerTrigger,
-} from "@raypx/ui/components/drawer"
-import { toast } from "@raypx/ui/components/toast"
-import { LogOutIcon } from "lucide-react"
-import { useTranslations } from "next-intl"
-import { useState } from "react"
-import { UserAvatar } from "@/components/layout/user-avatar"
-import { LocaleLink, useLocaleRouter } from "@/components/link"
-import { getAvatarLinks } from "@/config/avatar.config"
+} from "@raypx/ui/components/drawer";
+import { toast } from "@raypx/ui/components/toast";
+import { LogOutIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { UserAvatar } from "@/components/layout/user-avatar";
+import { LocaleLink, useLocaleRouter } from "@/components/link";
+import { getAvatarLinks } from "@/config/avatar.config";
 
 export function UserButtonMobile() {
-  const t = useTranslations()
-  const avatarLinks = getAvatarLinks()
-  const localeRouter = useLocaleRouter()
-  const [open, setOpen] = useState(false)
+  const t = useTranslations();
+  const avatarLinks = getAvatarLinks();
+  const localeRouter = useLocaleRouter();
+  const [open, setOpen] = useState(false);
   const closeDrawer = () => {
-    setOpen(false)
-  }
+    setOpen(false);
+  };
   const {
     hooks: { useSession },
     authClient,
-  } = useAuth()
-  const { data: session } = useSession()
+  } = useAuth();
+  const { data: session } = useSession();
 
   const handleSignOut = async () => {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          console.log("sign out success")
+          console.log("sign out success");
           // TanStack Query automatically handles cache invalidation on sign out
-          localeRouter.replace("/")
+          localeRouter.replace("/");
         },
         onError: (error) => {
-          console.error("sign out error:", error)
-          toast.error(t("common.logoutFailed"))
+          console.error("sign out error:", error);
+          toast.error(t("common.logoutFailed"));
         },
       },
-    })
-  }
+    });
+  };
 
   return (
     <Drawer open={open} onClose={closeDrawer}>
@@ -78,18 +78,13 @@ export function UserButtonMobile() {
             )}
             <div className="flex flex-col">
               <p className="font-medium">{session?.user.name}</p>
-              <p className="w-[200px] truncate text-muted-foreground">
-                {session?.user.email}
-              </p>
+              <p className="w-[200px] truncate text-muted-foreground">{session?.user.email}</p>
             </div>
           </div>
 
           <ul className="mb-14 mt-1 w-full text-muted-foreground">
             {avatarLinks?.map((item) => (
-              <li
-                key={item.title}
-                className="rounded-lg text-foreground hover:bg-muted"
-              >
+              <li key={item.title} className="rounded-lg text-foreground hover:bg-muted">
                 <LocaleLink
                   href={item.href || "#"}
                   onClick={closeDrawer}
@@ -101,16 +96,13 @@ export function UserButtonMobile() {
               </li>
             ))}
 
-            <li
-              key="logout"
-              className="rounded-lg text-foreground hover:bg-muted"
-            >
+            <li key="logout" className="rounded-lg text-foreground hover:bg-muted">
               <a
                 href="#"
                 onClick={async (event) => {
-                  event.preventDefault()
-                  closeDrawer()
-                  handleSignOut()
+                  event.preventDefault();
+                  closeDrawer();
+                  handleSignOut();
                 }}
                 className="flex w-full items-center gap-3 px-2.5 py-2"
               >
@@ -122,5 +114,5 @@ export function UserButtonMobile() {
         </DrawerContent>
       </DrawerPortal>
     </Drawer>
-  )
+  );
 }

@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button } from "@raypx/ui/components/button"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@raypx/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@raypx/ui/components/dialog"
+} from "@raypx/ui/components/dialog";
 import {
   Form,
   FormControl,
@@ -17,21 +17,21 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@raypx/ui/components/form"
-import { Loader2 } from "@raypx/ui/components/icons"
-import { PasswordField } from "@raypx/ui/components/password-field"
-import type { SettingsCardClassNames } from "@raypx/ui/components/settings"
-import { cn } from "@raypx/ui/lib/utils"
-import { type ComponentProps, useState } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod/v4"
-import { useAuth } from "../../core/hooks/use-auth"
-import { getLocalizedError } from "../../core/lib/utils"
-import { BackupCodesDialog } from "./backup-codes-dialog"
+} from "@raypx/ui/components/form";
+import { Loader2 } from "@raypx/ui/components/icons";
+import { PasswordField } from "@raypx/ui/components/password-field";
+import type { SettingsCardClassNames } from "@raypx/ui/components/settings";
+import { cn } from "@raypx/ui/lib/utils";
+import { type ComponentProps, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod/v4";
+import { useAuth } from "../../core/hooks/use-auth";
+import { getLocalizedError } from "../../core/lib/utils";
+import { BackupCodesDialog } from "./backup-codes-dialog";
 
 interface TwoFactorPasswordDialogProps extends ComponentProps<typeof Dialog> {
-  classNames?: SettingsCardClassNames
-  isTwoFactorEnabled: boolean
+  classNames?: SettingsCardClassNames;
+  isTwoFactorEnabled: boolean;
 }
 
 export function TwoFactorPasswordDialog({
@@ -40,47 +40,46 @@ export function TwoFactorPasswordDialog({
   isTwoFactorEnabled,
   ...props
 }: TwoFactorPasswordDialogProps) {
-  const { t, authClient, basePath, viewPaths, navigate, toast, twoFactor } =
-    useAuth()
-  const [showBackupCodesDialog, setShowBackupCodesDialog] = useState(false)
-  const [backupCodes, setBackupCodes] = useState<string[]>([])
-  const [totpURI, setTotpURI] = useState<string | null>(null)
+  const { t, authClient, basePath, viewPaths, navigate, toast, twoFactor } = useAuth();
+  const [showBackupCodesDialog, setShowBackupCodesDialog] = useState(false);
+  const [backupCodes, setBackupCodes] = useState<string[]>([]);
+  const [totpURI, setTotpURI] = useState<string | null>(null);
 
   const formSchema = z.object({
     password: z.string().min(1, { message: t("PASSWORD_REQUIRED") }),
-  })
+  });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       password: "",
     },
-  })
+  });
 
-  const { isSubmitting } = form.formState
+  const { isSubmitting } = form.formState;
 
   async function enableTwoFactor({ password }: z.infer<typeof formSchema>) {
     try {
       const response = await authClient.twoFactor.enable({
         password,
         fetchOptions: { throw: true },
-      })
+      });
 
-      onOpenChange?.(false)
-      setBackupCodes(response.backupCodes)
+      onOpenChange?.(false);
+      setBackupCodes(response.backupCodes);
 
       if (twoFactor?.includes("totp")) {
-        setTotpURI(response.totpURI)
+        setTotpURI(response.totpURI);
       }
 
       setTimeout(() => {
-        setShowBackupCodesDialog(true)
-      }, 250)
+        setShowBackupCodesDialog(true);
+      }, 250);
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
   }
 
@@ -89,19 +88,19 @@ export function TwoFactorPasswordDialog({
       await authClient.twoFactor.disable({
         password,
         fetchOptions: { throw: true },
-      })
+      });
 
       toast({
         variant: "success",
         message: t("TWO_FACTOR_DISABLED"),
-      })
+      });
 
-      onOpenChange?.(false)
+      onOpenChange?.(false);
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
   }
 
@@ -110,9 +109,7 @@ export function TwoFactorPasswordDialog({
       <Dialog onOpenChange={onOpenChange} {...props}>
         <DialogContent className={cn("sm:max-w-md", classNames?.dialog)}>
           <DialogHeader className={classNames?.dialog?.header}>
-            <DialogTitle className={classNames?.title}>
-              {t("TWO_FACTOR")}
-            </DialogTitle>
+            <DialogTitle className={classNames?.title}>{t("TWO_FACTOR")}</DialogTitle>
 
             <DialogDescription className={classNames?.description}>
               {isTwoFactorEnabled
@@ -123,9 +120,7 @@ export function TwoFactorPasswordDialog({
 
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(
-                isTwoFactorEnabled ? disableTwoFactor : enableTwoFactor,
-              )}
+              onSubmit={form.handleSubmit(isTwoFactorEnabled ? disableTwoFactor : enableTwoFactor)}
               className="grid gap-4"
             >
               <FormField
@@ -133,9 +128,7 @@ export function TwoFactorPasswordDialog({
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className={classNames?.label}>
-                      {t("PASSWORD")}
-                    </FormLabel>
+                    <FormLabel className={classNames?.label}>{t("PASSWORD")}</FormLabel>
                     <FormControl>
                       <PasswordField
                         className={classNames?.input}
@@ -154,10 +147,7 @@ export function TwoFactorPasswordDialog({
                   type="button"
                   variant="secondary"
                   onClick={() => onOpenChange?.(false)}
-                  className={cn(
-                    classNames?.button,
-                    classNames?.secondaryButton,
-                  )}
+                  className={cn(classNames?.button, classNames?.secondaryButton)}
                 >
                   {t("CANCEL")}
                 </Button>
@@ -168,9 +158,7 @@ export function TwoFactorPasswordDialog({
                   className={cn(classNames?.button, classNames?.primaryButton)}
                 >
                   {isSubmitting && <Loader2 className="animate-spin" />}
-                  {isTwoFactorEnabled
-                    ? t("DISABLE_TWO_FACTOR")
-                    : t("ENABLE_TWO_FACTOR")}
+                  {isTwoFactorEnabled ? t("DISABLE_TWO_FACTOR") : t("ENABLE_TWO_FACTOR")}
                 </Button>
               </DialogFooter>
             </form>
@@ -182,19 +170,15 @@ export function TwoFactorPasswordDialog({
         classNames={classNames}
         open={showBackupCodesDialog}
         onOpenChange={(open) => {
-          setShowBackupCodesDialog(open)
+          setShowBackupCodesDialog(open);
 
           if (!open) {
-            const url = `${basePath}/${viewPaths.TWO_FACTOR}`
-            navigate(
-              twoFactor?.includes("totp") && totpURI
-                ? `${url}?totpURI=${totpURI}`
-                : url,
-            )
+            const url = `${basePath}/${viewPaths.TWO_FACTOR}`;
+            navigate(twoFactor?.includes("totp") && totpURI ? `${url}?totpURI=${totpURI}` : url);
           }
         }}
         backupCodes={backupCodes}
       />
     </>
-  )
+  );
 }

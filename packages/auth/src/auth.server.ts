@@ -1,4 +1,4 @@
-import { db, nanoid, schemas, uuidv7 } from "@raypx/db"
+import { db, nanoid, schemas, uuidv7 } from "@raypx/db";
 import {
   ResetPasswordEmail,
   SendMagicLinkEmail,
@@ -6,9 +6,9 @@ import {
   sendEmail,
   VerifyEmail,
   WelcomeEmail,
-} from "@raypx/email"
-import { type BetterAuthOptions, betterAuth } from "better-auth"
-import { drizzleAdapter } from "better-auth/adapters/drizzle"
+} from "@raypx/email";
+import { type BetterAuthOptions, betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import {
   admin,
   apiKey,
@@ -19,20 +19,20 @@ import {
   oneTap,
   organization,
   username,
-} from "better-auth/plugins"
-import { socialProviders } from "./core/lib/providers/shared-providers"
-import { envs } from "./envs"
-import { authFeatures } from "./features"
+} from "better-auth/plugins";
+import { socialProviders } from "./core/lib/providers/shared-providers";
+import { envs } from "./envs";
+import { authFeatures } from "./features";
 import {
   ac,
   admin as adminRole,
   superadmin as superAdminRole,
   user as userRole,
-} from "./permissions"
+} from "./permissions";
 
 // Build plugins array based on enabled features
 const buildServerPlugins = () => {
-  const plugins = []
+  const plugins = [];
 
   // Always include basic plugins
   plugins.push(
@@ -41,11 +41,11 @@ const buildServerPlugins = () => {
       loginPage: "/signin",
     }),
     lastLoginMethod(),
-  )
+  );
 
   // Add feature-specific plugins
   if (authFeatures.apiKey) {
-    plugins.push(apiKey())
+    plugins.push(apiKey());
   }
 
   // Magic Link
@@ -61,15 +61,15 @@ const buildServerPlugins = () => {
               token,
             }),
             to: email,
-          })
+          });
         },
       }),
-    )
+    );
   }
 
   // One Tap
   if (authFeatures.oneTap) {
-    plugins.push(oneTap())
+    plugins.push(oneTap());
   }
 
   // Organization
@@ -86,7 +86,7 @@ const buildServerPlugins = () => {
         },
       }),
       organization(),
-    )
+    );
   }
 
   // Email OTP
@@ -94,24 +94,24 @@ const buildServerPlugins = () => {
     plugins.push(
       emailOTP({
         sendVerificationOTP: async (data, _request) => {
-          const { email, otp } = data
+          const { email, otp } = data;
           sendEmail({
             to: email,
             subject: "Verify your email",
             template: SendVerificationOTP({
               otp,
             }),
-          })
+          });
         },
       }),
-    )
+    );
   }
 
-  return plugins
-}
+  return plugins;
+};
 
 const createConfig = (): BetterAuthOptions => {
-  const env = envs()
+  const env = envs();
 
   return {
     emailAndPassword: {
@@ -125,7 +125,7 @@ const createConfig = (): BetterAuthOptions => {
             resetLink: url,
             username: user.name || user.email,
           }),
-        })
+        });
       },
     },
     emailVerification: {
@@ -137,16 +137,15 @@ const createConfig = (): BetterAuthOptions => {
             username: user.email,
           }),
           to: user.email,
-        })
+        });
       },
     },
     baseURL: env.NEXT_PUBLIC_AUTH_URL,
     socialProviders,
     trustedOrigins: (req) =>
-      [
-        req.headers.get("origin") ?? "",
-        req.headers.get("referer") ?? "",
-      ].filter(Boolean) as string[],
+      [req.headers.get("origin") ?? "", req.headers.get("referer") ?? ""].filter(
+        Boolean,
+      ) as string[],
     session: {
       cookieCache: {
         enabled: true,
@@ -178,17 +177,15 @@ const createConfig = (): BetterAuthOptions => {
       user: {
         create: {
           before: async (user) => {
-            const name =
-              user.name?.trim() || user.email?.split("@")[0] || nanoid()
-            const image =
-              user.image || `https://ui-avatars.com/api/?name=${name}`
+            const name = user.name?.trim() || user.email?.split("@")[0] || nanoid();
+            const image = user.image || `https://ui-avatars.com/api/?name=${name}`;
 
             return {
               data: {
                 name,
                 image,
               },
-            }
+            };
           },
           after: async (user) => {
             await sendEmail({
@@ -197,7 +194,7 @@ const createConfig = (): BetterAuthOptions => {
                 username: user.name || user.email,
               }),
               to: user.email,
-            })
+            });
           },
         },
       },
@@ -207,11 +204,11 @@ const createConfig = (): BetterAuthOptions => {
       level: "debug",
     },
     plugins: buildServerPlugins(),
-  }
-}
+  };
+};
 
-const config: BetterAuthOptions = createConfig()
+const config: BetterAuthOptions = createConfig();
 
-export const auth = betterAuth(config)
+export const auth = betterAuth(config);
 
-export type Auth = typeof auth
+export type Auth = typeof auth;

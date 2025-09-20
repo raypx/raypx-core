@@ -1,83 +1,69 @@
-"use client"
+"use client";
 
-import { Button } from "@raypx/ui/components/button"
+import { Button } from "@raypx/ui/components/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@raypx/ui/components/dropdown-menu"
+} from "@raypx/ui/components/dropdown-menu";
 import {
   ChevronsUpDown,
   LogInIcon,
   LogOutIcon,
   PlusCircleIcon,
   SettingsIcon,
-} from "@raypx/ui/components/icons"
-import { Link } from "@raypx/ui/components/link"
-import { cn } from "@raypx/ui/lib/utils"
-import type { Organization } from "better-auth/plugins/organization"
-import {
-  type ComponentProps,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useState,
-} from "react"
-import { useAuth } from "../../core/hooks/use-auth"
-import { useCurrentOrganization } from "../../core/hooks/use-current-organization"
-import {
-  buildAccountUrl,
-  buildAuthUrl,
-  buildOrganizationUrl,
-} from "../../core/lib/url-utils"
-import { getLocalizedError } from "../../core/lib/utils"
-import type { User } from "../../types"
-import { PersonalAccountView } from "../account/personal-account-view"
-import { UserAvatar, type UserAvatarClassNames } from "../account/user-avatar"
-import type { UserViewClassNames } from "../account/user-view"
-import { CreateOrganizationDialog } from "./create-organization-dialog"
-import {
-  OrganizationCellView,
-  type OrganizationViewClassNames,
-} from "./organization-cell-view"
-import { OrganizationLogo } from "./organization-logo"
+} from "@raypx/ui/components/icons";
+import { Link } from "@raypx/ui/components/link";
+import { cn } from "@raypx/ui/lib/utils";
+import type { Organization } from "better-auth/plugins/organization";
+import { type ComponentProps, type ReactNode, useCallback, useEffect, useState } from "react";
+import { useAuth } from "../../core/hooks/use-auth";
+import { useCurrentOrganization } from "../../core/hooks/use-current-organization";
+import { buildAccountUrl, buildAuthUrl, buildOrganizationUrl } from "../../core/lib/url-utils";
+import { getLocalizedError } from "../../core/lib/utils";
+import type { User } from "../../types";
+import { PersonalAccountView } from "../account/personal-account-view";
+import { UserAvatar, type UserAvatarClassNames } from "../account/user-avatar";
+import type { UserViewClassNames } from "../account/user-view";
+import { CreateOrganizationDialog } from "./create-organization-dialog";
+import { OrganizationCellView, type OrganizationViewClassNames } from "./organization-cell-view";
+import { OrganizationLogo } from "./organization-logo";
 
 export interface OrganizationSwitcherClassNames {
-  base?: string
-  skeleton?: string
+  base?: string;
+  skeleton?: string;
   trigger?: {
-    base?: string
-    avatar?: UserAvatarClassNames
-    user?: UserViewClassNames
-    organization?: OrganizationViewClassNames
-    skeleton?: string
-  }
+    base?: string;
+    avatar?: UserAvatarClassNames;
+    user?: UserViewClassNames;
+    organization?: OrganizationViewClassNames;
+    skeleton?: string;
+  };
   content?: {
-    base?: string
-    user?: UserViewClassNames
-    organization?: OrganizationViewClassNames
-    avatar?: UserAvatarClassNames
-    menuItem?: string
-    separator?: string
-  }
+    base?: string;
+    user?: UserViewClassNames;
+    organization?: OrganizationViewClassNames;
+    avatar?: UserAvatarClassNames;
+    menuItem?: string;
+    separator?: string;
+  };
 }
 
-export interface OrganizationSwitcherProps
-  extends Omit<ComponentProps<typeof Button>, "trigger"> {
-  classNames?: OrganizationSwitcherClassNames
-  align?: "center" | "start" | "end"
-  trigger?: ReactNode
-  slug?: string
-  onSetActive?: (organization: Organization | null) => void
+export interface OrganizationSwitcherProps extends Omit<ComponentProps<typeof Button>, "trigger"> {
+  classNames?: OrganizationSwitcherClassNames;
+  align?: "center" | "start" | "end";
+  trigger?: ReactNode;
+  slug?: string;
+  onSetActive?: (organization: Organization | null) => void;
   /**
    * Hide the personal organization option from the switcher.
    * When true, users can only switch between organizations and cannot access their personal account.
    * If no organization is active, the first available organization will be automatically selected.
    * @default false
    */
-  hidePersonal?: boolean
+  hidePersonal?: boolean;
 }
 
 /**
@@ -112,87 +98,75 @@ export function OrganizationSwitcher({
     navigate,
     toast,
     viewPaths,
-  } = useAuth()
+  } = useAuth();
 
-  const {
-    pathMode,
-    slug: contextSlug,
-    personalPath,
-  } = organizationOptions || {}
+  const { pathMode, slug: contextSlug, personalPath } = organizationOptions || {};
 
-  const slug = slugProp || contextSlug
+  const slug = slugProp || contextSlug;
 
-  const [activeOrganizationPending, setActiveOrganizationPending] =
-    useState(false)
-  const [isCreateOrgDialogOpen, setIsCreateOrgDialogOpen] = useState(false)
-  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [activeOrganizationPending, setActiveOrganizationPending] = useState(false);
+  const [isCreateOrgDialogOpen, setIsCreateOrgDialogOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const { data: sessionData, isPending: sessionPending } = useSession()
-  const user = sessionData?.user
+  const { data: sessionData, isPending: sessionPending } = useSession();
+  const user = sessionData?.user;
 
-  const { data: organizations, isPending: organizationsPending } =
-    useListOrganizations()
+  const { data: organizations, isPending: organizationsPending } = useListOrganizations();
 
   const {
     data: activeOrganization,
     isPending: organizationPending,
     isRefetching: organizationRefetching,
-  } = useCurrentOrganization({ slug })
+  } = useCurrentOrganization({ slug });
 
   const isPending =
-    organizationsPending ||
-    sessionPending ||
-    activeOrganizationPending ||
-    organizationPending
+    organizationsPending || sessionPending || activeOrganizationPending || organizationPending;
 
   useEffect(() => {
-    if (organizationRefetching) return
+    if (organizationRefetching) return;
 
-    setActiveOrganizationPending(false)
-  }, [activeOrganization, organizationRefetching])
+    setActiveOrganizationPending(false);
+  }, [activeOrganization, organizationRefetching]);
 
   const switchOrganization = useCallback(
     async (organization: Organization | null) => {
       // Prevent switching to personal account when hidePersonal is true
       if (hidePersonal && organization === null) {
-        return
+        return;
       }
 
       if (pathMode === "slug") {
         if (organization) {
-          navigate(`${organizationOptions?.basePath}/${organization.slug}`)
+          navigate(`${organizationOptions?.basePath}/${organization.slug}`);
         } else {
           navigate(
             personalPath ??
-              buildAccountUrl(
-                accountOptions?.basePath,
-                accountOptions?.viewPaths.SETTINGS,
-              ) ??
+              buildAccountUrl(accountOptions?.basePath, accountOptions?.viewPaths.SETTINGS) ??
               redirectTo,
-          )
+          );
         }
 
-        return
+        return;
       }
 
-      setActiveOrganizationPending(true)
+      setActiveOrganizationPending(true);
 
       try {
-        onSetActive?.(organization)
+        onSetActive?.(organization);
 
         await authClient.organization.setActive({
           organizationId: organization?.id || null,
           fetchOptions: {
             throw: true,
           },
-        })
+        });
       } catch (error) {
         toast({
           variant: "error",
           message: getLocalizedError({ error, t }),
-        })
+        });
 
-        setActiveOrganizationPending(false)
+        setActiveOrganizationPending(false);
       }
     },
     [
@@ -207,7 +181,7 @@ export function OrganizationSwitcher({
       redirectTo,
       navigate,
     ],
-  )
+  );
 
   // Auto-select first organization when hidePersonal is true
   useEffect(() => {
@@ -221,7 +195,7 @@ export function OrganizationSwitcher({
       !organizationPending &&
       !slug
     ) {
-      switchOrganization(organizations[0])
+      switchOrganization(organizations[0]);
     }
   }, [
     hidePersonal,
@@ -232,7 +206,7 @@ export function OrganizationSwitcher({
     organizationPending,
     switchOrganization,
     slug,
-  ])
+  ]);
 
   return (
     <>
@@ -242,11 +216,7 @@ export function OrganizationSwitcher({
             (size === "icon" ? (
               <Button
                 size="icon"
-                className={cn(
-                  "size-fit rounded-full",
-                  className,
-                  classNames?.trigger?.base,
-                )}
+                className={cn("size-fit rounded-full", className, classNames?.trigger?.base)}
                 variant="ghost"
                 type="button"
                 {...props}
@@ -276,11 +246,7 @@ export function OrganizationSwitcher({
               </Button>
             ) : (
               <Button
-                className={cn(
-                  "!p-2 h-fit",
-                  className,
-                  classNames?.trigger?.base,
-                )}
+                className={cn("!p-2 h-fit", className, classNames?.trigger?.base)}
                 size={size}
                 {...props}
               >
@@ -324,9 +290,7 @@ export function OrganizationSwitcher({
           >
             {(user && !(user as User).isAnonymous) || isPending ? (
               <>
-                {activeOrganizationPending ||
-                activeOrganization ||
-                hidePersonal ? (
+                {activeOrganizationPending || activeOrganization || hidePersonal ? (
                   <OrganizationCellView
                     classNames={classNames?.content?.organization}
                     isPending={isPending || activeOrganizationPending}
@@ -368,9 +332,7 @@ export function OrganizationSwitcher({
                 )}
               </>
             ) : (
-              <div className="-my-1 text-muted-foreground text-xs">
-                {t("ORGANIZATION")}
-              </div>
+              <div className="-my-1 text-muted-foreground text-xs">{t("ORGANIZATION")}</div>
             )}
           </div>
 
@@ -405,9 +367,7 @@ export function OrganizationSwitcher({
           {organizations &&
             organizations.length > 0 &&
             (!hidePersonal || organizations.length > 1) && (
-              <DropdownMenuSeparator
-                className={classNames?.content?.separator}
-              />
+              <DropdownMenuSeparator className={classNames?.content?.separator} />
             )}
 
           {!isPending && sessionData && !(user as User).isAnonymous ? (
@@ -442,5 +402,5 @@ export function OrganizationSwitcher({
         onOpenChange={setIsCreateOrgDialogOpen}
       />
     </>
-  )
+  );
 }

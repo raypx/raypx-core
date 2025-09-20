@@ -1,28 +1,23 @@
-import {
-  getUserStats,
-  getUsersList,
-  type schemas,
-  updateUserStatus,
-} from "@raypx/db"
-import type { InferSelectModel } from "drizzle-orm"
+import { getUserStats, getUsersList, type schemas, updateUserStatus } from "@raypx/db";
+import type { InferSelectModel } from "drizzle-orm";
 
-export type User = InferSelectModel<typeof schemas.user>
+export type User = InferSelectModel<typeof schemas.user>;
 
 export interface UserListOptions {
-  limit?: number
-  offset?: number
-  search?: string
-  sortBy?: "name" | "email" | "createdAt" | "updatedAt"
-  sortOrder?: "asc" | "desc"
-  role?: string
-  status?: "active" | "banned"
+  limit?: number;
+  offset?: number;
+  search?: string;
+  sortBy?: "name" | "email" | "createdAt" | "updatedAt";
+  sortOrder?: "asc" | "desc";
+  role?: string;
+  status?: "active" | "banned";
 }
 
 export interface UpdateUserData {
-  banned?: boolean
-  banReason?: string
-  banExpires?: Date
-  role?: string
+  banned?: boolean;
+  banReason?: string;
+  banExpires?: Date;
+  role?: string;
 }
 
 export class UserService {
@@ -30,18 +25,18 @@ export class UserService {
    * Get users list with pagination, search, and filters
    */
   async getUsers(options?: UserListOptions) {
-    return await getUsersList(options)
+    return await getUsersList(options);
   }
 
   /**
    * Update user status (ban/unban, role changes)
    */
   async updateUser(id: string, data: UpdateUserData) {
-    const updated = await updateUserStatus(id, data)
+    const updated = await updateUserStatus(id, data);
     if (!updated) {
-      throw new Error("User not found")
+      throw new Error("User not found");
     }
-    return updated
+    return updated;
   }
 
   /**
@@ -52,7 +47,7 @@ export class UserService {
       banned: true,
       banReason,
       banExpires,
-    })
+    });
   }
 
   /**
@@ -61,20 +56,20 @@ export class UserService {
   async unbanUser(id: string) {
     return await this.updateUser(id, {
       banned: false,
-    })
+    });
   }
 
   /**
    * Change user role
    */
   async changeUserRole(id: string, role: string) {
-    return await this.updateUser(id, { role })
+    return await this.updateUser(id, { role });
   }
 
   /**
    * Get user statistics for dashboard
    */
   async getUserStats() {
-    return await getUserStats()
+    return await getUserStats();
   }
 }

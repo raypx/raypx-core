@@ -1,4 +1,4 @@
-import type { AuthViewPaths } from "@raypx/auth"
+import type { AuthViewPaths } from "@raypx/auth";
 
 export const authPages: Partial<AuthViewPaths> = {
   CALLBACK: "callback",
@@ -12,4 +12,4 @@ export const authPages: Partial<AuthViewPaths> = {
   SIGN_UP: "sign-up",
   TWO_FACTOR: "two-factor",
   ACCEPT_INVITATION: "accept-invitation",
-}
+};

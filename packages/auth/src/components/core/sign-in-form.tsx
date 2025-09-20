@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import type { BetterFetchOption } from "@better-fetch/fetch"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Badge } from "@raypx/ui/components/badge"
-import { Button } from "@raypx/ui/components/button"
-import { Checkbox } from "@raypx/ui/components/checkbox"
+import type { BetterFetchOption } from "@better-fetch/fetch";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Badge } from "@raypx/ui/components/badge";
+import { Button } from "@raypx/ui/components/button";
+import { Checkbox } from "@raypx/ui/components/checkbox";
 import {
   Form,
   FormControl,
@@ -12,38 +12,33 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@raypx/ui/components/form"
-import { Loader2 } from "@raypx/ui/components/icons"
-import { Input } from "@raypx/ui/components/input"
-import { Link } from "@raypx/ui/components/link"
-import { PasswordField } from "@raypx/ui/components/password-field"
-import { useTranslations } from "next-intl"
-import { type RefObject, useEffect } from "react"
-import type ReCAPTCHA from "react-google-recaptcha"
-import { useForm } from "react-hook-form"
-import { z } from "zod/v4"
-import { useAuth } from "../../core/hooks/use-auth"
-import { useCaptcha } from "../../core/hooks/use-captcha"
-import { useIsHydrated } from "../../core/hooks/use-hydrated"
-import { useOnSuccessTransition } from "../../core/hooks/use-success-transition"
-import { buildAuthUrl } from "../../core/lib/url-utils"
-import {
-  cn,
-  getLocalizedError,
-  getPasswordSchema,
-  isValidEmail,
-} from "../../core/lib/utils"
-import type { PasswordValidation } from "../../types"
-import type { AuthFormClassNames } from "./auth-form"
-import { Captcha } from "./captcha"
+} from "@raypx/ui/components/form";
+import { Loader2 } from "@raypx/ui/components/icons";
+import { Input } from "@raypx/ui/components/input";
+import { Link } from "@raypx/ui/components/link";
+import { PasswordField } from "@raypx/ui/components/password-field";
+import { useTranslations } from "next-intl";
+import { type RefObject, useEffect } from "react";
+import type ReCAPTCHA from "react-google-recaptcha";
+import { useForm } from "react-hook-form";
+import { z } from "zod/v4";
+import { useAuth } from "../../core/hooks/use-auth";
+import { useCaptcha } from "../../core/hooks/use-captcha";
+import { useIsHydrated } from "../../core/hooks/use-hydrated";
+import { useOnSuccessTransition } from "../../core/hooks/use-success-transition";
+import { buildAuthUrl } from "../../core/lib/url-utils";
+import { cn, getLocalizedError, getPasswordSchema, isValidEmail } from "../../core/lib/utils";
+import type { PasswordValidation } from "../../types";
+import type { AuthFormClassNames } from "./auth-form";
+import { Captcha } from "./captcha";
 
 export interface SignInFormProps {
-  className?: string
-  classNames?: AuthFormClassNames
-  isSubmitting?: boolean
-  redirectTo?: string
-  setIsSubmitting?: (isSubmitting: boolean) => void
-  passwordValidation?: PasswordValidation
+  className?: string;
+  classNames?: AuthFormClassNames;
+  isSubmitting?: boolean;
+  redirectTo?: string;
+  setIsSubmitting?: (isSubmitting: boolean) => void;
+  passwordValidation?: PasswordValidation;
 }
 
 export function SignInForm({
@@ -54,9 +49,9 @@ export function SignInForm({
   setIsSubmitting,
   passwordValidation,
 }: SignInFormProps) {
-  const isHydrated = useIsHydrated()
-  const t = useTranslations("auth")
-  const { captchaRef, getCaptchaHeaders, resetCaptcha } = useCaptcha()
+  const isHydrated = useIsHydrated();
+  const t = useTranslations("auth");
+  const { captchaRef, getCaptchaHeaders, resetCaptcha } = useCaptcha();
 
   const {
     hooks: { useLastUsedLoginMethod },
@@ -66,21 +61,21 @@ export function SignInForm({
     viewPaths,
     navigate,
     toast,
-  } = useAuth()
+  } = useAuth();
 
-  const { isLastUsedLoginMethod } = useLastUsedLoginMethod()
+  const { isLastUsedLoginMethod } = useLastUsedLoginMethod();
 
-  const isLastUsed = isLastUsedLoginMethod("email")
+  const isLastUsed = isLastUsedLoginMethod("email");
 
-  const rememberMeEnabled = credentials?.rememberMe
-  const usernameEnabled = credentials?.username
-  const contextPasswordValidation = credentials?.passwordValidation
+  const rememberMeEnabled = credentials?.rememberMe;
+  const usernameEnabled = credentials?.username;
+  const contextPasswordValidation = credentials?.passwordValidation;
 
-  passwordValidation = { ...contextPasswordValidation, ...passwordValidation }
+  passwordValidation = { ...contextPasswordValidation, ...passwordValidation };
 
   const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({
     redirectTo,
-  })
+  });
 
   const formSchema = z.object({
     email: usernameEnabled
@@ -101,7 +96,7 @@ export function SignInForm({
       INVALID_PASSWORD: t("INVALID_PASSWORD"),
     }),
     rememberMe: z.boolean().optional(),
-  })
+  });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -110,62 +105,57 @@ export function SignInForm({
       password: "",
       rememberMe: !rememberMeEnabled,
     },
-  })
+  });
 
-  isSubmitting =
-    isSubmitting || form.formState.isSubmitting || transitionPending
+  isSubmitting = isSubmitting || form.formState.isSubmitting || transitionPending;
 
   useEffect(() => {
-    setIsSubmitting?.(form.formState.isSubmitting || transitionPending)
-  }, [form.formState.isSubmitting, transitionPending, setIsSubmitting])
+    setIsSubmitting?.(form.formState.isSubmitting || transitionPending);
+  }, [form.formState.isSubmitting, transitionPending, setIsSubmitting]);
 
-  async function signIn({
-    email,
-    password,
-    rememberMe,
-  }: z.infer<typeof formSchema>) {
+  async function signIn({ email, password, rememberMe }: z.infer<typeof formSchema>) {
     try {
-      let response: Record<string, unknown> = {}
+      let response: Record<string, unknown> = {};
 
       if (usernameEnabled && !isValidEmail(email)) {
         const fetchOptions: BetterFetchOption = {
           throw: true,
           headers: await getCaptchaHeaders("/sign-in/username"),
-        }
+        };
 
         response = await authClient.signIn.username({
           username: email,
           password,
           rememberMe,
           fetchOptions,
-        })
+        });
       } else {
         const fetchOptions: BetterFetchOption = {
           throw: true,
           headers: await getCaptchaHeaders("/sign-in/email"),
-        }
+        };
 
         response = await authClient.signIn.email({
           email,
           password,
           rememberMe,
           fetchOptions,
-        })
+        });
       }
 
       if (response.twoFactorRedirect) {
-        navigate(`${basePath}/${viewPaths.TWO_FACTOR}${window.location.search}`)
+        navigate(`${basePath}/${viewPaths.TWO_FACTOR}${window.location.search}`);
       } else {
-        await onSuccess()
+        await onSuccess();
       }
     } catch (error) {
-      form.resetField("password")
-      resetCaptcha()
+      form.resetField("password");
+      resetCaptcha();
 
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
   }
 
@@ -191,9 +181,7 @@ export function SignInForm({
                   className={classNames?.input}
                   type={usernameEnabled ? "text" : "email"}
                   placeholder={
-                    usernameEnabled
-                      ? t("SIGN_IN_USERNAME_PLACEHOLDER")
-                      : t("EMAIL_PLACEHOLDER")
+                    usernameEnabled ? t("SIGN_IN_USERNAME_PLACEHOLDER") : t("EMAIL_PLACEHOLDER")
                   }
                   disabled={isSubmitting}
                   {...field}
@@ -211,21 +199,12 @@ export function SignInForm({
           render={({ field }) => (
             <FormItem>
               <div className="flex items-center justify-between">
-                <FormLabel className={classNames?.label}>
-                  {t("PASSWORD")}
-                </FormLabel>
+                <FormLabel className={classNames?.label}>{t("PASSWORD")}</FormLabel>
 
                 {credentials?.forgotPassword && (
                   <Link
-                    className={cn(
-                      "text-sm hover:underline",
-                      classNames?.forgotPasswordLink,
-                    )}
-                    href={buildAuthUrl(
-                      basePath,
-                      viewPaths.FORGOT_PASSWORD,
-                      isHydrated,
-                    )}
+                    className={cn("text-sm hover:underline", classNames?.forgotPasswordLink)}
+                    href={buildAuthUrl(basePath, viewPaths.FORGOT_PASSWORD, isHydrated)}
                   >
                     {t("FORGOT_PASSWORD_LINK")}
                   </Link>
@@ -267,10 +246,7 @@ export function SignInForm({
           />
         )}
 
-        <Captcha
-          ref={captchaRef as RefObject<ReCAPTCHA>}
-          action="/sign-in/email"
-        />
+        <Captcha ref={captchaRef as RefObject<ReCAPTCHA>} action="/sign-in/email" />
 
         <Button
           type="submit"
@@ -282,11 +258,7 @@ export function SignInForm({
             isLastUsed && "relative",
           )}
         >
-          {isSubmitting ? (
-            <Loader2 className="animate-spin" />
-          ) : (
-            t("SIGN_IN_ACTION")
-          )}
+          {isSubmitting ? <Loader2 className="animate-spin" /> : t("SIGN_IN_ACTION")}
           {isLastUsed && (
             <Badge
               variant="secondary"
@@ -298,5 +270,5 @@ export function SignInForm({
         </Button>
       </form>
     </Form>
-  )
+  );
 }

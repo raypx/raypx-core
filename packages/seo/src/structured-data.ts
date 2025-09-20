@@ -5,19 +5,19 @@ import type {
   Person,
   WebSite,
   WithContext,
-} from "schema-dts"
+} from "schema-dts";
 
 export type StructuredDataType =
   | WithContext<WebSite>
   | WithContext<Organization>
   | WithContext<Person>
   | WithContext<Article>
-  | WithContext<BreadcrumbList>
+  | WithContext<BreadcrumbList>;
 
-const applicationName = "Raypx"
+const applicationName = "Raypx";
 const baseUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
   ? `${process.env.NODE_ENV === "production" ? "https" : "http"}://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-  : undefined
+  : undefined;
 
 export const createWebSiteStructuredData = (): WithContext<WebSite> => ({
   "@context": "https://schema.org",
@@ -29,17 +29,16 @@ export const createWebSiteStructuredData = (): WithContext<WebSite> => ({
     "@type": "SearchAction",
     target: `${baseUrl}/search?q={search_term_string}`,
   },
-})
+});
 
-export const createOrganizationStructuredData =
-  (): WithContext<Organization> => ({
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: applicationName,
-    url: baseUrl,
-    logo: `${baseUrl}/logo.png`,
-    sameAs: ["https://twitter.com/raypx_com"],
-  })
+export const createOrganizationStructuredData = (): WithContext<Organization> => ({
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: applicationName,
+  url: baseUrl,
+  logo: `${baseUrl}/logo.png`,
+  sameAs: ["https://twitter.com/raypx_com"],
+});
 
 export const createArticleStructuredData = ({
   title,
@@ -50,13 +49,13 @@ export const createArticleStructuredData = ({
   dateModified,
   url,
 }: {
-  title: string
-  description: string
-  image?: string
-  author?: string
-  datePublished: string
-  dateModified?: string
-  url: string
+  title: string;
+  description: string;
+  image?: string;
+  author?: string;
+  datePublished: string;
+  dateModified?: string;
+  url: string;
 }): WithContext<Article> => ({
   "@context": "https://schema.org",
   "@type": "Article",
@@ -78,7 +77,7 @@ export const createArticleStructuredData = ({
   datePublished,
   dateModified: dateModified || datePublished,
   url,
-})
+});
 
 export const createBreadcrumbStructuredData = (
   breadcrumbs: Array<{ name: string; url: string }>,
@@ -91,7 +90,7 @@ export const createBreadcrumbStructuredData = (
     name: breadcrumb.name,
     item: breadcrumb.url,
   })),
-})
+});
 
 export const createPersonStructuredData = ({
   name,
@@ -100,11 +99,11 @@ export const createPersonStructuredData = ({
   image,
   sameAs = [],
 }: {
-  name: string
-  jobTitle?: string
-  url?: string
-  image?: string
-  sameAs?: string[]
+  name: string;
+  jobTitle?: string;
+  url?: string;
+  image?: string;
+  sameAs?: string[];
 }): WithContext<Person> => ({
   "@context": "https://schema.org",
   "@type": "Person",
@@ -113,4 +112,4 @@ export const createPersonStructuredData = ({
   ...(url && { url }),
   ...(image && { image }),
   ...(sameAs.length > 0 && { sameAs }),
-})
+});

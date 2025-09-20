@@ -1,12 +1,12 @@
-import type { Session, User } from "@raypx/auth/client"
-import type { Database } from "@raypx/db"
+import type { Session, User } from "@raypx/auth/client";
+import type { Database } from "@raypx/db";
 
 export interface ServerOptions {
-  prefix: string
+  prefix: string;
 }
 
 export type Variables = {
-  db: Database
-  session?: Session
-  user?: User
-}
+  db: Database;
+  session?: Session;
+  user?: User;
+};

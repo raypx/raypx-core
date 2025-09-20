@@ -1,47 +1,40 @@
-"use client"
+"use client";
 
-import { CardContent } from "@raypx/ui/components/card"
-import type { SettingsCardProps } from "@raypx/ui/components/settings"
-import { SettingsCard } from "@raypx/ui/components/settings"
-import { cn } from "@raypx/ui/lib/utils"
-import { useMemo, useState } from "react"
-import { useAuth } from "../../core/hooks/use-auth"
-import { ApiKeyCell } from "./api-key-cell"
-import { ApiKeyDisplayDialog } from "./api-key-display-dialog"
-import { CreateApiKeyDialog } from "./create-api-key-dialog"
+import { CardContent } from "@raypx/ui/components/card";
+import type { SettingsCardProps } from "@raypx/ui/components/settings";
+import { SettingsCard } from "@raypx/ui/components/settings";
+import { cn } from "@raypx/ui/lib/utils";
+import { useMemo, useState } from "react";
+import { useAuth } from "../../core/hooks/use-auth";
+import { ApiKeyCell } from "./api-key-cell";
+import { ApiKeyDisplayDialog } from "./api-key-display-dialog";
+import { CreateApiKeyDialog } from "./create-api-key-dialog";
 
 export interface ApiKeysCardProps extends SettingsCardProps {
-  organizationId?: string
+  organizationId?: string;
 }
 
-export function ApiKeysCard({
-  className,
-  classNames,
-  organizationId,
-  ...props
-}: ApiKeysCardProps) {
+export function ApiKeysCard({ className, classNames, organizationId, ...props }: ApiKeysCardProps) {
   const {
     hooks: { useListApiKeys },
     t,
-  } = useAuth()
+  } = useAuth();
 
-  const { data: apiKeys, isPending, refetch } = useListApiKeys()
+  const { data: apiKeys, isPending, refetch } = useListApiKeys();
 
   // Filter API keys by organizationId
   const filteredApiKeys = useMemo(() => {
-    return apiKeys?.filter(
-      (apiKey) => organizationId === apiKey.metadata?.organizationId,
-    )
-  }, [apiKeys, organizationId])
+    return apiKeys?.filter((apiKey) => organizationId === apiKey.metadata?.organizationId);
+  }, [apiKeys, organizationId]);
 
-  const [createDialogOpen, setCreateDialogOpen] = useState(false)
-  const [displayDialogOpen, setDisplayDialogOpen] = useState(false)
-  const [createdApiKey, setCreatedApiKey] = useState("")
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [displayDialogOpen, setDisplayDialogOpen] = useState(false);
+  const [createdApiKey, setCreatedApiKey] = useState("");
 
   const handleCreateApiKey = (apiKey: string) => {
-    setCreatedApiKey(apiKey)
-    setDisplayDialogOpen(true)
-  }
+    setCreatedApiKey(apiKey);
+    setDisplayDialogOpen(true);
+  };
 
   return (
     <>
@@ -86,5 +79,5 @@ export function ApiKeysCard({
         onOpenChange={setDisplayDialogOpen}
       />
     </>
-  )
+  );
 }

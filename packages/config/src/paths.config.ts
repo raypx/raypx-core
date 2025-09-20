@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "zod";
 
 const PathsSchema = z.object({
   auth: z.object({
@@ -32,7 +32,7 @@ const PathsSchema = z.object({
     terms: z.string().min(1),
     privacy: z.string().min(1),
   }),
-})
+});
 
 const pathsConfig = PathsSchema.parse({
   auth: {
@@ -66,6 +66,6 @@ const pathsConfig = PathsSchema.parse({
     terms: "/terms",
     privacy: "/privacy",
   },
-} satisfies z.infer<typeof PathsSchema>)
+} satisfies z.infer<typeof PathsSchema>);
 
-export default pathsConfig
+export default pathsConfig;

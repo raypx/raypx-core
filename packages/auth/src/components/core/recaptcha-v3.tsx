@@ -1,20 +1,17 @@
-"use client"
+"use client";
 
-import {
-  GoogleReCaptchaProvider,
-  useGoogleReCaptcha,
-} from "@wojtekmaj/react-recaptcha-v3"
-import { type ReactNode, useEffect } from "react"
-import { useAuth } from "../../core/hooks/use-auth"
-import { useIsHydrated } from "../../core/hooks/use-hydrated"
-import { useLang } from "../../core/hooks/use-lang"
-import { useTheme } from "../../core/hooks/use-theme"
+import { GoogleReCaptchaProvider, useGoogleReCaptcha } from "@wojtekmaj/react-recaptcha-v3";
+import { type ReactNode, useEffect } from "react";
+import { useAuth } from "../../core/hooks/use-auth";
+import { useIsHydrated } from "../../core/hooks/use-hydrated";
+import { useLang } from "../../core/hooks/use-lang";
+import { useTheme } from "../../core/hooks/use-theme";
 
 export function RecaptchaV3({ children }: { children: ReactNode }) {
-  const isHydrated = useIsHydrated()
-  const { captcha } = useAuth()
+  const isHydrated = useIsHydrated();
+  const { captcha } = useAuth();
 
-  if (captcha?.provider !== "google-recaptcha-v3") return children
+  if (captcha?.provider !== "google-recaptcha-v3") return children;
 
   return (
     <GoogleReCaptchaProvider
@@ -43,32 +40,30 @@ export function RecaptchaV3({ children }: { children: ReactNode }) {
 
       {children}
     </GoogleReCaptchaProvider>
-  )
+  );
 }
 
 function RecaptchaV3Style() {
-  const { executeRecaptcha } = useGoogleReCaptcha()
-  const { theme } = useTheme()
-  const { lang } = useLang()
+  const { executeRecaptcha } = useGoogleReCaptcha();
+  const { theme } = useTheme();
+  const { lang } = useLang();
 
   useEffect(() => {
-    if (!executeRecaptcha) return
+    if (!executeRecaptcha) return;
 
     const updateRecaptcha = async () => {
       // find iframe with title "reCAPTCHA"
-      const iframe = document.querySelector(
-        "iframe[title='reCAPTCHA']",
-      ) as HTMLIFrameElement
+      const iframe = document.querySelector("iframe[title='reCAPTCHA']") as HTMLIFrameElement;
       if (iframe) {
-        const iframeSrcUrl = new URL(iframe.src)
-        iframeSrcUrl.searchParams.set("theme", theme)
-        if (lang) iframeSrcUrl.searchParams.set("hl", lang)
-        iframe.src = iframeSrcUrl.toString()
+        const iframeSrcUrl = new URL(iframe.src);
+        iframeSrcUrl.searchParams.set("theme", theme);
+        if (lang) iframeSrcUrl.searchParams.set("hl", lang);
+        iframe.src = iframeSrcUrl.toString();
       }
-    }
+    };
 
-    updateRecaptcha()
-  }, [executeRecaptcha, theme, lang])
+    updateRecaptcha();
+  }, [executeRecaptcha, theme, lang]);
 
-  return null
+  return null;
 }

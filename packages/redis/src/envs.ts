@@ -1,4 +1,4 @@
-import { createEnv, z } from "@raypx/shared"
+import { createEnv, z } from "@raypx/shared";
 
 export const envs = () =>
   createEnv({
@@ -8,4 +8,4 @@ export const envs = () =>
     runtimeEnv: {
       REDIS_URL: process.env.REDIS_URL,
     },
-  })
+  });

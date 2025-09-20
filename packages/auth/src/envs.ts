@@ -1,7 +1,7 @@
-import { envs as db } from "@raypx/db/envs"
-import { envs as email } from "@raypx/email/envs"
-import { envs as redis } from "@raypx/redis/envs"
-import { createEnv, z } from "@raypx/shared"
+import { envs as db } from "@raypx/db/envs";
+import { envs as email } from "@raypx/email/envs";
+import { envs as redis } from "@raypx/redis/envs";
+import { createEnv, z } from "@raypx/shared";
 
 export const envs = () =>
   createEnv({
@@ -32,10 +32,8 @@ export const envs = () =>
       NEXT_PUBLIC_AUTH_URL: process.env.NEXT_PUBLIC_AUTH_URL,
       AUTH_GOOGLE_ID: process.env.AUTH_GOOGLE_ID,
       AUTH_GOOGLE_SECRET: process.env.AUTH_GOOGLE_SECRET,
-      NEXT_PUBLIC_AUTH_GITHUB_ENABLED:
-        process.env.NEXT_PUBLIC_AUTH_GITHUB_ENABLED,
-      NEXT_PUBLIC_AUTH_GOOGLE_ENABLED:
-        process.env.NEXT_PUBLIC_AUTH_GOOGLE_ENABLED,
+      NEXT_PUBLIC_AUTH_GITHUB_ENABLED: process.env.NEXT_PUBLIC_AUTH_GITHUB_ENABLED,
+      NEXT_PUBLIC_AUTH_GOOGLE_ENABLED: process.env.NEXT_PUBLIC_AUTH_GOOGLE_ENABLED,
       NEXT_PUBLIC_AUTH_GOOGLE_ID: process.env.NEXT_PUBLIC_AUTH_GOOGLE_ID,
     },
-  })
+  });

@@ -4,8 +4,8 @@ import {
   defineDocs,
   frontmatterSchema,
   metaSchema,
-} from "fumadocs-mdx/config"
-import { z } from "zod"
+} from "fumadocs-mdx/config";
+import { z } from "zod";
 
 export const docs = defineDocs({
   docs: {
@@ -16,7 +16,7 @@ export const docs = defineDocs({
       description: z.string().optional(),
     }),
   },
-})
+});
 
 export const changelog = defineCollections({
   type: "doc",
@@ -26,7 +26,7 @@ export const changelog = defineCollections({
     date: z.date(),
     published: z.boolean().default(true),
   }),
-})
+});
 
 export const pages = defineCollections({
   type: "doc",
@@ -35,7 +35,7 @@ export const pages = defineCollections({
     date: z.date(),
     published: z.boolean().default(true),
   }),
-})
+});
 
 export const blog = defineCollections({
   type: "doc",
@@ -44,8 +44,8 @@ export const blog = defineCollections({
     date: z.date(),
     published: z.boolean().default(true),
   }),
-})
+});
 
 export default defineConfig({
   lastModifiedTime: "git",
-})
+});

@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
  * Custom hook for debouncing values
@@ -9,19 +9,19 @@ import { useCallback, useEffect, useRef, useState } from "react"
  * @returns The debounced value
  */
 export function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value)
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      setDebouncedValue(value)
-    }, delay)
+      setDebouncedValue(value);
+    }, delay);
 
     return () => {
-      clearTimeout(handler)
-    }
-  }, [value, delay])
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
 
-  return debouncedValue
+  return debouncedValue;
 }
 
 /**
@@ -34,37 +34,37 @@ export function useDebouncedCallback<T extends unknown[]>(
   callback: (...args: T) => void,
   delay: number,
 ) {
-  const callbackRef = useRef(callback)
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const callbackRef = useRef(callback);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Update callback ref when callback changes
   useEffect(() => {
-    callbackRef.current = callback
-  }, [callback])
+    callbackRef.current = callback;
+  }, [callback]);
 
   // Cleanup timeout on unmount
   useEffect(() => {
     return () => {
       if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
+        clearTimeout(timeoutRef.current);
       }
-    }
-  }, [])
+    };
+  }, []);
 
   const debouncedCallback = useCallback(
     (...args: T) => {
       if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
+        clearTimeout(timeoutRef.current);
       }
 
       timeoutRef.current = setTimeout(() => {
-        callbackRef.current(...args)
-      }, delay)
+        callbackRef.current(...args);
+      }, delay);
     },
     [delay],
-  )
+  );
 
-  return debouncedCallback
+  return debouncedCallback;
 }
 
 /**
@@ -80,32 +80,32 @@ export function useDebouncedValidation<T>(
   validate: (value: T) => Promise<string | null> | string | null,
   delay: number = 300,
 ) {
-  const [error, setError] = useState<string | null>(null)
-  const [isValidating, setIsValidating] = useState(false)
-  const debouncedValue = useDebounce(value, delay)
+  const [error, setError] = useState<string | null>(null);
+  const [isValidating, setIsValidating] = useState(false);
+  const debouncedValue = useDebounce(value, delay);
 
   useEffect(() => {
     if (!debouncedValue) {
-      setError(null)
-      setIsValidating(false)
-      return
+      setError(null);
+      setIsValidating(false);
+      return;
     }
 
-    setIsValidating(true)
+    setIsValidating(true);
 
     const validateAsync = async () => {
       try {
-        const result = await validate(debouncedValue)
-        setError(result)
+        const result = await validate(debouncedValue);
+        setError(result);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Validation error")
+        setError(err instanceof Error ? err.message : "Validation error");
       } finally {
-        setIsValidating(false)
+        setIsValidating(false);
       }
-    }
+    };
 
-    validateAsync()
-  }, [debouncedValue, validate])
+    validateAsync();
+  }, [debouncedValue, validate]);
 
-  return { error, isValidating }
+  return { error, isValidating };
 }

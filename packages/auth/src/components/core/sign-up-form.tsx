@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button } from "@raypx/ui/components/button"
-import { Checkbox } from "@raypx/ui/components/checkbox"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@raypx/ui/components/button";
+import { Checkbox } from "@raypx/ui/components/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@raypx/ui/components/dropdown-menu"
+} from "@raypx/ui/components/dropdown-menu";
 import {
   Form,
   FormControl,
@@ -16,40 +16,35 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@raypx/ui/components/form"
-import { Loader2, Trash, UploadCloud } from "@raypx/ui/components/icons"
-import { Input } from "@raypx/ui/components/input"
-import { PasswordField } from "@raypx/ui/components/password-field"
-import { Textarea } from "@raypx/ui/components/textarea"
-import type { BetterFetchOption } from "better-auth/react"
-import { type RefObject, useCallback, useEffect, useRef, useState } from "react"
-import type ReCAPTCHA from "react-google-recaptcha"
-import { useForm } from "react-hook-form"
-import { z } from "zod/v4"
-import { useAuth } from "../../core/hooks/use-auth"
-import { useCaptcha } from "../../core/hooks/use-captcha"
-import { useIsHydrated } from "../../core/hooks/use-hydrated"
-import { useOnSuccessTransition } from "../../core/hooks/use-success-transition"
-import { fileToBase64, resizeAndCropImage } from "../../core/lib/image-utils"
-import {
-  cn,
-  getLocalizedError,
-  getPasswordSchema,
-  getSearchParam,
-} from "../../core/lib/utils"
-import type { PasswordValidation } from "../../types"
-import { UserAvatar } from "../account/user-avatar"
-import type { AuthFormClassNames } from "./auth-form"
-import { Captcha } from "./captcha"
+} from "@raypx/ui/components/form";
+import { Loader2, Trash, UploadCloud } from "@raypx/ui/components/icons";
+import { Input } from "@raypx/ui/components/input";
+import { PasswordField } from "@raypx/ui/components/password-field";
+import { Textarea } from "@raypx/ui/components/textarea";
+import type { BetterFetchOption } from "better-auth/react";
+import { type RefObject, useCallback, useEffect, useRef, useState } from "react";
+import type ReCAPTCHA from "react-google-recaptcha";
+import { useForm } from "react-hook-form";
+import { z } from "zod/v4";
+import { useAuth } from "../../core/hooks/use-auth";
+import { useCaptcha } from "../../core/hooks/use-captcha";
+import { useIsHydrated } from "../../core/hooks/use-hydrated";
+import { useOnSuccessTransition } from "../../core/hooks/use-success-transition";
+import { fileToBase64, resizeAndCropImage } from "../../core/lib/image-utils";
+import { cn, getLocalizedError, getPasswordSchema, getSearchParam } from "../../core/lib/utils";
+import type { PasswordValidation } from "../../types";
+import { UserAvatar } from "../account/user-avatar";
+import type { AuthFormClassNames } from "./auth-form";
+import { Captcha } from "./captcha";
 
 export interface SignUpFormProps {
-  className?: string
-  classNames?: AuthFormClassNames
-  callbackURL?: string
-  isSubmitting?: boolean
-  redirectTo?: string
-  setIsSubmitting?: (value: boolean) => void
-  passwordValidation?: PasswordValidation
+  className?: string;
+  classNames?: AuthFormClassNames;
+  callbackURL?: string;
+  isSubmitting?: boolean;
+  redirectTo?: string;
+  setIsSubmitting?: (value: boolean) => void;
+  passwordValidation?: PasswordValidation;
 }
 
 export function SignUpForm({
@@ -61,8 +56,8 @@ export function SignUpForm({
   setIsSubmitting,
   passwordValidation,
 }: SignUpFormProps) {
-  const isHydrated = useIsHydrated()
-  const { captchaRef, getCaptchaHeaders, resetCaptcha } = useCaptcha()
+  const isHydrated = useIsHydrated();
+  const { captchaRef, getCaptchaHeaders, resetCaptcha } = useCaptcha();
 
   const {
     additionalFields,
@@ -79,24 +74,24 @@ export function SignUpForm({
     navigate,
     toast,
     avatar,
-  } = useAuth()
+  } = useAuth();
 
-  const confirmPasswordEnabled = credentials?.confirmPassword
-  const usernameEnabled = credentials?.username
-  const contextPasswordValidation = credentials?.passwordValidation
-  const signUpFields = signUpOptions?.fields
+  const confirmPasswordEnabled = credentials?.confirmPassword;
+  const usernameEnabled = credentials?.username;
+  const contextPasswordValidation = credentials?.passwordValidation;
+  const signUpFields = signUpOptions?.fields;
 
-  passwordValidation = { ...contextPasswordValidation, ...passwordValidation }
+  passwordValidation = { ...contextPasswordValidation, ...passwordValidation };
 
   // Avatar upload state
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const [avatarImage, setAvatarImage] = useState<string | null>(null)
-  const [uploadingAvatar, setUploadingAvatar] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [avatarImage, setAvatarImage] = useState<string | null>(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   const getRedirectTo = useCallback(
     () => redirectTo || getSearchParam("redirectTo") || contextRedirectTo,
     [redirectTo, contextRedirectTo],
-  )
+  );
 
   const getCallbackURL = useCallback(
     () =>
@@ -107,11 +102,11 @@ export function SignUpForm({
           : getRedirectTo())
       }`,
     [callbackURL, persistClient, basePath, viewPaths, baseURL, getRedirectTo],
-  )
+  );
 
   const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({
     redirectTo,
-  })
+  });
 
   // Create the base schema for standard fields
   const defaultFields = {
@@ -148,20 +143,20 @@ export function SignUpForm({
           INVALID_PASSWORD: t("INVALID_PASSWORD"),
         })
       : z.string().optional(),
-  }
+  };
 
-  const schemaFields: Record<string, z.ZodTypeAny> = {}
+  const schemaFields: Record<string, z.ZodTypeAny> = {};
 
   // Add additional fields from signUpFields
   if (signUpFields) {
     for (const field of signUpFields) {
-      if (field === "name") continue // Already handled above
-      if (field === "image") continue // Already handled above
+      if (field === "name") continue; // Already handled above
+      if (field === "image") continue; // Already handled above
 
-      const additionalField = additionalFields?.[field]
-      if (!additionalField) continue
+      const additionalField = additionalFields?.[field];
+      if (!additionalField) continue;
 
-      let fieldSchema: z.ZodTypeAny
+      let fieldSchema: z.ZodTypeAny;
 
       // Create the appropriate schema based on field type
       if (additionalField.type === "number") {
@@ -176,7 +171,7 @@ export function SignUpForm({
               .number({
                 error: `${additionalField.label} ${t("IS_INVALID")}`,
               })
-              .optional()
+              .optional();
       } else if (additionalField.type === "boolean") {
         fieldSchema = additionalField.required
           ? z.coerce
@@ -192,16 +187,14 @@ export function SignUpForm({
               .boolean({
                 error: `${additionalField.label} ${t("IS_INVALID")}`,
               })
-              .optional()
+              .optional();
       } else {
         fieldSchema = additionalField.required
-          ? z
-              .string()
-              .min(1, t("FIELD_IS_REQUIRED", { field: additionalField.label }))
-          : z.string().optional()
+          ? z.string().min(1, t("FIELD_IS_REQUIRED", { field: additionalField.label }))
+          : z.string().optional();
       }
 
-      schemaFields[field] = fieldSchema
+      schemaFields[field] = fieldSchema;
     }
   }
 
@@ -214,14 +207,14 @@ export function SignUpForm({
     .refine(
       (data) => {
         // Skip validation if confirmPassword is not enabled
-        if (!confirmPasswordEnabled) return true
-        return data.password === data.confirmPassword
+        if (!confirmPasswordEnabled) return true;
+        return data.password === data.confirmPassword;
       },
       {
         message: t("PASSWORDS_DO_NOT_MATCH"),
         path: ["confirmPassword"],
       },
-    )
+    );
 
   // Create default values for the form
   const defaultValues: Record<string, unknown> = {
@@ -231,36 +224,35 @@ export function SignUpForm({
     ...(signUpFields?.includes("name") ? { name: "" } : {}),
     ...(usernameEnabled ? { username: "" } : {}),
     ...(signUpFields?.includes("image") && avatar ? { image: "" } : {}),
-  }
+  };
 
   // Add default values for additional fields
   if (signUpFields) {
     for (const field of signUpFields) {
-      if (field === "name") continue
-      if (field === "image") continue
-      const additionalField = additionalFields?.[field]
-      if (!additionalField) continue
+      if (field === "name") continue;
+      if (field === "image") continue;
+      const additionalField = additionalFields?.[field];
+      if (!additionalField) continue;
 
-      defaultValues[field] = additionalField.type === "boolean" ? false : ""
+      defaultValues[field] = additionalField.type === "boolean" ? false : "";
     }
   }
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues,
-  })
+  });
 
-  isSubmitting =
-    isSubmitting || form.formState.isSubmitting || transitionPending
+  isSubmitting = isSubmitting || form.formState.isSubmitting || transitionPending;
 
   useEffect(() => {
-    setIsSubmitting?.(form.formState.isSubmitting || transitionPending)
-  }, [form.formState.isSubmitting, transitionPending, setIsSubmitting])
+    setIsSubmitting?.(form.formState.isSubmitting || transitionPending);
+  }, [form.formState.isSubmitting, transitionPending, setIsSubmitting]);
 
   const handleAvatarChange = async (file: File) => {
-    if (!avatar) return
+    if (!avatar) return;
 
-    setUploadingAvatar(true)
+    setUploadingAvatar(true);
 
     try {
       const resizedFile = await resizeAndCropImage(
@@ -268,40 +260,40 @@ export function SignUpForm({
         crypto.randomUUID(),
         avatar.size,
         avatar.extension,
-      )
+      );
 
-      let image: string | undefined | null
+      let image: string | undefined | null;
 
       if (avatar.upload) {
-        image = await avatar.upload(resizedFile)
+        image = await avatar.upload(resizedFile);
       } else {
-        image = await fileToBase64(resizedFile)
+        image = await fileToBase64(resizedFile);
       }
 
       if (image) {
-        setAvatarImage(image)
-        form.setValue("image", image)
+        setAvatarImage(image);
+        form.setValue("image", image);
       } else {
-        setAvatarImage(null)
-        form.setValue("image", "")
+        setAvatarImage(null);
+        form.setValue("image", "");
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
 
-    setUploadingAvatar(false)
-  }
+    setUploadingAvatar(false);
+  };
 
   const handleDeleteAvatar = () => {
-    setAvatarImage(null)
-    form.setValue("image", "")
-  }
+    setAvatarImage(null);
+    form.setValue("image", "");
+  };
 
-  const openFileDialog = () => fileInputRef.current?.click()
+  const openFileDialog = () => fileInputRef.current?.click();
 
   async function signUp({
     email,
@@ -315,33 +307,30 @@ export function SignUpForm({
     try {
       // Validate additional fields with custom validators if provided
       for (const [field, value] of Object.entries(additionalFieldValues)) {
-        const additionalField = additionalFields?.[field]
-        if (!additionalField?.validate) continue
+        const additionalField = additionalFields?.[field];
+        if (!additionalField?.validate) continue;
 
-        if (
-          typeof value === "string" &&
-          !(await additionalField.validate(value))
-        ) {
+        if (typeof value === "string" && !(await additionalField.validate(value))) {
           form.setError(field, {
             message: `${additionalField.label} ${t("IS_INVALID")}`,
-          })
-          return
+          });
+          return;
         }
       }
 
       const fetchOptions: BetterFetchOption = {
         throw: true,
         headers: await getCaptchaHeaders("/sign-up/email"),
-      }
+      };
 
-      const additionalParams: Record<string, unknown> = {}
+      const additionalParams: Record<string, unknown> = {};
 
       if (username !== undefined) {
-        additionalParams.username = username
+        additionalParams.username = username;
       }
 
       if (image !== undefined) {
-        additionalParams.image = image
+        additionalParams.image = image;
       }
 
       const data = await authClient.signUp.email({
@@ -352,26 +341,26 @@ export function SignUpForm({
         ...additionalFieldValues,
         callbackURL: getCallbackURL(),
         fetchOptions,
-      })
+      });
 
       if ("token" in data && data.token) {
-        await onSuccess()
+        await onSuccess();
       } else {
-        navigate(`${basePath}/${viewPaths.SIGN_IN}${window.location.search}`)
+        navigate(`${basePath}/${viewPaths.SIGN_IN}${window.location.search}`);
         toast({
           variant: "success",
           message: t("SIGN_UP_EMAIL"),
-        })
+        });
       }
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
 
-      form.resetField("password")
-      form.resetField("confirmPassword")
-      resetCaptcha()
+      form.resetField("password");
+      form.resetField("confirmPassword");
+      resetCaptcha();
     }
   }
 
@@ -391,9 +380,9 @@ export function SignUpForm({
               hidden
               type="file"
               onChange={(e) => {
-                const file = e.target.files?.item(0)
-                if (file) handleAvatarChange(file)
-                e.target.value = ""
+                const file = e.target.files?.item(0);
+                if (file) handleAvatarChange(file);
+                e.target.value = "";
               }}
             />
 
@@ -433,10 +422,7 @@ export function SignUpForm({
                         align="start"
                         onCloseAutoFocus={(e) => e.preventDefault()}
                       >
-                        <DropdownMenuItem
-                          onClick={openFileDialog}
-                          disabled={uploadingAvatar}
-                        >
+                        <DropdownMenuItem onClick={openFileDialog} disabled={uploadingAvatar}>
                           <UploadCloud />
                           {t("UPLOAD_AVATAR")}
                         </DropdownMenuItem>
@@ -502,9 +488,7 @@ export function SignUpForm({
             name="username"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className={classNames?.label}>
-                  {t("USERNAME")}
-                </FormLabel>
+                <FormLabel className={classNames?.label}>{t("USERNAME")}</FormLabel>
 
                 <FormControl>
                   <Input
@@ -548,9 +532,7 @@ export function SignUpForm({
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className={classNames?.label}>
-                {t("PASSWORD")}
-              </FormLabel>
+              <FormLabel className={classNames?.label}>{t("PASSWORD")}</FormLabel>
 
               <FormControl>
                 <PasswordField
@@ -573,9 +555,7 @@ export function SignUpForm({
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className={classNames?.label}>
-                  {t("CONFIRM_PASSWORD")}
-                </FormLabel>
+                <FormLabel className={classNames?.label}>{t("CONFIRM_PASSWORD")}</FormLabel>
 
                 <FormControl>
                   <PasswordField
@@ -596,10 +576,10 @@ export function SignUpForm({
         {signUpFields
           ?.filter((field) => field !== "name" && field !== "image")
           .map((field) => {
-            const additionalField = additionalFields?.[field]
+            const additionalField = additionalFields?.[field];
             if (!additionalField) {
-              console.error(`Additional field ${field} not found`)
-              return null
+              console.error(`Additional field ${field} not found`);
+              return null;
             }
 
             return additionalField.type === "boolean" ? (
@@ -617,9 +597,7 @@ export function SignUpForm({
                       />
                     </FormControl>
 
-                    <FormLabel className={classNames?.label}>
-                      {additionalField.label}
-                    </FormLabel>
+                    <FormLabel className={classNames?.label}>{additionalField.label}</FormLabel>
 
                     <FormMessage className={classNames?.error} />
                   </FormItem>
@@ -632,9 +610,7 @@ export function SignUpForm({
                 name={field}
                 render={({ field: formField }) => (
                   <FormItem>
-                    <FormLabel className={classNames?.label}>
-                      {additionalField.label}
-                    </FormLabel>
+                    <FormLabel className={classNames?.label}>{additionalField.label}</FormLabel>
 
                     <FormControl>
                       {additionalField.type === "number" ? (
@@ -643,9 +619,7 @@ export function SignUpForm({
                           type="number"
                           placeholder={
                             additionalField.placeholder ||
-                            (typeof additionalField.label === "string"
-                              ? additionalField.label
-                              : "")
+                            (typeof additionalField.label === "string" ? additionalField.label : "")
                           }
                           disabled={isSubmitting}
                           {...formField}
@@ -656,9 +630,7 @@ export function SignUpForm({
                           className={classNames?.input}
                           placeholder={
                             additionalField.placeholder ||
-                            (typeof additionalField.label === "string"
-                              ? additionalField.label
-                              : "")
+                            (typeof additionalField.label === "string" ? additionalField.label : "")
                           }
                           disabled={isSubmitting}
                           {...formField}
@@ -670,9 +642,7 @@ export function SignUpForm({
                           type="text"
                           placeholder={
                             additionalField.placeholder ||
-                            (typeof additionalField.label === "string"
-                              ? additionalField.label
-                              : "")
+                            (typeof additionalField.label === "string" ? additionalField.label : "")
                           }
                           disabled={isSubmitting}
                           {...formField}
@@ -685,30 +655,19 @@ export function SignUpForm({
                   </FormItem>
                 )}
               />
-            )
+            );
           })}
 
-        <Captcha
-          ref={captchaRef as RefObject<ReCAPTCHA>}
-          action="/sign-up/email"
-        />
+        <Captcha ref={captchaRef as RefObject<ReCAPTCHA>} action="/sign-up/email" />
 
         <Button
           type="submit"
           disabled={isSubmitting}
-          className={cn(
-            "w-full",
-            classNames?.button,
-            classNames?.primaryButton,
-          )}
+          className={cn("w-full", classNames?.button, classNames?.primaryButton)}
         >
-          {isSubmitting ? (
-            <Loader2 className="animate-spin" />
-          ) : (
-            t("SIGN_UP_ACTION")
-          )}
+          {isSubmitting ? <Loader2 className="animate-spin" /> : t("SIGN_UP_ACTION")}
         </Button>
       </form>
     </Form>
-  )
+  );
 }

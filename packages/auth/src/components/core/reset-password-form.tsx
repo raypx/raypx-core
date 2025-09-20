@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button } from "@raypx/ui/components/button"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@raypx/ui/components/button";
 import {
   Form,
   FormControl,
@@ -9,23 +9,23 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@raypx/ui/components/form"
-import { Loader2 } from "@raypx/ui/components/icons"
-import { PasswordField } from "@raypx/ui/components/password-field"
-import { cn } from "@raypx/ui/lib/utils"
-import { useEffect, useRef } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod/v4"
-import { useAuth } from "../../core/hooks/use-auth"
-import { buildAuthUrl } from "../../core/lib/url-utils"
-import { getLocalizedError, getPasswordSchema } from "../../core/lib/utils"
-import type { PasswordValidation } from "../../types"
-import type { AuthFormClassNames } from "./auth-form"
+} from "@raypx/ui/components/form";
+import { Loader2 } from "@raypx/ui/components/icons";
+import { PasswordField } from "@raypx/ui/components/password-field";
+import { cn } from "@raypx/ui/lib/utils";
+import { useEffect, useRef } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod/v4";
+import { useAuth } from "../../core/hooks/use-auth";
+import { buildAuthUrl } from "../../core/lib/url-utils";
+import { getLocalizedError, getPasswordSchema } from "../../core/lib/utils";
+import type { PasswordValidation } from "../../types";
+import type { AuthFormClassNames } from "./auth-form";
 
 export interface ResetPasswordFormProps {
-  className?: string
-  classNames?: AuthFormClassNames
-  passwordValidation?: PasswordValidation
+  className?: string;
+  classNames?: AuthFormClassNames;
+  passwordValidation?: PasswordValidation;
 }
 
 export function ResetPasswordForm({
@@ -33,15 +33,14 @@ export function ResetPasswordForm({
   classNames,
   passwordValidation,
 }: ResetPasswordFormProps) {
-  const tokenChecked = useRef(false)
+  const tokenChecked = useRef(false);
 
-  const { authClient, basePath, credentials, viewPaths, navigate, toast, t } =
-    useAuth()
+  const { authClient, basePath, credentials, viewPaths, navigate, toast, t } = useAuth();
 
-  const confirmPasswordEnabled = credentials?.confirmPassword
-  const contextPasswordValidation = credentials?.passwordValidation
+  const confirmPasswordEnabled = credentials?.confirmPassword;
+  const contextPasswordValidation = credentials?.passwordValidation;
 
-  passwordValidation = { ...contextPasswordValidation, ...passwordValidation }
+  passwordValidation = { ...contextPasswordValidation, ...passwordValidation };
 
   const formSchema = z
     .object({
@@ -60,14 +59,10 @@ export function ResetPasswordForm({
           })
         : z.string().optional(),
     })
-    .refine(
-      (data) =>
-        !confirmPasswordEnabled || data.newPassword === data.confirmPassword,
-      {
-        message: t("PASSWORDS_DO_NOT_MATCH"),
-        path: ["confirmPassword"],
-      },
-    )
+    .refine((data) => !confirmPasswordEnabled || data.newPassword === data.confirmPassword, {
+      message: t("PASSWORDS_DO_NOT_MATCH"),
+      path: ["confirmPassword"],
+    });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -75,47 +70,47 @@ export function ResetPasswordForm({
       newPassword: "",
       confirmPassword: "",
     },
-  })
+  });
 
-  const isSubmitting = form.formState.isSubmitting
+  const isSubmitting = form.formState.isSubmitting;
 
   useEffect(() => {
-    if (tokenChecked.current) return
-    tokenChecked.current = true
+    if (tokenChecked.current) return;
+    tokenChecked.current = true;
 
-    const searchParams = new URLSearchParams(window.location.search)
-    const token = searchParams.get("token")
+    const searchParams = new URLSearchParams(window.location.search);
+    const token = searchParams.get("token");
 
     if (!token || token === "INVALID_TOKEN") {
-      navigate(buildAuthUrl(basePath, viewPaths.SIGN_IN, true))
-      toast({ variant: "error", message: t("INVALID_TOKEN") })
+      navigate(buildAuthUrl(basePath, viewPaths.SIGN_IN, true));
+      toast({ variant: "error", message: t("INVALID_TOKEN") });
     }
-  }, [basePath, navigate, toast, viewPaths, t])
+  }, [basePath, navigate, toast, viewPaths, t]);
 
   async function resetPassword({ newPassword }: z.infer<typeof formSchema>) {
     try {
-      const searchParams = new URLSearchParams(window.location.search)
-      const token = searchParams.get("token") as string
+      const searchParams = new URLSearchParams(window.location.search);
+      const token = searchParams.get("token") as string;
 
       await authClient.resetPassword({
         newPassword,
         token,
         fetchOptions: { throw: true },
-      })
+      });
 
       toast({
         variant: "success",
         message: t("RESET_PASSWORD_SUCCESS"),
-      })
+      });
 
-      navigate(buildAuthUrl(basePath, viewPaths.SIGN_IN, false))
+      navigate(buildAuthUrl(basePath, viewPaths.SIGN_IN, false));
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
 
-      form.reset()
+      form.reset();
     }
   }
 
@@ -130,9 +125,7 @@ export function ResetPasswordForm({
           name="newPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className={classNames?.label}>
-                {t("NEW_PASSWORD")}
-              </FormLabel>
+              <FormLabel className={classNames?.label}>{t("NEW_PASSWORD")}</FormLabel>
 
               <FormControl>
                 <PasswordField
@@ -155,9 +148,7 @@ export function ResetPasswordForm({
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className={classNames?.label}>
-                  {t("CONFIRM_PASSWORD")}
-                </FormLabel>
+                <FormLabel className={classNames?.label}>{t("CONFIRM_PASSWORD")}</FormLabel>
 
                 <FormControl>
                   <PasswordField
@@ -178,19 +169,11 @@ export function ResetPasswordForm({
         <Button
           type="submit"
           disabled={isSubmitting}
-          className={cn(
-            "w-full",
-            classNames?.button,
-            classNames?.primaryButton,
-          )}
+          className={cn("w-full", classNames?.button, classNames?.primaryButton)}
         >
-          {isSubmitting ? (
-            <Loader2 className="animate-spin" />
-          ) : (
-            t("RESET_PASSWORD_ACTION")
-          )}
+          {isSubmitting ? <Loader2 className="animate-spin" /> : t("RESET_PASSWORD_ACTION")}
         </Button>
       </form>
     </Form>
-  )
+  );
 }

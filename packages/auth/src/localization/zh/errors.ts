@@ -46,10 +46,8 @@ export const errors = {
   COULD_NOT_CREATE_SESSION: "无法创建会话",
   ANONYMOUS_USERS_CANNOT_SIGN_IN_AGAIN_ANONYMOUSLY: "匿名用户无法再次匿名登录",
   INVALID_METADATA_TYPE: "metadata 必须是对象或 undefined",
-  REFILL_AMOUNT_AND_INTERVAL_REQUIRED:
-    "提供 refillInterval 时需要 refillAmount",
-  REFILL_INTERVAL_AND_AMOUNT_REQUIRED:
-    "提供 refillAmount 时需要 refillInterval",
+  REFILL_AMOUNT_AND_INTERVAL_REQUIRED: "提供 refillInterval 时需要 refillAmount",
+  REFILL_INTERVAL_AND_AMOUNT_REQUIRED: "提供 refillAmount 时需要 refillInterval",
   USER_BANNED: "用户已被封禁",
   UNAUTHORIZED_SESSION: "未授权或无效会话",
   KEY_NOT_FOUND: "API 密钥不存在",
@@ -68,8 +66,7 @@ export const errors = {
   KEY_DISABLED_EXPIRATION: "自定义密钥过期值已禁用。",
   INVALID_API_KEY: "无效的 API 密钥。",
   INVALID_USER_ID_FROM_API_KEY: "API 密钥中的用户 ID 无效。",
-  INVALID_API_KEY_GETTER_RETURN_TYPE:
-    "API 密钥获取器返回了无效的密钥类型。期望字符串。",
+  INVALID_API_KEY_GETTER_RETURN_TYPE: "API 密钥获取器返回了无效的密钥类型。期望字符串。",
   SERVER_ONLY_PROPERTY: "您尝试设置的属性只能在服务器认证实例中设置。",
   VERIFICATION_FAILED: "验证码验证失败",
   MISSING_RESPONSE: "缺少验证码响应",
@@ -96,27 +93,22 @@ export const errors = {
   YOU_ARE_NOT_ALLOWED_TO_CREATE_A_NEW_TEAM: "您不被允许创建新团队",
   TEAM_ALREADY_EXISTS: "团队已存在",
   TEAM_NOT_FOUND: "团队不存在",
-  YOU_CANNOT_LEAVE_THE_ORGANIZATION_AS_THE_ONLY_OWNER:
-    "作为唯一所有者，您不能离开组织",
+  YOU_CANNOT_LEAVE_THE_ORGANIZATION_AS_THE_ONLY_OWNER: "作为唯一所有者，您不能离开组织",
   YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_MEMBER: "您不被允许删除此成员",
-  YOU_ARE_NOT_ALLOWED_TO_INVITE_USERS_TO_THIS_ORGANIZATION:
-    "您不被允许邀请用户加入此组织",
+  YOU_ARE_NOT_ALLOWED_TO_INVITE_USERS_TO_THIS_ORGANIZATION: "您不被允许邀请用户加入此组织",
   USER_IS_ALREADY_INVITED_TO_THIS_ORGANIZATION: "用户已被邀请加入此组织",
   INVITATION_NOT_FOUND: "邀请不存在",
   YOU_ARE_NOT_THE_RECIPIENT_OF_THE_INVITATION: "您不是此邀请的接收者",
   YOU_ARE_NOT_ALLOWED_TO_CANCEL_THIS_INVITATION: "您不被允许取消此邀请",
   INVITER_IS_NO_LONGER_A_MEMBER_OF_THE_ORGANIZATION: "邀请者不再是组织成员",
-  YOU_ARE_NOT_ALLOWED_TO_INVITE_USER_WITH_THIS_ROLE:
-    "您不被允许邀请具有此角色的用户",
+  YOU_ARE_NOT_ALLOWED_TO_INVITE_USER_WITH_THIS_ROLE: "您不被允许邀请具有此角色的用户",
   FAILED_TO_RETRIEVE_INVITATION: "获取邀请失败",
   YOU_HAVE_REACHED_THE_MAXIMUM_NUMBER_OF_TEAMS: "您已达到团队数量上限",
   UNABLE_TO_REMOVE_LAST_TEAM: "无法移除最后一个团队",
   YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_MEMBER: "您不被允许更新此成员",
   ORGANIZATION_MEMBERSHIP_LIMIT_REACHED: "组织成员数量已达到上限",
-  YOU_ARE_NOT_ALLOWED_TO_CREATE_TEAMS_IN_THIS_ORGANIZATION:
-    "您不被允许在此组织中创建团队",
-  YOU_ARE_NOT_ALLOWED_TO_DELETE_TEAMS_IN_THIS_ORGANIZATION:
-    "您不被允许在此组织中删除团队",
+  YOU_ARE_NOT_ALLOWED_TO_CREATE_TEAMS_IN_THIS_ORGANIZATION: "您不被允许在此组织中创建团队",
+  YOU_ARE_NOT_ALLOWED_TO_DELETE_TEAMS_IN_THIS_ORGANIZATION: "您不被允许在此组织中删除团队",
   YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_TEAM: "您不被允许更新此团队",
   YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_TEAM: "您不被允许删除此团队",
   INVITATION_LIMIT_REACHED: "邀请数量已达到上限",
@@ -163,8 +155,7 @@ export const errors = {
     "提供商账户提供商是 Twitter，但未配置",
   PROVIDER_ACCOUNT_PROVIDER_IS_FACEBOOK_BUT_IT_IS_NOT_CONFIGURED:
     "提供商账户提供商是 Facebook，但未配置",
-  PROVIDER_ACCOUNT_PROVIDER_IS_APPLE_BUT_IT_IS_NOT_CONFIGURED:
-    "提供商账户提供商是 Apple，但未配置",
+  PROVIDER_ACCOUNT_PROVIDER_IS_APPLE_BUT_IT_IS_NOT_CONFIGURED: "提供商账户提供商是 Apple，但未配置",
   PROVIDER_ACCOUNT_PROVIDER_IS_MICROSOFT_BUT_IT_IS_NOT_CONFIGURED:
     "提供商账户提供商是 Microsoft，但未配置",
   PROVIDER_ACCOUNT_PROVIDER_IS_LINKEDIN_BUT_IT_IS_NOT_CONFIGURED:
@@ -175,4 +166,4 @@ export const errors = {
     "提供商账户提供商是 GitLab，但未配置",
   FIELD_IS_TOO_X: "{field} 太 {x}",
   FIELD_IN_CHARACTER_LIMIT: "{field} 字符数在 {limit} 以内",
-}
+};

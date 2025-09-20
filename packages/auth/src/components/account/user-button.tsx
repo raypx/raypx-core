@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { Button } from "@raypx/ui/components/button"
+import { Button } from "@raypx/ui/components/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@raypx/ui/components/dropdown-menu"
+} from "@raypx/ui/components/dropdown-menu";
 import {
   ChevronsUpDown,
   LogInIcon,
@@ -15,9 +15,9 @@ import {
   PlusCircleIcon,
   SettingsIcon,
   UserRoundPlus,
-} from "@raypx/ui/components/icons"
-import { Link } from "@raypx/ui/components/link"
-import { cn } from "@raypx/ui/lib/utils"
+} from "@raypx/ui/components/icons";
+import { Link } from "@raypx/ui/components/link";
+import { cn } from "@raypx/ui/lib/utils";
 import {
   type ComponentProps,
   Fragment,
@@ -26,46 +26,46 @@ import {
   useEffect,
   useRef,
   useState,
-} from "react"
-import { useAuth } from "../../core/hooks/use-auth"
-import { useIsHydrated } from "../../core/hooks/use-hydrated"
-import { buildAccountUrl, buildAuthUrl } from "../../core/lib/url-utils"
-import { getLocalizedError } from "../../core/lib/utils"
-import type { AnyAuthClient, User } from "../../types"
-import { UserAvatar, type UserAvatarClassNames } from "./user-avatar"
-import { UserView, type UserViewClassNames } from "./user-view"
+} from "react";
+import { useAuth } from "../../core/hooks/use-auth";
+import { useIsHydrated } from "../../core/hooks/use-hydrated";
+import { buildAccountUrl, buildAuthUrl } from "../../core/lib/url-utils";
+import { getLocalizedError } from "../../core/lib/utils";
+import type { AnyAuthClient, User } from "../../types";
+import { UserAvatar, type UserAvatarClassNames } from "./user-avatar";
+import { UserView, type UserViewClassNames } from "./user-view";
 
 export interface UserButtonClassNames {
-  base?: string
-  skeleton?: string
+  base?: string;
+  skeleton?: string;
   trigger?: {
-    base?: string
-    avatar?: UserAvatarClassNames
-    user?: UserViewClassNames
-    skeleton?: string
-  }
+    base?: string;
+    avatar?: UserAvatarClassNames;
+    user?: UserViewClassNames;
+    skeleton?: string;
+  };
   content?: {
-    base?: string
-    user?: UserViewClassNames
-    avatar?: UserAvatarClassNames
-    menuItem?: string
-    separator?: string
-  }
+    base?: string;
+    user?: UserViewClassNames;
+    avatar?: UserAvatarClassNames;
+    menuItem?: string;
+    separator?: string;
+  };
 }
 
 export interface UserButtonProps {
-  className?: string
-  classNames?: UserButtonClassNames
-  align?: "center" | "start" | "end"
+  className?: string;
+  classNames?: UserButtonClassNames;
+  align?: "center" | "start" | "end";
   additionalLinks?: {
-    href: string
-    icon?: ReactNode
-    label: ReactNode
-    signedIn?: boolean
-    separator?: boolean
-  }[]
-  trigger?: ReactNode
-  disableDefaultLinks?: boolean
+    href: string;
+    icon?: ReactNode;
+    label: ReactNode;
+    signedIn?: boolean;
+    separator?: boolean;
+  }[];
+  trigger?: ReactNode;
+  disableDefaultLinks?: boolean;
 }
 
 /**
@@ -99,78 +99,70 @@ export function UserButton({
     toast,
     viewPaths,
     onSessionChange,
-  } = useAuth()
+  } = useAuth();
 
-  let deviceSessions: AnyAuthClient["$Infer"]["Session"][] | undefined | null =
-    null
-  let deviceSessionsPending = false
+  let deviceSessions: AnyAuthClient["$Infer"]["Session"][] | undefined | null = null;
+  let deviceSessionsPending = false;
 
   if (multiSession) {
-    const { data, isPending } = useListDeviceSessions()
-    deviceSessions = data
-    deviceSessionsPending = isPending
+    const { data, isPending } = useListDeviceSessions();
+    deviceSessions = data;
+    deviceSessionsPending = isPending;
   }
 
-  const { data: sessionData, isPending: sessionPending } = useSession()
-  const user = sessionData?.user
-  const [activeSessionPending, setActiveSessionPending] = useState(false)
+  const { data: sessionData, isPending: sessionPending } = useSession();
+  const user = sessionData?.user;
+  const [activeSessionPending, setActiveSessionPending] = useState(false);
 
-  const isHydrated = useIsHydrated()
-  const isPending = sessionPending || activeSessionPending || !isHydrated
+  const isHydrated = useIsHydrated();
+  const isPending = sessionPending || activeSessionPending || !isHydrated;
 
   const switchAccount = useCallback(
     async (sessionToken: string) => {
-      setActiveSessionPending(true)
+      setActiveSessionPending(true);
 
       try {
-        await setActiveSession({ sessionToken })
+        await setActiveSession({ sessionToken });
 
-        onSessionChange?.()
+        onSessionChange?.();
       } catch (error) {
         toast({
           variant: "error",
           message: getLocalizedError({ error, t }),
-        })
-        setActiveSessionPending(false)
+        });
+        setActiveSessionPending(false);
       }
     },
     [setActiveSession, onSessionChange, toast, t],
-  )
+  );
 
   useEffect(() => {
-    if (!multiSession) return
+    if (!multiSession) return;
 
-    setActiveSessionPending(false)
-  }, [sessionData, multiSession])
+    setActiveSessionPending(false);
+  }, [sessionData, multiSession]);
 
-  const warningLogged = useRef(false)
+  const warningLogged = useRef(false);
 
   useEffect(() => {
-    if (size || warningLogged.current) return
+    if (size || warningLogged.current) return;
 
     console.warn(
       "[Better Auth UI] The `size` prop of `UserButton` no longer defaults to `icon`. Please pass `size='icon'` to the `UserButton` component to get the same behaviour as before. This warning will be removed in a future release. It can be suppressed in the meantime by defining the `size` prop.",
-    )
+    );
 
-    warningLogged.current = true
-  }, [size])
+    warningLogged.current = true;
+  }, [size]);
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
         asChild
-        className={cn(
-          size === "icon" && "rounded-full",
-          classNames?.trigger?.base,
-        )}
+        className={cn(size === "icon" && "rounded-full", classNames?.trigger?.base)}
       >
         {trigger ||
           (size === "icon" ? (
-            <Button
-              size="icon"
-              className="size-fit rounded-full"
-              variant="ghost"
-            >
+            <Button size="icon" className="size-fit rounded-full" variant="ghost">
               <UserAvatar
                 key={user?.image}
                 isPending={isPending}
@@ -208,15 +200,9 @@ export function UserButton({
       >
         <div className={cn("p-2", classNames?.content?.menuItem)}>
           {(user && !(user as User).isAnonymous) || isPending ? (
-            <UserView
-              user={user}
-              isPending={isPending}
-              classNames={classNames?.content?.user}
-            />
+            <UserView user={user} isPending={isPending} classNames={classNames?.content?.user} />
           ) : (
-            <div className="-my-1 text-muted-foreground text-xs">
-              {t("ACCOUNT")}
-            </div>
+            <div className="-my-1 text-muted-foreground text-xs">{t("ACCOUNT")}</div>
           )}
         </div>
 
@@ -234,11 +220,7 @@ export function UserButton({
                     {label}
                   </DropdownMenuItem>
                 </Link>
-                {separator && (
-                  <DropdownMenuSeparator
-                    className={classNames?.content?.separator}
-                  />
-                )}
+                {separator && <DropdownMenuSeparator className={classNames?.content?.separator} />}
               </Fragment>
             ),
         )}
@@ -267,10 +249,7 @@ export function UserButton({
           <>
             {!disableDefaultLinks && accountOptions && (
               <Link
-                href={buildAccountUrl(
-                  accountOptions.basePath,
-                  accountOptions.viewPaths?.SETTINGS,
-                )}
+                href={buildAccountUrl(accountOptions.basePath, accountOptions.viewPaths?.SETTINGS)}
               >
                 <DropdownMenuItem className={classNames?.content?.menuItem}>
                   <SettingsIcon />
@@ -294,19 +273,11 @@ export function UserButton({
 
             {!deviceSessions && deviceSessionsPending && (
               <>
-                <DropdownMenuItem
-                  disabled
-                  className={classNames?.content?.menuItem}
-                >
-                  <UserView
-                    isPending={true}
-                    classNames={classNames?.content?.user}
-                  />
+                <DropdownMenuItem disabled className={classNames?.content?.menuItem}>
+                  <UserView isPending={true} classNames={classNames?.content?.user} />
                 </DropdownMenuItem>
 
-                <DropdownMenuSeparator
-                  className={classNames?.content?.separator}
-                />
+                <DropdownMenuSeparator className={classNames?.content?.separator} />
               </>
             )}
 
@@ -318,15 +289,10 @@ export function UserButton({
                     className={classNames?.content?.menuItem}
                     onClick={() => switchAccount(session.token)}
                   >
-                    <UserView
-                      user={user}
-                      classNames={classNames?.content?.user}
-                    />
+                    <UserView user={user} classNames={classNames?.content?.user} />
                   </DropdownMenuItem>
 
-                  <DropdownMenuSeparator
-                    className={classNames?.content?.separator}
-                  />
+                  <DropdownMenuSeparator className={classNames?.content?.separator} />
                 </Fragment>
               ))}
 
@@ -341,5 +307,5 @@ export function UserButton({
         )}
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

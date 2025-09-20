@@ -1,13 +1,6 @@
-import {
-  boolean,
-  index,
-  integer,
-  text,
-  timestamp,
-  uuid,
-} from "drizzle-orm/pg-core"
-import { uuidv7 } from "../utils"
-import { pgTable } from "./_table"
+import { boolean, index, integer, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { uuidv7 } from "../utils";
+import { pgTable } from "./_table";
 
 export const user = pgTable(
   "user",
@@ -39,7 +32,7 @@ export const user = pgTable(
     index("idx_user_email").on(table.email),
     index("idx_user_username").on(table.username),
   ],
-)
+);
 
 export const passkey = pgTable("passkey", {
   id: uuid("id")
@@ -63,7 +56,7 @@ export const passkey = pgTable("passkey", {
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .$onUpdateFn(() => /* @__PURE__ */ new Date()),
   aaguid: text("aaguid"),
-})
+});
 
 export const session = pgTable(
   "session",
@@ -93,7 +86,7 @@ export const session = pgTable(
     index("idx_session_user_id").on(table.userId),
     index("idx_session_expires_at").on(table.expiresAt),
   ],
-)
+);
 
 export const account = pgTable("account", {
   id: uuid("id")
@@ -117,7 +110,7 @@ export const account = pgTable("account", {
   updatedAt: timestamp("updated_at")
     .notNull()
     .$onUpdateFn(() => /* @__PURE__ */ new Date()),
-})
+});
 
 export const verification = pgTable("verification", {
   id: uuid("id")
@@ -132,7 +125,7 @@ export const verification = pgTable("verification", {
   updatedAt: timestamp("updated_at")
     .notNull()
     .$onUpdateFn(() => /* @__PURE__ */ new Date()),
-})
+});
 
 export const apikey = pgTable(
   "apikey",
@@ -167,11 +160,8 @@ export const apikey = pgTable(
     permissions: text("permissions"),
     metadata: text("metadata"),
   },
-  (table) => [
-    index("idx_apikey_user_id").on(table.userId),
-    index("idx_apikey_key").on(table.key),
-  ],
-)
+  (table) => [index("idx_apikey_user_id").on(table.userId), index("idx_apikey_key").on(table.key)],
+);
 
 export const organization = pgTable("organization", {
   id: uuid("id")
@@ -187,7 +177,7 @@ export const organization = pgTable("organization", {
     .notNull()
     .$onUpdateFn(() => /* @__PURE__ */ new Date()),
   metadata: text("metadata"),
-})
+});
 
 export const member = pgTable("member", {
   id: uuid("id")
@@ -206,7 +196,7 @@ export const member = pgTable("member", {
   updatedAt: timestamp("updated_at")
     .notNull()
     .$onUpdateFn(() => /* @__PURE__ */ new Date()),
-})
+});
 
 export const invitation = pgTable("invitation", {
   id: uuid("id")
@@ -222,7 +212,7 @@ export const invitation = pgTable("invitation", {
   inviterId: uuid("inviter_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-})
+});
 
 export const oauthApplication = pgTable("oauth_application", {
   id: uuid("id")
@@ -245,7 +235,7 @@ export const oauthApplication = pgTable("oauth_application", {
   updatedAt: timestamp("updated_at")
     .notNull()
     .$onUpdateFn(() => /* @__PURE__ */ new Date()),
-})
+});
 
 export const oauthAccessToken = pgTable("oauth_access_token", {
   id: uuid("id")
@@ -266,7 +256,7 @@ export const oauthAccessToken = pgTable("oauth_access_token", {
   updatedAt: timestamp("updated_at")
     .notNull()
     .$onUpdateFn(() => /* @__PURE__ */ new Date()),
-})
+});
 
 export const oauthConsent = pgTable("oauth_consent", {
   id: uuid("id")
@@ -284,4 +274,4 @@ export const oauthConsent = pgTable("oauth_consent", {
     .notNull()
     .$onUpdateFn(() => /* @__PURE__ */ new Date()),
   consentGiven: boolean("consent_given"),
-})
+});

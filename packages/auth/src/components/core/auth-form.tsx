@@ -1,50 +1,50 @@
-"use client"
+"use client";
 
-import { useEffect } from "react"
-import { useAuth } from "../../core/hooks/use-auth"
-import { buildAuthUrl } from "../../core/lib/url-utils"
-import { getViewByPath } from "../../core/lib/utils"
-import type { AuthViewPath } from "../../core/lib/view-paths"
-import { SignOut } from "../account/sign-out"
-import { AuthCallback } from "./auth-callback"
-import { EmailOTPForm } from "./email-otp-form"
-import { ForgotPasswordForm } from "./forgot-password-form"
-import { MagicLinkForm } from "./magic-link-form"
-import { RecoverAccountForm } from "./recover-account-form"
-import { ResetPasswordForm } from "./reset-password-form"
-import { SignInForm } from "./sign-in-form"
-import { SignUpForm } from "./sign-up-form"
-import { TwoFactorForm } from "./two-factor-form"
+import { useEffect } from "react";
+import { useAuth } from "../../core/hooks/use-auth";
+import { buildAuthUrl } from "../../core/lib/url-utils";
+import { getViewByPath } from "../../core/lib/utils";
+import type { AuthViewPath } from "../../core/lib/view-paths";
+import { SignOut } from "../account/sign-out";
+import { AuthCallback } from "./auth-callback";
+import { EmailOTPForm } from "./email-otp-form";
+import { ForgotPasswordForm } from "./forgot-password-form";
+import { MagicLinkForm } from "./magic-link-form";
+import { RecoverAccountForm } from "./recover-account-form";
+import { ResetPasswordForm } from "./reset-password-form";
+import { SignInForm } from "./sign-in-form";
+import { SignUpForm } from "./sign-up-form";
+import { TwoFactorForm } from "./two-factor-form";
 
 export type AuthFormClassNames = {
-  base?: string
-  button?: string
-  checkbox?: string
-  description?: string
-  error?: string
-  forgotPasswordLink?: string
-  icon?: string
-  input?: string
-  label?: string
-  otpInput?: string
-  otpInputContainer?: string
-  outlineButton?: string
-  primaryButton?: string
-  providerButton?: string
-  qrCode?: string
-  secondaryButton?: string
-}
+  base?: string;
+  button?: string;
+  checkbox?: string;
+  description?: string;
+  error?: string;
+  forgotPasswordLink?: string;
+  icon?: string;
+  input?: string;
+  label?: string;
+  otpInput?: string;
+  otpInputContainer?: string;
+  outlineButton?: string;
+  primaryButton?: string;
+  providerButton?: string;
+  qrCode?: string;
+  secondaryButton?: string;
+};
 
 export interface AuthFormProps {
-  className?: string
-  classNames?: AuthFormClassNames
-  callbackURL?: string
-  isSubmitting?: boolean
-  pathname?: string
-  redirectTo?: string
-  view?: AuthViewPath
-  otpSeparators?: 0 | 1 | 2
-  setIsSubmitting?: (isSubmitting: boolean) => void
+  className?: string;
+  classNames?: AuthFormClassNames;
+  callbackURL?: string;
+  isSubmitting?: boolean;
+  pathname?: string;
+  redirectTo?: string;
+  view?: AuthViewPath;
+  otpSeparators?: 0 | 1 | 2;
+  setIsSubmitting?: (isSubmitting: boolean) => void;
 }
 
 export function AuthForm({
@@ -67,60 +67,51 @@ export function AuthForm({
     twoFactor: twoFactorEnabled,
     viewPaths,
     replace,
-  } = useAuth()
+  } = useAuth();
 
-  const signUpEnabled = !!signUp
+  const signUpEnabled = !!signUp;
 
   useEffect(() => {
     if (pathname && !getViewByPath(viewPaths, pathname)) {
-      console.error(`Invalid auth view: ${pathname}`)
-      replace(`${basePath}/${viewPaths.SIGN_IN}${window.location.search}`)
+      console.error(`Invalid auth view: ${pathname}`);
+      replace(`${basePath}/${viewPaths.SIGN_IN}${window.location.search}`);
     }
-  }, [pathname, viewPaths, basePath, replace])
+  }, [pathname, viewPaths, basePath, replace]);
 
-  view =
-    view || (getViewByPath(viewPaths, pathname) as AuthViewPath) || "SIGN_IN"
+  view = view || (getViewByPath(viewPaths, pathname) as AuthViewPath) || "SIGN_IN";
 
   // Redirect to appropriate view based on enabled features
   useEffect(() => {
-    let isInvalidView = false
+    let isInvalidView = false;
 
     if (view === "MAGIC_LINK" && (!magicLink || (!credentials && !emailOTP))) {
-      isInvalidView = true
+      isInvalidView = true;
     }
 
     if (view === "EMAIL_OTP" && (!emailOTP || (!credentials && !magicLink))) {
-      isInvalidView = true
+      isInvalidView = true;
     }
 
     if (view === "SIGN_UP" && !signUpEnabled) {
-      isInvalidView = true
+      isInvalidView = true;
     }
 
     if (
       !credentials &&
       view &&
-      [
-        "SIGN_UP",
-        "FORGOT_PASSWORD",
-        "RESET_PASSWORD",
-        "TWO_FACTOR",
-        "RECOVER_ACCOUNT",
-      ].includes(view)
+      ["SIGN_UP", "FORGOT_PASSWORD", "RESET_PASSWORD", "TWO_FACTOR", "RECOVER_ACCOUNT"].includes(
+        view,
+      )
     ) {
-      isInvalidView = true
+      isInvalidView = true;
     }
 
-    if (
-      view &&
-      ["TWO_FACTOR", "RECOVER_ACCOUNT"].includes(view) &&
-      !twoFactorEnabled
-    ) {
-      isInvalidView = true
+    if (view && ["TWO_FACTOR", "RECOVER_ACCOUNT"].includes(view) && !twoFactorEnabled) {
+      isInvalidView = true;
     }
 
     if (isInvalidView) {
-      replace(buildAuthUrl(basePath, viewPaths.SIGN_IN, true))
+      replace(buildAuthUrl(basePath, viewPaths.SIGN_IN, true));
     }
   }, [
     basePath,
@@ -132,10 +123,10 @@ export function AuthForm({
     signUpEnabled,
     magicLink,
     twoFactorEnabled,
-  ])
+  ]);
 
-  if (view === "SIGN_OUT") return <SignOut />
-  if (view === "CALLBACK") return <AuthCallback redirectTo={redirectTo} />
+  if (view === "SIGN_OUT") return <SignOut />;
+  if (view === "CALLBACK") return <AuthCallback redirectTo={redirectTo} />;
 
   if (view === "SIGN_IN") {
     return credentials ? (
@@ -164,7 +155,7 @@ export function AuthForm({
         isSubmitting={isSubmitting}
         setIsSubmitting={setIsSubmitting}
       />
-    ) : null
+    ) : null;
   }
 
   if (view === "TWO_FACTOR") {
@@ -177,7 +168,7 @@ export function AuthForm({
         isSubmitting={isSubmitting}
         setIsSubmitting={setIsSubmitting}
       />
-    )
+    );
   }
 
   if (view === "RECOVER_ACCOUNT") {
@@ -189,7 +180,7 @@ export function AuthForm({
         isSubmitting={isSubmitting}
         setIsSubmitting={setIsSubmitting}
       />
-    )
+    );
   }
 
   if (view === "MAGIC_LINK") {
@@ -202,7 +193,7 @@ export function AuthForm({
         isSubmitting={isSubmitting}
         setIsSubmitting={setIsSubmitting}
       />
-    )
+    );
   }
 
   if (view === "EMAIL_OTP") {
@@ -215,7 +206,7 @@ export function AuthForm({
         isSubmitting={isSubmitting}
         setIsSubmitting={setIsSubmitting}
       />
-    )
+    );
   }
 
   if (view === "FORGOT_PASSWORD") {
@@ -226,11 +217,11 @@ export function AuthForm({
         isSubmitting={isSubmitting}
         setIsSubmitting={setIsSubmitting}
       />
-    )
+    );
   }
 
   if (view === "RESET_PASSWORD") {
-    return <ResetPasswordForm className={className} classNames={classNames} />
+    return <ResetPasswordForm className={className} classNames={classNames} />;
   }
 
   if (view === "SIGN_UP") {
@@ -245,6 +236,6 @@ export function AuthForm({
           setIsSubmitting={setIsSubmitting}
         />
       )
-    )
+    );
   }
 }

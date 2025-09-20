@@ -1,30 +1,21 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { CardContent } from "@raypx/ui/components/card"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@raypx/ui/components/form"
-import { Input } from "@raypx/ui/components/input"
-import {
-  SettingsCard,
-  type SettingsCardProps,
-} from "@raypx/ui/components/settings"
-import { Skeleton } from "@raypx/ui/components/skeleton"
-import { cn } from "@raypx/ui/lib/utils"
-import type { Organization } from "better-auth/plugins/organization"
-import { useForm } from "react-hook-form"
-import { z } from "zod/v4"
-import { useAuth } from "../../core/hooks/use-auth"
-import { useCurrentOrganization } from "../../core/hooks/use-current-organization"
-import { getLocalizedError } from "../../core/lib/utils"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CardContent } from "@raypx/ui/components/card";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@raypx/ui/components/form";
+import { Input } from "@raypx/ui/components/input";
+import { SettingsCard, type SettingsCardProps } from "@raypx/ui/components/settings";
+import { Skeleton } from "@raypx/ui/components/skeleton";
+import { cn } from "@raypx/ui/lib/utils";
+import type { Organization } from "better-auth/plugins/organization";
+import { useForm } from "react-hook-form";
+import { z } from "zod/v4";
+import { useAuth } from "../../core/hooks/use-auth";
+import { useCurrentOrganization } from "../../core/hooks/use-current-organization";
+import { getLocalizedError } from "../../core/lib/utils";
 
 export interface OrganizationSlugCardProps extends SettingsCardProps {
-  slug?: string
+  slug?: string;
 }
 
 export function OrganizationSlugCard({
@@ -33,11 +24,11 @@ export function OrganizationSlugCard({
   slug: slugProp,
   ...props
 }: OrganizationSlugCardProps) {
-  const { t, organization: organizationOptions } = useAuth()
+  const { t, organization: organizationOptions } = useAuth();
 
-  const slug = slugProp || organizationOptions?.slug
+  const slug = slugProp || organizationOptions?.slug;
 
-  const { data: organization } = useCurrentOrganization({ slug })
+  const { data: organization } = useCurrentOrganization({ slug });
 
   if (!organization) {
     return (
@@ -55,7 +46,7 @@ export function OrganizationSlugCard({
           <Skeleton className={cn("h-9 w-full", classNames?.skeleton)} />
         </CardContent>
       </SettingsCard>
-    )
+    );
   }
 
   return (
@@ -65,7 +56,7 @@ export function OrganizationSlugCard({
       organization={organization}
       {...props}
     />
-  )
+  );
 }
 
 function OrganizationSlugForm({
@@ -82,18 +73,18 @@ function OrganizationSlugForm({
     toast,
     organization: organizationOptions,
     replace,
-  } = useAuth()
+  } = useAuth();
 
   const { refetch: refetchOrganization } = useCurrentOrganization({
     slug: organization.slug,
-  })
+  });
 
   const { data: hasPermission, isPending } = useHasPermission({
     organizationId: organization.id,
     permissions: {
       organization: ["update"],
     },
-  })
+  });
 
   const formSchema = z.object({
     slug: z
@@ -104,53 +95,51 @@ function OrganizationSlugForm({
       .regex(/^[a-z0-9-]+$/, {
         message: `${t("ORGANIZATION_SLUG")} ${t("IS_INVALID")}`,
       }),
-  })
+  });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     values: { slug: organization.slug || "" },
-  })
+  });
 
-  const { isSubmitting } = form.formState
+  const { isSubmitting } = form.formState;
 
-  const updateOrganizationSlug = async ({
-    slug,
-  }: z.infer<typeof formSchema>) => {
+  const updateOrganizationSlug = async ({ slug }: z.infer<typeof formSchema>) => {
     if (organization.slug === slug) {
       toast({
         variant: "error",
         message: `${t("ORGANIZATION_SLUG")} ${t("IS_THE_SAME")}`,
-      })
+      });
 
-      return
+      return;
     }
 
     try {
       await updateOrganization({
         organizationId: organization.id,
         data: { slug },
-      })
+      });
 
-      await refetchOrganization?.()
+      await refetchOrganization?.();
 
       toast({
         variant: "success",
         message: `${t("ORGANIZATION_SLUG")} ${t("UPDATED_SUCCESSFULLY")}`,
-      })
+      });
 
       // If using slug-based paths, redirect to the new slug's settings route
       if (organizationOptions?.pathMode === "slug") {
-        const basePath = organizationOptions.basePath
-        const settingsPath = organizationOptions.viewPaths.SETTINGS
-        replace(`${basePath}/${slug}/${settingsPath}`)
+        const basePath = organizationOptions.basePath;
+        const settingsPath = organizationOptions.viewPaths.SETTINGS;
+        replace(`${basePath}/${slug}/${settingsPath}`);
       }
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
-  }
+  };
 
   return (
     <Form {...form}>
@@ -194,5 +183,5 @@ function OrganizationSlugForm({
         </SettingsCard>
       </form>
     </Form>
-  )
+  );
 }

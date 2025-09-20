@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button } from "@raypx/ui/components/button"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@raypx/ui/components/button";
 import {
   Form,
   FormControl,
@@ -9,39 +9,39 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@raypx/ui/components/form"
-import { Loader2 } from "@raypx/ui/components/icons"
-import { Input } from "@raypx/ui/components/input"
-import { InputOTP } from "@raypx/ui/components/input-otp"
-import { cn } from "@raypx/ui/lib/utils"
-import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod/v4"
-import { useAuth } from "../../core/hooks/use-auth"
-import { useIsHydrated } from "../../core/hooks/use-hydrated"
-import { useOnSuccessTransition } from "../../core/hooks/use-success-transition"
-import { getLocalizedError } from "../../core/lib/utils"
-import type { AuthFormClassNames } from "./auth-form"
-import { OTPInputGroup } from "./otp-input-group"
+} from "@raypx/ui/components/form";
+import { Loader2 } from "@raypx/ui/components/icons";
+import { Input } from "@raypx/ui/components/input";
+import { InputOTP } from "@raypx/ui/components/input-otp";
+import { cn } from "@raypx/ui/lib/utils";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod/v4";
+import { useAuth } from "../../core/hooks/use-auth";
+import { useIsHydrated } from "../../core/hooks/use-hydrated";
+import { useOnSuccessTransition } from "../../core/hooks/use-success-transition";
+import { getLocalizedError } from "../../core/lib/utils";
+import type { AuthFormClassNames } from "./auth-form";
+import { OTPInputGroup } from "./otp-input-group";
 
 export interface EmailOTPFormProps {
-  className?: string
-  classNames?: AuthFormClassNames
-  callbackURL?: string
-  isSubmitting?: boolean
-  otpSeparators?: 0 | 1 | 2
-  redirectTo?: string
-  setIsSubmitting?: (value: boolean) => void
+  className?: string;
+  classNames?: AuthFormClassNames;
+  callbackURL?: string;
+  isSubmitting?: boolean;
+  otpSeparators?: 0 | 1 | 2;
+  redirectTo?: string;
+  setIsSubmitting?: (value: boolean) => void;
 }
 
 export function EmailOTPForm(props: EmailOTPFormProps) {
-  const [email, setEmail] = useState<string | undefined>()
+  const [email, setEmail] = useState<string | undefined>();
 
   if (!email) {
-    return <EmailForm {...props} setEmail={setEmail} />
+    return <EmailForm {...props} setEmail={setEmail} />;
   }
 
-  return <OTPForm {...props} email={email} />
+  return <OTPForm {...props} email={email} />;
 }
 
 function EmailForm({
@@ -51,11 +51,11 @@ function EmailForm({
   setIsSubmitting,
   setEmail,
 }: EmailOTPFormProps & {
-  setEmail: (email: string) => void
+  setEmail: (email: string) => void;
 }) {
-  const isHydrated = useIsHydrated()
+  const isHydrated = useIsHydrated();
 
-  const { authClient, t, toast } = useAuth()
+  const { authClient, t, toast } = useAuth();
 
   const formSchema = z.object({
     email: z
@@ -65,20 +65,20 @@ function EmailForm({
       .min(1, {
         message: t("FIELD_IS_REQUIRED", { field: t("EMAIL") }),
       }),
-  })
+  });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
     },
-  })
+  });
 
-  isSubmitting = isSubmitting || form.formState.isSubmitting
+  isSubmitting = isSubmitting || form.formState.isSubmitting;
 
   useEffect(() => {
-    setIsSubmitting?.(form.formState.isSubmitting)
-  }, [form.formState.isSubmitting, setIsSubmitting])
+    setIsSubmitting?.(form.formState.isSubmitting);
+  }, [form.formState.isSubmitting, setIsSubmitting]);
 
   async function sendEmailOTP({ email }: z.infer<typeof formSchema>) {
     try {
@@ -86,19 +86,19 @@ function EmailForm({
         email,
         type: "sign-in",
         fetchOptions: { throw: true },
-      })
+      });
 
       toast({
         variant: "success",
         message: t("EMAIL_OTP_VERIFICATION_SENT"),
-      })
+      });
 
-      setEmail(email)
+      setEmail(email);
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
   }
 
@@ -134,21 +134,13 @@ function EmailForm({
         <Button
           type="submit"
           disabled={isSubmitting}
-          className={cn(
-            "w-full",
-            classNames?.button,
-            classNames?.primaryButton,
-          )}
+          className={cn("w-full", classNames?.button, classNames?.primaryButton)}
         >
-          {isSubmitting ? (
-            <Loader2 className="animate-spin" />
-          ) : (
-            t("EMAIL_OTP_SEND_ACTION")
-          )}
+          {isSubmitting ? <Loader2 className="animate-spin" /> : t("EMAIL_OTP_SEND_ACTION")}
         </Button>
       </form>
     </Form>
-  )
+  );
 }
 
 export function OTPForm({
@@ -160,13 +152,13 @@ export function OTPForm({
   setIsSubmitting,
   email,
 }: EmailOTPFormProps & {
-  email: string
+  email: string;
 }) {
-  const { authClient, t, toast } = useAuth()
+  const { authClient, t, toast } = useAuth();
 
   const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({
     redirectTo,
-  })
+  });
 
   const formSchema = z.object({
     code: z
@@ -177,21 +169,20 @@ export function OTPForm({
       .min(6, {
         message: `${t("EMAIL_OTP")} ${t("IS_INVALID")}`,
       }),
-  })
+  });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       code: "",
     },
-  })
+  });
 
-  isSubmitting =
-    isSubmitting || form.formState.isSubmitting || transitionPending
+  isSubmitting = isSubmitting || form.formState.isSubmitting || transitionPending;
 
   useEffect(() => {
-    setIsSubmitting?.(form.formState.isSubmitting || transitionPending)
-  }, [form.formState.isSubmitting, transitionPending, setIsSubmitting])
+    setIsSubmitting?.(form.formState.isSubmitting || transitionPending);
+  }, [form.formState.isSubmitting, transitionPending, setIsSubmitting]);
 
   async function verifyCode({ code }: z.infer<typeof formSchema>) {
     try {
@@ -199,16 +190,16 @@ export function OTPForm({
         email,
         otp: code,
         fetchOptions: { throw: true },
-      })
+      });
 
-      await onSuccess()
+      await onSuccess();
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
 
-      form.reset()
+      form.reset();
     }
   }
 
@@ -223,19 +214,17 @@ export function OTPForm({
           name="code"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className={classNames?.label}>
-                {t("EMAIL_OTP")}
-              </FormLabel>
+              <FormLabel className={classNames?.label}>{t("EMAIL_OTP")}</FormLabel>
 
               <FormControl>
                 <InputOTP
                   {...field}
                   maxLength={6}
                   onChange={(value) => {
-                    field.onChange(value)
+                    field.onChange(value);
 
                     if (value.length === 6) {
-                      form.handleSubmit(verifyCode)()
+                      form.handleSubmit(verifyCode)();
                     }
                   }}
                   containerClassName={classNames?.otpInputContainer}
@@ -263,5 +252,5 @@ export function OTPForm({
         </div>
       </form>
     </Form>
-  )
+  );
 }

@@ -1,1 +1,1 @@
-export const name = "supabase"
+export const name = "supabase";

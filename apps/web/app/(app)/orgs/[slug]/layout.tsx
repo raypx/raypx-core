@@ -1,29 +1,26 @@
-import { RedirectToSignIn } from "@raypx/auth/core"
-import { createMetadata } from "@raypx/seo"
-import { ChevronRight, Home } from "lucide-react"
-import type { Metadata } from "next"
-import Link from "next/link"
-import type { ReactNode } from "react"
-import { Header } from "@/layouts/console/header"
+import { RedirectToSignIn } from "@raypx/auth/core";
+import { createMetadata } from "@raypx/seo";
+import { ChevronRight, Home } from "lucide-react";
+import type { Metadata } from "next";
+import Link from "next/link";
+import type { ReactNode } from "react";
+import { Header } from "@/layouts/console/header";
 
 interface OrganizationLayoutProps {
-  children: ReactNode
+  children: ReactNode;
   params: Promise<{
-    slug: string
-  }>
+    slug: string;
+  }>;
 }
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return createMetadata({
     title: "Organization",
-  })
-}
+  });
+};
 
-export default async function OrganizationLayout({
-  children,
-  params,
-}: OrganizationLayoutProps) {
-  const { slug } = await params
+export default async function OrganizationLayout({ children, params }: OrganizationLayoutProps) {
+  const { slug } = await params;
   return (
     <>
       <RedirectToSignIn />
@@ -52,5 +49,5 @@ export default async function OrganizationLayout({
         <main className="container mx-auto px-6 py-8">{children}</main>
       </div>
     </>
-  )
+  );
 }

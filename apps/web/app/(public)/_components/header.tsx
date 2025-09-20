@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { useAuth } from "@raypx/auth/core"
-import { OrganizationSwitcher } from "@raypx/auth/organization"
-import { Button } from "@raypx/ui/components/button"
-import { ThemeSwitcher } from "@raypx/ui/components/theme-switcher"
-import Image from "next/image"
-import Link from "next/link"
-import { LangSwitcher } from "@/components/lang-switcher"
+import { useAuth } from "@raypx/auth/core";
+import { OrganizationSwitcher } from "@raypx/auth/organization";
+import { Button } from "@raypx/ui/components/button";
+import { ThemeSwitcher } from "@raypx/ui/components/theme-switcher";
+import Image from "next/image";
+import Link from "next/link";
+import { LangSwitcher } from "@/components/lang-switcher";
 
 export function Header() {
   const {
     viewPaths: pages,
     hooks: { useSession },
-  } = useAuth()
-  const { data: session } = useSession()
+  } = useAuth();
+  const { data: session } = useSession();
 
   return (
     <header className="w-full border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-6 py-4">
@@ -47,5 +47,5 @@ export function Header() {
         </div>
       </div>
     </header>
-  )
+  );
 }

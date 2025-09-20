@@ -1,21 +1,21 @@
-import { defineRouting } from "next-intl/routing"
-import { getRequestConfig } from "next-intl/server"
-import type { Promisable } from "type-fest"
+import { defineRouting } from "next-intl/routing";
+import { getRequestConfig } from "next-intl/server";
+import type { Promisable } from "type-fest";
 
-export * from "./services/locale"
+export * from "./services/locale";
 
-import { getUserLocale, setUserLocale } from "./services/locale"
+import { getUserLocale, setUserLocale } from "./services/locale";
 
-export * from "./config"
+export * from "./config";
 
-export const DEFAULT_LOCALE_COOKIE_NAME = "NEXT_LOCALE"
+export const DEFAULT_LOCALE_COOKIE_NAME = "NEXT_LOCALE";
 
 export interface I18nServerConfigOptions {
-  getLocale?: () => Promise<string> | string
-  locales: readonly string[]
-  defaultLocale: string
-  localeCookieName?: string
-  importMessages: (locale: string) => Promisable<Record<string, unknown>>
+  getLocale?: () => Promise<string> | string;
+  locales: readonly string[];
+  defaultLocale: string;
+  localeCookieName?: string;
+  importMessages: (locale: string) => Promisable<Record<string, unknown>>;
 }
 
 export function createI18nServerConfig(options: I18nServerConfigOptions) {
@@ -25,7 +25,7 @@ export function createI18nServerConfig(options: I18nServerConfigOptions) {
     locales,
     defaultLocale,
     localeCookieName = DEFAULT_LOCALE_COOKIE_NAME,
-  } = options
+  } = options;
 
   const routing = defineRouting({
     // A list of all locales that are supported
@@ -53,22 +53,22 @@ export function createI18nServerConfig(options: I18nServerConfigOptions) {
     // Use "always" for better SEO and clearer URLs
     // https://next-intl.dev/docs/routing#locale-prefix
     localePrefix: "as-needed",
-  })
+  });
 
   return {
     getRequestConfig: getRequestConfig(async () => {
-      let lang = await getLocale()
+      let lang = await getLocale();
       if (!locales.includes(lang)) {
-        lang = defaultLocale
+        lang = defaultLocale;
       }
-      const messages = await importMessages(lang)
+      const messages = await importMessages(lang);
       return {
         locale: lang,
         messages: messages,
-      }
+      };
     }),
     routing,
-  }
+  };
 }
 
-export { getUserLocale, setUserLocale }
+export { getUserLocale, setUserLocale };

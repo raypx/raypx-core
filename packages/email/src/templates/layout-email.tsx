@@ -1,22 +1,14 @@
-import {
-  Body,
-  Container,
-  Head,
-  Html,
-  Preview,
-  Section,
-  Tailwind,
-} from "@react-email/components"
-import type { ReactNode } from "react"
+import { Body, Container, Head, Html, Preview, Section, Tailwind } from "@react-email/components";
+import type { ReactNode } from "react";
 
 /**
  * Props for the email layout component
  */
 interface EmailLayoutProps {
   /** Email preview text shown in email clients */
-  preview: string
+  preview: string;
   /** Email content to be rendered inside the layout */
-  children: ReactNode
+  children: ReactNode;
 }
 
 /**
@@ -38,5 +30,5 @@ export const EmailLayout = ({ preview, children }: EmailLayoutProps) => {
         </Body>
       </Tailwind>
     </Html>
-  )
-}
+  );
+};

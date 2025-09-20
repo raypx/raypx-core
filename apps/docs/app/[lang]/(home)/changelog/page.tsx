@@ -1,52 +1,47 @@
-import type { Metadata } from "next"
-import { notFound } from "next/navigation"
-import { getTranslations } from "next-intl/server"
-import appConfig from "@/config/app.config"
-import { changelogSource } from "@/lib/source"
-import { getMDXComponents } from "@/mdx-components"
-import { ChangelogCard } from "./_components/card"
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
+import appConfig from "@/config/app.config";
+import { changelogSource } from "@/lib/source";
+import { getMDXComponents } from "@/mdx-components";
+import { ChangelogCard } from "./_components/card";
 
 interface ChangelogPageProps {
-  params: Promise<{ lang: string }>
+  params: Promise<{ lang: string }>;
 }
 
-export async function generateMetadata({
-  params,
-}: ChangelogPageProps): Promise<Metadata> {
-  const { lang } = await params
+export async function generateMetadata({ params }: ChangelogPageProps): Promise<Metadata> {
+  const { lang } = await params;
   const t = await getTranslations({
     locale: lang,
-  })
-  const title = t("changelog.title")
-  const description = t("changelog.description", { name: appConfig.name })
+  });
+  const title = t("changelog.title");
+  const description = t("changelog.description", { name: appConfig.name });
 
   return {
     title,
     description,
-  }
+  };
 }
 
 export default async function ChangelogPage({ params }: ChangelogPageProps) {
-  const { lang } = await params
+  const { lang } = await params;
   const t = await getTranslations({
     locale: lang,
-  })
+  });
 
   // Get all changelog entries
   const entries = changelogSource
     .getPages(lang)
     .filter((i) => i.data.published)
-    .sort(
-      (a, b) =>
-        new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
-    )
+    .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 
   if (!entries.length) {
-    notFound()
+    notFound();
   }
 
-  const title = t("changelog.title")
-  const description = t("changelog.description", { name: appConfig.name })
+  const title = t("changelog.title");
+  const description = t("changelog.description", { name: appConfig.name });
 
   return (
     <div className="container max-w-4xl py-12">
@@ -73,5 +68,5 @@ export default async function ChangelogPage({ params }: ChangelogPageProps) {
         ))}
       </div>
     </div>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { createEnv, z } from "@raypx/shared"
+import { createEnv, z } from "@raypx/shared";
 
 export const envs = () =>
   createEnv({
@@ -10,4 +10,4 @@ export const envs = () =>
       DATABASE_URL: process.env.DATABASE_URL,
       DATABASE_PREFIX: process.env.DATABASE_PREFIX,
     },
-  })
+  });

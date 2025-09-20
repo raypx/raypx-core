@@ -32,7 +32,7 @@
     },
     "lint": {
       "cache": true,
-      "inputs": ["$TURBO_DEFAULT$", "biome.jsonc"],
+      "inputs": ["$TURBO_DEFAULT$", "biome.json"],
       "outputs": []
     },
     "start": {

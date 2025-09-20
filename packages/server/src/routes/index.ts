@@ -1,3 +1,3 @@
-export { authRoutes } from "./auth"
-export { knowledgeRoutes } from "./knowledge"
-export { userRoutes } from "./user"
+export { authRoutes } from "./auth";
+export { knowledgeRoutes } from "./knowledge";
+export { userRoutes } from "./user";

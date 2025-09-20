@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useEffect } from "react"
-import { useAuth } from "../../core/hooks/use-auth"
-import { useCurrentOrganization } from "../../core/hooks/use-current-organization"
+import { useEffect } from "react";
+import { useAuth } from "../../core/hooks/use-auth";
+import { useCurrentOrganization } from "../../core/hooks/use-current-organization";
 
 export const OrganizationRefetcher = () => {
   const {
@@ -10,37 +10,37 @@ export const OrganizationRefetcher = () => {
     organization: organizationOptions,
     navigate,
     redirectTo,
-  } = useAuth()
+  } = useAuth();
 
-  const { slug, pathMode, personalPath } = organizationOptions || {}
+  const { slug, pathMode, personalPath } = organizationOptions || {};
 
-  const { data: sessionData } = useSession()
+  const { data: sessionData } = useSession();
 
   const {
     data: organization,
     isPending: organizationPending,
     isRefetching: organizationRefetching,
     refetch: refetchOrganization,
-  } = useCurrentOrganization()
+  } = useCurrentOrganization();
 
-  const { refetch: refetchListOrganizations } = useListOrganizations()
+  const { refetch: refetchListOrganizations } = useListOrganizations();
 
-  const { data: organizations } = useListOrganizations()
+  const { data: organizations } = useListOrganizations();
 
   useEffect(() => {
-    if (!sessionData?.user.id) return
+    if (!sessionData?.user.id) return;
 
     if (organization || organizations) {
-      refetchOrganization?.()
-      refetchListOrganizations?.()
+      refetchOrganization?.();
+      refetchListOrganizations?.();
     }
-  }, [sessionData?.user.id])
+  }, [sessionData?.user.id]);
 
   useEffect(() => {
-    if (organizationRefetching || organizationPending) return
+    if (organizationRefetching || organizationPending) return;
 
     if (slug && pathMode === "slug" && !organization) {
-      navigate(personalPath || redirectTo)
+      navigate(personalPath || redirectTo);
     }
   }, [
     organization,
@@ -51,7 +51,7 @@ export const OrganizationRefetcher = () => {
     personalPath,
     navigate,
     redirectTo,
-  ])
+  ]);
 
-  return null
-}
+  return null;
+};

@@ -1,41 +1,41 @@
-"use client"
+"use client";
 
-import { Button } from "@raypx/ui/components/button"
+import { Button } from "@raypx/ui/components/button";
 import {
   Drawer,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@raypx/ui/components/drawer"
-import { MenuIcon } from "@raypx/ui/components/icons"
-import { Label } from "@raypx/ui/components/label"
-import { Link } from "@raypx/ui/components/link"
-import type { SettingsCardClassNames } from "@raypx/ui/components/settings"
-import { cn } from "@raypx/ui/lib/utils"
-import { useAuth } from "../../core/hooks/use-auth"
-import { buildAccountUrl } from "../../core/lib/url-utils"
-import { getViewByPath } from "../../core/lib/utils"
-import type { AccountViewPath } from "../../server"
-import { OrganizationsCard } from "../organization/organizations-card"
-import { AccountSettingsCards } from "./account-settings-cards"
-import { ApiKeysCard } from "./api-keys-card"
-import { SecuritySettingsCards } from "./security-settings-cards"
-import { UserInvitationsCard } from "./user-invitations-card"
+} from "@raypx/ui/components/drawer";
+import { MenuIcon } from "@raypx/ui/components/icons";
+import { Label } from "@raypx/ui/components/label";
+import { Link } from "@raypx/ui/components/link";
+import type { SettingsCardClassNames } from "@raypx/ui/components/settings";
+import { cn } from "@raypx/ui/lib/utils";
+import { useAuth } from "../../core/hooks/use-auth";
+import { buildAccountUrl } from "../../core/lib/url-utils";
+import { getViewByPath } from "../../core/lib/utils";
+import type { AccountViewPath } from "../../server";
+import { OrganizationsCard } from "../organization/organizations-card";
+import { AccountSettingsCards } from "./account-settings-cards";
+import { ApiKeysCard } from "./api-keys-card";
+import { SecuritySettingsCards } from "./security-settings-cards";
+import { UserInvitationsCard } from "./user-invitations-card";
 
 export interface AccountViewProps {
-  className?: string
+  className?: string;
   classNames?: {
-    base?: string
-    cards?: string
-    drawer?: { menuItem?: string }
-    sidebar?: { base?: string; button?: string; buttonActive?: string }
-    card?: SettingsCardClassNames
-  }
-  pathname?: string
-  view?: AccountViewPath
-  path?: string
-  hideNav?: boolean
+    base?: string;
+    cards?: string;
+    drawer?: { menuItem?: string };
+    sidebar?: { base?: string; button?: string; buttonActive?: string };
+    card?: SettingsCardClassNames;
+  };
+  pathname?: string;
+  view?: AccountViewPath;
+  path?: string;
+  hideNav?: boolean;
 }
 
 export function AccountView({
@@ -46,36 +46,35 @@ export function AccountView({
   hideNav,
   path: pathProp,
 }: AccountViewProps) {
-  const { apiKey, t, organization, account: accountOptions } = useAuth()
+  const { apiKey, t, organization, account: accountOptions } = useAuth();
 
   if (!accountOptions) {
-    return null
+    return null;
   }
 
-  const path = pathProp ?? pathname?.split("/").pop()
-  const view =
-    viewProp || getViewByPath(accountOptions.viewPaths, path) || "SETTINGS"
+  const path = pathProp ?? pathname?.split("/").pop();
+  const view = viewProp || getViewByPath(accountOptions.viewPaths, path) || "SETTINGS";
 
   const navItems: {
-    view: AccountViewPath
-    label: string
+    view: AccountViewPath;
+    label: string;
   }[] = [
     { view: "SETTINGS", label: t("ACCOUNT") },
     { view: "SECURITY", label: t("SECURITY") },
-  ]
+  ];
 
   if (apiKey) {
     navItems.push({
       view: "API_KEYS",
       label: t("API_KEYS"),
-    })
+    });
   }
 
   if (organization) {
     navItems.push({
       view: "ORGANIZATIONS",
       label: t("ORGANIZATIONS"),
-    })
+    });
   }
 
   return (
@@ -116,9 +115,7 @@ export function AccountView({
                       className={cn(
                         "w-full justify-start px-4 transition-none",
                         classNames?.drawer?.menuItem,
-                        view === item.view
-                          ? "font-semibold"
-                          : "text-foreground/70",
+                        view === item.view ? "font-semibold" : "text-foreground/70",
                       )}
                       variant="ghost"
                     >
@@ -134,12 +131,7 @@ export function AccountView({
 
       {!hideNav && (
         <div className="hidden md:block">
-          <div
-            className={cn(
-              "flex w-48 flex-col gap-1 lg:w-60",
-              classNames?.sidebar?.base,
-            )}
-          >
+          <div className={cn("flex w-48 flex-col gap-1 lg:w-60", classNames?.sidebar?.base)}>
             {navItems.map((item) => (
               <Link
                 key={item.view}
@@ -180,5 +172,5 @@ export function AccountView({
         </div>
       )}
     </div>
-  )
+  );
 }

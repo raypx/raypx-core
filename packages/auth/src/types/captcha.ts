@@ -3,13 +3,13 @@ export type CaptchaProvider =
   | "google-recaptcha-v2-checkbox"
   | "google-recaptcha-v2-invisible"
   | "google-recaptcha-v3"
-  | "hcaptcha"
+  | "hcaptcha";
 
 export type CaptchaOptions = {
-  siteKey: string
-  provider: CaptchaProvider
-  hideBadge?: boolean
-  recaptchaNet?: boolean
-  enterprise?: boolean
-  endpoints?: string[]
-}
+  siteKey: string;
+  provider: CaptchaProvider;
+  hideBadge?: boolean;
+  recaptchaNet?: boolean;
+  enterprise?: boolean;
+  endpoints?: string[];
+};

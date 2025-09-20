@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { admin } from "@raypx/auth/client"
-import { useAuth } from "@raypx/auth/core"
+import { admin } from "@raypx/auth/client";
+import { useAuth } from "@raypx/auth/core";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,16 +11,16 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@raypx/ui/components/alert-dialog"
-import { Badge } from "@raypx/ui/components/badge"
-import { Button } from "@raypx/ui/components/button"
+} from "@raypx/ui/components/alert-dialog";
+import { Badge } from "@raypx/ui/components/badge";
+import { Button } from "@raypx/ui/components/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@raypx/ui/components/card"
+} from "@raypx/ui/components/card";
 import {
   Dialog,
   DialogContent,
@@ -28,7 +28,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@raypx/ui/components/dialog"
+} from "@raypx/ui/components/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,16 +36,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@raypx/ui/components/dropdown-menu"
-import { Input } from "@raypx/ui/components/input"
-import { Label } from "@raypx/ui/components/label"
+} from "@raypx/ui/components/dropdown-menu";
+import { Input } from "@raypx/ui/components/input";
+import { Label } from "@raypx/ui/components/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@raypx/ui/components/select"
+} from "@raypx/ui/components/select";
 import {
   Table,
   TableBody,
@@ -53,15 +53,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@raypx/ui/components/table"
-import { Textarea } from "@raypx/ui/components/textarea"
-import {
-  keepPreviousData,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query"
-import { format } from "date-fns"
+} from "@raypx/ui/components/table";
+import { Textarea } from "@raypx/ui/components/textarea";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { format } from "date-fns";
 import {
   AlertTriangle,
   Ban,
@@ -74,84 +69,84 @@ import {
   User as UserIcon,
   Users,
   UserX,
-} from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useCallback, useEffect, useMemo, useState } from "react"
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 interface User {
-  id: string
-  name: string
-  email: string
-  emailVerified: boolean
-  username?: string
-  role?: "user" | "moderator" | "admin" | "superadmin"
-  banned: boolean
-  banReason?: string
-  banExpires?: string
-  createdAt: string
-  updatedAt: string
-  image?: string
+  id: string;
+  name: string;
+  email: string;
+  emailVerified: boolean;
+  username?: string;
+  role?: "user" | "moderator" | "admin" | "superadmin";
+  banned: boolean;
+  banReason?: string;
+  banExpires?: string;
+  createdAt: string;
+  updatedAt: string;
+  image?: string;
 }
 
-type UserRole = "user" | "moderator" | "admin" | "superadmin"
-type UserStatus = "all" | "active" | "banned"
-type FilterState = "all" | UserRole
+type UserRole = "user" | "moderator" | "admin" | "superadmin";
+type UserStatus = "all" | "active" | "banned";
+type FilterState = "all" | UserRole;
 
 interface UserStats {
-  totalUsers: number
-  activeUsers: number
-  bannedUsers: number
-  recentUsers: number
+  totalUsers: number;
+  activeUsers: number;
+  bannedUsers: number;
+  recentUsers: number;
 }
 
 interface UsersResponse {
-  data: User[]
+  data: User[];
   meta: {
-    total: number
-    page: number
-    totalPages: number
-    limit: number
-    offset: number
-  }
+    total: number;
+    page: number;
+    totalPages: number;
+    limit: number;
+    offset: number;
+  };
 }
 
 // API functions
 const fetchUsers = async (params: {
-  limit?: number
-  offset?: number
-  search?: string
-  sortBy?: string
-  sortOrder?: string
-  role?: string
-  status?: string
+  limit?: number;
+  offset?: number;
+  search?: string;
+  sortBy?: string;
+  sortOrder?: string;
+  role?: string;
+  status?: string;
 }): Promise<UsersResponse> => {
-  const query = new URLSearchParams()
+  const query = new URLSearchParams();
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined) {
-      query.set(key, value.toString())
+      query.set(key, value.toString());
     }
-  })
+  });
 
-  const response = await fetch(`/api/v1/users?${query}`)
+  const response = await fetch(`/api/v1/users?${query}`);
   if (!response.ok) {
-    throw new Error("Failed to fetch users")
+    throw new Error("Failed to fetch users");
   }
-  return response.json()
-}
+  return response.json();
+};
 
 const fetchUserStats = async (): Promise<{ data: UserStats }> => {
-  const response = await fetch("/api/v1/users/stats")
+  const response = await fetch("/api/v1/users/stats");
   if (!response.ok) {
-    throw new Error("Failed to fetch user stats")
+    throw new Error("Failed to fetch user stats");
   }
-  return response.json()
-}
+  return response.json();
+};
 
 const banUser = async (
   id: string,
   data: {
-    banReason: string
-    banExpires?: string
+    banReason: string;
+    banExpires?: string;
   },
 ) => {
   const response = await fetch(`/api/v1/users/${id}/ban`, {
@@ -160,22 +155,22 @@ const banUser = async (
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
-  })
+  });
   if (!response.ok) {
-    throw new Error("Failed to ban user")
+    throw new Error("Failed to ban user");
   }
-  return response.json()
-}
+  return response.json();
+};
 
 const unbanUser = async (id: string) => {
   const response = await fetch(`/api/v1/users/${id}/unban`, {
     method: "POST",
-  })
+  });
   if (!response.ok) {
-    throw new Error("Failed to unban user")
+    throw new Error("Failed to unban user");
   }
-  return response.json()
-}
+  return response.json();
+};
 
 const changeUserRole = async (id: string, role: string) => {
   const response = await fetch(`/api/v1/users/${id}/role`, {
@@ -184,72 +179,72 @@ const changeUserRole = async (id: string, role: string) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ role }),
-  })
+  });
   if (!response.ok) {
-    throw new Error("Failed to change user role")
+    throw new Error("Failed to change user role");
   }
-  return response.json()
-}
+  return response.json();
+};
 
 const startImpersonation = async (targetUserId: string) => {
   const response = await admin.impersonateUser({
     userId: targetUserId,
-  })
+  });
   if (!response.data) {
-    throw new Error("Failed to start impersonation")
+    throw new Error("Failed to start impersonation");
   }
-  return response
-}
+  return response;
+};
 
 const endImpersonation = async () => {
-  const response = await admin.stopImpersonating()
+  const response = await admin.stopImpersonating();
   if (!response.data) {
-    throw new Error("Failed to end impersonation")
+    throw new Error("Failed to end impersonation");
   }
-  return response
-}
+  return response;
+};
 
 export default function UsersPage() {
-  const [search, setSearch] = useState("")
-  const [debouncedSearch, setDebouncedSearch] = useState("")
-  const [currentPage, setCurrentPage] = useState(1)
-  const [statusFilter, setStatusFilter] = useState<UserStatus>("all")
-  const [roleFilter, setRoleFilter] = useState<FilterState>("all")
-  const router = useRouter()
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [statusFilter, setStatusFilter] = useState<UserStatus>("all");
+  const [roleFilter, setRoleFilter] = useState<FilterState>("all");
+  const router = useRouter();
 
   // Debounce search input
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedSearch(search)
-    }, 300)
+      setDebouncedSearch(search);
+    }, 300);
 
-    return () => clearTimeout(timer)
-  }, [search])
+    return () => clearTimeout(timer);
+  }, [search]);
 
   // Reset page when search changes
   useEffect(() => {
-    setCurrentPage(1)
-  }, [debouncedSearch, statusFilter, roleFilter])
+    setCurrentPage(1);
+  }, [debouncedSearch, statusFilter, roleFilter]);
 
   const {
     hooks: { useSession },
-  } = useAuth()
+  } = useAuth();
 
-  const { data: session, refetch } = useSession()
+  const { data: session, refetch } = useSession();
 
   // Dialog states
-  const [isBanDialogOpen, setIsBanDialogOpen] = useState(false)
-  const [isUnbanDialogOpen, setIsUnbanDialogOpen] = useState(false)
-  const [isRoleDialogOpen, setIsRoleDialogOpen] = useState(false)
-  const [isImpersonateDialogOpen, setIsImpersonateDialogOpen] = useState(false)
-  const [selectedUser, setSelectedUser] = useState<User | null>(null)
+  const [isBanDialogOpen, setIsBanDialogOpen] = useState(false);
+  const [isUnbanDialogOpen, setIsUnbanDialogOpen] = useState(false);
+  const [isRoleDialogOpen, setIsRoleDialogOpen] = useState(false);
+  const [isImpersonateDialogOpen, setIsImpersonateDialogOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   // Form states
-  const [banForm, setBanForm] = useState({ reason: "", expires: "" })
-  const [newRole, setNewRole] = useState("")
+  const [banForm, setBanForm] = useState({ reason: "", expires: "" });
+  const [newRole, setNewRole] = useState("");
 
-  const queryClient = useQueryClient()
-  const limit = 15
+  const queryClient = useQueryClient();
+  const limit = 15;
 
   // Queries with proper typing
   const { data: statsData, isLoading: isStatsLoading } = useQuery({
@@ -257,7 +252,7 @@ export default function UsersPage() {
     queryFn: fetchUserStats,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
-  })
+  });
 
   // Remove active impersonations query since better-auth handles this internally
 
@@ -272,116 +267,110 @@ export default function UsersPage() {
       sortOrder: "desc" as const,
     }),
     [currentPage, limit, debouncedSearch, statusFilter, roleFilter],
-  )
+  );
 
   const { data, isLoading, error, isFetching } = useQuery({
     queryKey: ["users", queryParams],
     queryFn: () => fetchUsers(queryParams),
     placeholderData: keepPreviousData,
     staleTime: 2 * 60 * 1000, // 2 minutes
-  })
+  });
 
   // Mutations
   const banMutation = useMutation({
-    mutationFn: ({
-      id,
-      data,
-    }: {
-      id: string
-      data: { banReason: string; banExpires?: string }
-    }) => banUser(id, data),
+    mutationFn: ({ id, data }: { id: string; data: { banReason: string; banExpires?: string } }) =>
+      banUser(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] })
-      queryClient.invalidateQueries({ queryKey: ["user-stats"] })
-      setIsBanDialogOpen(false)
-      setBanForm({ reason: "", expires: "" })
-      setSelectedUser(null)
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["user-stats"] });
+      setIsBanDialogOpen(false);
+      setBanForm({ reason: "", expires: "" });
+      setSelectedUser(null);
     },
     onError: (error) => {
-      console.error("Failed to ban user:", error)
+      console.error("Failed to ban user:", error);
     },
-  })
+  });
 
   const unbanMutation = useMutation({
     mutationFn: unbanUser,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] })
-      queryClient.invalidateQueries({ queryKey: ["user-stats"] })
-      setIsUnbanDialogOpen(false)
-      setSelectedUser(null)
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["user-stats"] });
+      setIsUnbanDialogOpen(false);
+      setSelectedUser(null);
     },
     onError: (error) => {
-      console.error("Failed to unban user:", error)
+      console.error("Failed to unban user:", error);
     },
-  })
+  });
 
   const roleChangeMutation = useMutation({
-    mutationFn: ({ id, role }: { id: string; role: string }) =>
-      changeUserRole(id, role),
+    mutationFn: ({ id, role }: { id: string; role: string }) => changeUserRole(id, role),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] })
-      setIsRoleDialogOpen(false)
-      setNewRole("")
-      setSelectedUser(null)
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      setIsRoleDialogOpen(false);
+      setNewRole("");
+      setSelectedUser(null);
     },
     onError: (error) => {
-      console.error("Failed to change user role:", error)
+      console.error("Failed to change user role:", error);
     },
-  })
+  });
 
   const impersonateMutation = useMutation({
     mutationFn: ({ userId }: { userId: string }) => startImpersonation(userId),
     onSuccess: () => {
-      setIsImpersonateDialogOpen(false)
-      setSelectedUser(null)
+      setIsImpersonateDialogOpen(false);
+      setSelectedUser(null);
       // Refresh the page to switch to impersonated user
-      router.replace("/")
-      refetch()
+      router.replace("/");
+      refetch();
     },
     onError: (error) => {
-      console.error("Failed to start impersonation:", error)
+      console.error("Failed to start impersonation:", error);
     },
-  })
+  });
 
   const endImpersonationMutation = useMutation({
     mutationFn: endImpersonation,
     onSuccess: () => {
       // Refresh the page to return to admin user
-      router.replace("/")
-      refetch()
+      router.replace("/");
+      refetch();
     },
     onError: (error) => {
-      console.error("Failed to end impersonation:", error)
+      console.error("Failed to end impersonation:", error);
     },
-  })
+  });
 
   const handleBan = useCallback((user: User) => {
-    setSelectedUser(user)
-    setBanForm({ reason: "", expires: "" }) // Reset form
-    setIsBanDialogOpen(true)
-  }, [])
+    setSelectedUser(user);
+    setBanForm({ reason: "", expires: "" }); // Reset form
+    setIsBanDialogOpen(true);
+  }, []);
 
   const handleUnban = useCallback((user: User) => {
-    setSelectedUser(user)
-    setIsUnbanDialogOpen(true)
-  }, [])
+    setSelectedUser(user);
+    setIsUnbanDialogOpen(true);
+  }, []);
 
   const handleRoleChange = useCallback((user: User) => {
-    setSelectedUser(user)
-    setNewRole(user.role || "")
-    setIsRoleDialogOpen(true)
-  }, [])
+    setSelectedUser(user);
+    setNewRole(user.role || "");
+    setIsRoleDialogOpen(true);
+  }, []);
 
   const handleImpersonate = useCallback((user: User) => {
-    setSelectedUser(user)
-    setIsImpersonateDialogOpen(true)
-  }, [])
+    setSelectedUser(user);
+    setIsImpersonateDialogOpen(true);
+  }, []);
 
   const handleEndImpersonation = () => {
-    endImpersonationMutation.mutate()
-    router.replace("/")
-    refetch()
-  }
+    endImpersonationMutation.mutate();
+    router.replace("/");
+    refetch();
+  };
 
   const confirmBan = useCallback(() => {
     if (selectedUser && banForm.reason.trim()) {
@@ -391,58 +380,55 @@ export default function UsersPage() {
           banReason: banForm.reason.trim(),
           banExpires: banForm.expires || undefined,
         },
-      })
+      });
     }
-  }, [selectedUser, banForm, banMutation])
+  }, [selectedUser, banForm, banMutation]);
 
   const confirmUnban = useCallback(() => {
     if (selectedUser) {
-      unbanMutation.mutate(selectedUser.id)
+      unbanMutation.mutate(selectedUser.id);
     }
-  }, [selectedUser, unbanMutation])
+  }, [selectedUser, unbanMutation]);
 
   const confirmRoleChange = useCallback(() => {
     if (selectedUser && newRole && newRole !== selectedUser.role) {
       roleChangeMutation.mutate({
         id: selectedUser.id,
         role: newRole as UserRole,
-      })
+      });
     }
-  }, [selectedUser, newRole, roleChangeMutation])
+  }, [selectedUser, newRole, roleChangeMutation]);
 
   const confirmImpersonate = useCallback(() => {
     if (selectedUser) {
       impersonateMutation.mutate({
         userId: selectedUser.id,
-      })
+      });
     }
-  }, [selectedUser, impersonateMutation])
+  }, [selectedUser, impersonateMutation]);
 
   const getRoleBadgeColor = useCallback((role?: UserRole) => {
     switch (role) {
       case "admin":
       case "superadmin":
-        return "bg-red-100 text-red-800"
+        return "bg-red-100 text-red-800";
       case "moderator":
-        return "bg-blue-100 text-blue-800"
+        return "bg-blue-100 text-blue-800";
       case "user":
-        return "bg-gray-100 text-gray-800"
+        return "bg-gray-100 text-gray-800";
       default:
-        return "bg-gray-100 text-gray-800"
+        return "bg-gray-100 text-gray-800";
     }
-  }, [])
+  }, []);
 
   // Enhanced error handling
   if (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "An unknown error occurred"
+    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
     return (
       <div className="p-6 space-y-6">
         <div>
           <h1 className="text-2xl font-semibold">User Management</h1>
-          <p className="text-muted-foreground">
-            Manage users, roles, and access permissions
-          </p>
+          <p className="text-muted-foreground">Manage users, roles, and access permissions</p>
         </div>
         <Card className="border-red-200">
           <CardContent className="pt-6">
@@ -452,26 +438,19 @@ export default function UsersPage() {
                   <AlertTriangle className="w-8 h-8 text-red-600" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-medium text-red-900 mb-2">
-                    Failed to Load Users
-                  </h3>
-                  <p className="text-red-700 text-sm max-w-md mx-auto mb-4">
-                    {errorMessage}
-                  </p>
+                  <h3 className="text-lg font-medium text-red-900 mb-2">Failed to Load Users</h3>
+                  <p className="text-red-700 text-sm max-w-md mx-auto mb-4">{errorMessage}</p>
                 </div>
                 <div className="flex gap-3 justify-center">
-                  <Button
-                    variant="outline"
-                    onClick={() => window.location.reload()}
-                  >
+                  <Button variant="outline" onClick={() => window.location.reload()}>
                     Reload Page
                   </Button>
                   <Button
                     onClick={() => {
-                      queryClient.invalidateQueries({ queryKey: ["users"] })
+                      queryClient.invalidateQueries({ queryKey: ["users"] });
                       queryClient.invalidateQueries({
                         queryKey: ["user-stats"],
-                      })
+                      });
                     }}
                   >
                     Retry
@@ -482,7 +461,7 @@ export default function UsersPage() {
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   // Stats component with loading state
@@ -502,10 +481,10 @@ export default function UsersPage() {
             </Card>
           ))}
         </div>
-      )
+      );
     }
 
-    if (!statsData?.data) return null
+    if (!statsData?.data) return null;
 
     const stats = [
       {
@@ -536,18 +515,16 @@ export default function UsersPage() {
         color: "text-blue-600",
         valueColor: "text-blue-600",
       },
-    ]
+    ];
 
     return (
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {stats.map((stat, index) => {
-          const Icon = stat.icon
+          const Icon = stat.icon;
           return (
             <Card key={index}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  {stat.title}
-                </CardTitle>
+                <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
                 <Icon className={`h-4 w-4 ${stat.color}`} />
               </CardHeader>
               <CardContent>
@@ -556,20 +533,18 @@ export default function UsersPage() {
                 </div>
               </CardContent>
             </Card>
-          )
+          );
         })}
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-semibold">User Management</h1>
-        <p className="text-muted-foreground">
-          Manage users, roles, and access permissions
-        </p>
+        <p className="text-muted-foreground">Manage users, roles, and access permissions</p>
       </div>
 
       {renderStatsSection()}
@@ -583,8 +558,7 @@ export default function UsersPage() {
               <span>Currently Impersonating</span>
             </CardTitle>
             <CardDescription>
-              You are viewing the system as {session.user.name} (
-              {session.user.email})
+              You are viewing the system as {session.user.name} ({session.user.email})
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -592,14 +566,9 @@ export default function UsersPage() {
               <div className="flex items-center space-x-3">
                 <div>
                   <div className="font-medium">{session.user.name}</div>
-                  <div className="text-sm text-gray-500">
-                    {session.user.email}
-                  </div>
+                  <div className="text-sm text-gray-500">{session.user.email}</div>
                 </div>
-                <Badge
-                  variant="outline"
-                  className="bg-orange-100 text-orange-800"
-                >
+                <Badge variant="outline" className="bg-orange-100 text-orange-800">
                   Impersonating
                 </Badge>
               </div>
@@ -647,10 +616,7 @@ export default function UsersPage() {
             <SelectItem value="banned">Banned</SelectItem>
           </SelectContent>
         </Select>
-        <Select
-          value={roleFilter}
-          onValueChange={(value) => setRoleFilter(value as FilterState)}
-        >
+        <Select value={roleFilter} onValueChange={(value) => setRoleFilter(value as FilterState)}>
           <SelectTrigger className="w-full sm:w-32">
             <SelectValue placeholder="Role" />
           </SelectTrigger>
@@ -670,9 +636,7 @@ export default function UsersPage() {
           <CardTitle>Users</CardTitle>
           <CardDescription>
             {data?.meta.total || 0} users total
-            {isFetching && !isLoading && (
-              <span className="ml-2 text-blue-600">• Updating...</span>
-            )}
+            {isFetching && !isLoading && <span className="ml-2 text-blue-600">• Updating...</span>}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -697,9 +661,7 @@ export default function UsersPage() {
               <UserIcon className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-50" />
               <h3 className="text-lg font-medium mb-2">No users found</h3>
               <p className="text-muted-foreground max-w-sm mx-auto">
-                {debouncedSearch ||
-                statusFilter !== "all" ||
-                roleFilter !== "all"
+                {debouncedSearch || statusFilter !== "all" || roleFilter !== "all"
                   ? "No users match your current filters. Try adjusting your search criteria."
                   : "No users have been created yet."}
               </p>
@@ -738,9 +700,7 @@ export default function UsersPage() {
                           <div>
                             <div className="font-medium">{user.name}</div>
                             {user.username && (
-                              <div className="text-sm text-muted-foreground">
-                                @{user.username}
-                              </div>
+                              <div className="text-sm text-muted-foreground">@{user.username}</div>
                             )}
                           </div>
                         </div>
@@ -766,11 +726,7 @@ export default function UsersPage() {
                             <Badge variant="destructive">Banned</Badge>
                             {user.banExpires && (
                               <div className="text-xs text-muted-foreground mt-1">
-                                Until{" "}
-                                {format(
-                                  new Date(user.banExpires),
-                                  "MMM d, yyyy",
-                                )}
+                                Until {format(new Date(user.banExpires), "MMM d, yyyy")}
                               </div>
                             )}
                           </div>
@@ -783,9 +739,7 @@ export default function UsersPage() {
                           </Badge>
                         )}
                       </TableCell>
-                      <TableCell>
-                        {format(new Date(user.createdAt), "MMM d, yyyy")}
-                      </TableCell>
+                      <TableCell>{format(new Date(user.createdAt), "MMM d, yyyy")}</TableCell>
                       <TableCell>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
@@ -796,18 +750,14 @@ export default function UsersPage() {
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              onClick={() => handleRoleChange(user)}
-                            >
+                            <DropdownMenuItem onClick={() => handleRoleChange(user)}>
                               <Shield className="w-4 h-4 mr-2" />
                               Change Role
                             </DropdownMenuItem>
                             {!user.banned &&
                               user.role !== "admin" &&
                               user.role !== "superadmin" && (
-                                <DropdownMenuItem
-                                  onClick={() => handleImpersonate(user)}
-                                >
+                                <DropdownMenuItem onClick={() => handleImpersonate(user)}>
                                   <Users className="w-4 h-4 mr-2" />
                                   Impersonate
                                 </DropdownMenuItem>
@@ -854,11 +804,7 @@ export default function UsersPage() {
               </span>
               <Button
                 variant="outline"
-                onClick={() =>
-                  setCurrentPage(
-                    Math.min(data.meta.totalPages, currentPage + 1),
-                  )
-                }
+                onClick={() => setCurrentPage(Math.min(data.meta.totalPages, currentPage + 1))}
                 disabled={currentPage === data.meta.totalPages}
               >
                 Next
@@ -874,8 +820,8 @@ export default function UsersPage() {
           <DialogHeader>
             <DialogTitle>Ban User</DialogTitle>
             <DialogDescription>
-              Ban "{selectedUser?.name}" from the platform. This will prevent
-              them from accessing their account.
+              Ban "{selectedUser?.name}" from the platform. This will prevent them from accessing
+              their account.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -884,9 +830,7 @@ export default function UsersPage() {
               <Textarea
                 id="ban-reason"
                 value={banForm.reason}
-                onChange={(e) =>
-                  setBanForm({ ...banForm, reason: e.target.value })
-                }
+                onChange={(e) => setBanForm({ ...banForm, reason: e.target.value })}
                 placeholder="Enter reason for ban..."
                 required
               />
@@ -897,9 +841,7 @@ export default function UsersPage() {
                 id="ban-expires"
                 type="datetime-local"
                 value={banForm.expires}
-                onChange={(e) =>
-                  setBanForm({ ...banForm, expires: e.target.value })
-                }
+                onChange={(e) => setBanForm({ ...banForm, expires: e.target.value })}
               />
             </div>
           </div>
@@ -924,16 +866,13 @@ export default function UsersPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Unban User</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to unban "{selectedUser?.name}"? They will
-              regain access to their account.
+              Are you sure you want to unban "{selectedUser?.name}"? They will regain access to
+              their account.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={confirmUnban}
-              disabled={unbanMutation.isPending}
-            >
+            <AlertDialogAction onClick={confirmUnban} disabled={unbanMutation.isPending}>
               {unbanMutation.isPending ? "Unbanning..." : "Unban User"}
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -946,8 +885,8 @@ export default function UsersPage() {
           <DialogHeader>
             <DialogTitle>Change User Role</DialogTitle>
             <DialogDescription>
-              Change the role for "{selectedUser?.name}". This will affect their
-              permissions on the platform.
+              Change the role for "{selectedUser?.name}". This will affect their permissions on the
+              platform.
             </DialogDescription>
           </DialogHeader>
           <div>
@@ -965,16 +904,10 @@ export default function UsersPage() {
             </Select>
           </div>
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setIsRoleDialogOpen(false)}
-            >
+            <Button variant="outline" onClick={() => setIsRoleDialogOpen(false)}>
               Cancel
             </Button>
-            <Button
-              onClick={confirmRoleChange}
-              disabled={roleChangeMutation.isPending || !newRole}
-            >
+            <Button onClick={confirmRoleChange} disabled={roleChangeMutation.isPending || !newRole}>
               {roleChangeMutation.isPending ? "Updating..." : "Update Role"}
             </Button>
           </DialogFooter>
@@ -982,16 +915,13 @@ export default function UsersPage() {
       </Dialog>
 
       {/* Impersonate User Dialog */}
-      <Dialog
-        open={isImpersonateDialogOpen}
-        onOpenChange={setIsImpersonateDialogOpen}
-      >
+      <Dialog open={isImpersonateDialogOpen} onOpenChange={setIsImpersonateDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Impersonate User</DialogTitle>
             <DialogDescription>
-              Temporarily sign in as "{selectedUser?.name}" for support
-              purposes. You will be switched to their account in this session.
+              Temporarily sign in as "{selectedUser?.name}" for support purposes. You will be
+              switched to their account in this session.
             </DialogDescription>
           </DialogHeader>
           <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
@@ -1000,23 +930,16 @@ export default function UsersPage() {
               <div className="text-sm text-yellow-800">
                 <div className="font-medium">Important Security Notice</div>
                 <ul className="mt-2 space-y-1 text-sm">
-                  <li>
-                    • Use impersonation only for legitimate support purposes
-                  </li>
+                  <li>• Use impersonation only for legitimate support purposes</li>
                   <li>• All actions will be logged and audited</li>
                   <li>• End the session as soon as possible</li>
-                  <li>
-                    • Never access sensitive personal information unnecessarily
-                  </li>
+                  <li>• Never access sensitive personal information unnecessarily</li>
                 </ul>
               </div>
             </div>
           </div>
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setIsImpersonateDialogOpen(false)}
-            >
+            <Button variant="outline" onClick={() => setIsImpersonateDialogOpen(false)}>
               Cancel
             </Button>
             <Button
@@ -1024,13 +947,11 @@ export default function UsersPage() {
               disabled={impersonateMutation.isPending}
               className="bg-orange-600 hover:bg-orange-700"
             >
-              {impersonateMutation.isPending
-                ? "Starting..."
-                : "Start Impersonation"}
+              {impersonateMutation.isPending ? "Starting..." : "Start Impersonation"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

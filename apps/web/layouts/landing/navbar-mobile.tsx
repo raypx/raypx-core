@@ -1,91 +1,79 @@
-"use client"
+"use client";
 
-import { useAuth } from "@raypx/auth/core"
-import { Button, buttonVariants } from "@raypx/ui/components/button"
+import { useAuth } from "@raypx/auth/core";
+import { Button, buttonVariants } from "@raypx/ui/components/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@raypx/ui/components/collapsible"
-import { Portal } from "@raypx/ui/components/portal"
-import { Skeleton } from "@raypx/ui/components/skeleton"
-import { cn } from "@raypx/ui/lib/utils"
-import {
-  ArrowUpRightIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
-  MenuIcon,
-  XIcon,
-} from "lucide-react"
-import { useTranslations } from "next-intl"
-import * as React from "react"
-import { useEffect, useState } from "react"
-import { RemoveScroll } from "react-remove-scroll"
-import { Logo } from "@/components/layout/logo"
-import { ModeSwitcherHorizontal } from "@/components/layout/mode-switcher-horizontal"
-import { UserButtonMobile } from "@/components/layout/user-button-mobile"
-import { LocaleLink, useLocalePathname } from "@/components/link"
-import { getNavbarLinks } from "@/config/navbar.config"
-import { Routes } from "@/config/routes.config"
-import { LangSwitcher } from "../../components/lang-switcher"
-import appConfig from "../../config/app.config"
+} from "@raypx/ui/components/collapsible";
+import { Portal } from "@raypx/ui/components/portal";
+import { Skeleton } from "@raypx/ui/components/skeleton";
+import { cn } from "@raypx/ui/lib/utils";
+import { ArrowUpRightIcon, ChevronDownIcon, ChevronRightIcon, MenuIcon, XIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
+import * as React from "react";
+import { useEffect, useState } from "react";
+import { RemoveScroll } from "react-remove-scroll";
+import { Logo } from "@/components/layout/logo";
+import { ModeSwitcherHorizontal } from "@/components/layout/mode-switcher-horizontal";
+import { UserButtonMobile } from "@/components/layout/user-button-mobile";
+import { LocaleLink, useLocalePathname } from "@/components/link";
+import { getNavbarLinks } from "@/config/navbar.config";
+import { Routes } from "@/config/routes.config";
+import { LangSwitcher } from "../../components/lang-switcher";
+import appConfig from "../../config/app.config";
 
-export function NavbarMobile({
-  className,
-  ...other
-}: React.HTMLAttributes<HTMLDivElement>) {
-  const [open, setOpen] = React.useState<boolean>(false)
-  const localePathname = useLocalePathname()
-  const [mounted, setMounted] = useState(false)
+export function NavbarMobile({ className, ...other }: React.HTMLAttributes<HTMLDivElement>) {
+  const [open, setOpen] = React.useState<boolean>(false);
+  const localePathname = useLocalePathname();
+  const [mounted, setMounted] = useState(false);
   const {
     hooks: { useSession },
-  } = useAuth()
-  const { data: session, isPending } = useSession()
+  } = useAuth();
+  const { data: session, isPending } = useSession();
 
-  const currentUser = session?.user
+  const currentUser = session?.user;
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleRouteChangeStart = () => {
       if (document.activeElement instanceof HTMLInputElement) {
-        document.activeElement.blur()
+        document.activeElement.blur();
       }
 
-      setOpen(false)
-    }
+      setOpen(false);
+    };
 
-    handleRouteChangeStart()
-  }, [localePathname])
+    handleRouteChangeStart();
+  }, [localePathname]);
 
   const handleChange = () => {
-    const mediaQueryList = window.matchMedia("(min-width: 1024px)")
-    setOpen((open) => (open ? !mediaQueryList.matches : false))
-  }
+    const mediaQueryList = window.matchMedia("(min-width: 1024px)");
+    setOpen((open) => (open ? !mediaQueryList.matches : false));
+  };
 
   useEffect(() => {
-    handleChange()
-    const mediaQueryList = window.matchMedia("(min-width: 1024px)")
-    mediaQueryList.addEventListener("change", handleChange)
-    return () => mediaQueryList.removeEventListener("change", handleChange)
-  }, [])
+    handleChange();
+    const mediaQueryList = window.matchMedia("(min-width: 1024px)");
+    mediaQueryList.addEventListener("change", handleChange);
+    return () => mediaQueryList.removeEventListener("change", handleChange);
+  }, []);
 
   const handleToggleMobileMenu = (): void => {
-    setOpen((open) => !open)
-  }
+    setOpen((open) => !open);
+  };
 
   if (!mounted) {
-    return null
+    return null;
   }
 
   return (
     <>
-      <div
-        className={cn("flex items-center justify-between", className)}
-        {...other}
-      >
+      <div className={cn("flex items-center justify-between", className)} {...other}>
         {/* navbar left shows logo */}
         <LocaleLink href={Routes.Root} className="flex items-center gap-2">
           <Logo />
@@ -113,11 +101,7 @@ export function NavbarMobile({
             className="size-8 flex aspect-square h-fit select-none items-center
               justify-center rounded-md border cursor-pointer"
           >
-            {open ? (
-              <XIcon className="size-4" />
-            ) : (
-              <MenuIcon className="size-4" />
-            )}
+            {open ? <XIcon className="size-4" /> : <MenuIcon className="size-4" />}
           </Button>
         </div>
       </div>
@@ -130,28 +114,25 @@ export function NavbarMobile({
           <RemoveScroll allowPinchZoom enabled>
             {/* Only render MainMobileMenu when not in loading state */}
             {!isPending && (
-              <MainMobileMenu
-                userLoggedIn={!!currentUser}
-                onLinkClicked={handleToggleMobileMenu}
-              />
+              <MainMobileMenu userLoggedIn={!!currentUser} onLinkClicked={handleToggleMobileMenu} />
             )}
           </RemoveScroll>
         </Portal>
       )}
     </>
-  )
+  );
 }
 
 interface MainMobileMenuProps {
-  userLoggedIn: boolean
-  onLinkClicked: () => void
+  userLoggedIn: boolean;
+  onLinkClicked: () => void;
 }
 
 function MainMobileMenu({ userLoggedIn, onLinkClicked }: MainMobileMenuProps) {
-  const [expanded, setExpanded] = React.useState<Record<string, boolean>>({})
-  const t = useTranslations()
-  const menuLinks = getNavbarLinks()
-  const localePathname = useLocalePathname()
+  const [expanded, setExpanded] = React.useState<Record<string, boolean>>({});
+  const t = useTranslations();
+  const menuLinks = getNavbarLinks();
+  const localePathname = useLocalePathname();
 
   return (
     <div
@@ -204,7 +185,7 @@ function MainMobileMenu({ userLoggedIn, onLinkClicked }: MainMobileMenuProps) {
                     (subItem.href === "/"
                       ? localePathname === "/"
                       : localePathname.startsWith(subItem.href)),
-                )
+                );
 
             return (
               <li key={item.title} className="py-1">
@@ -227,8 +208,7 @@ function MainMobileMenu({ userLoggedIn, onLinkClicked }: MainMobileMenuProps) {
                           "bg-transparent text-muted-foreground cursor-pointer",
                           "hover:bg-transparent hover:text-foreground",
                           "focus:bg-transparent focus:text-foreground",
-                          isActive &&
-                            "font-semibold bg-transparent text-foreground",
+                          isActive && "font-semibold bg-transparent text-foreground",
                         )}
                       >
                         <span className="text-base">{item.title}</span>
@@ -243,27 +223,21 @@ function MainMobileMenu({ userLoggedIn, onLinkClicked }: MainMobileMenuProps) {
                       <ul className="mt-2 space-y-2 pl-0">
                         {item.items.map((subItem) => {
                           const isSubItemActive =
-                            subItem.href &&
-                            localePathname.startsWith(subItem.href)
+                            subItem.href && localePathname.startsWith(subItem.href);
 
                           return (
                             <li key={subItem.title}>
                               <LocaleLink
                                 href={subItem.href || "#"}
                                 target={subItem.external ? "_blank" : undefined}
-                                rel={
-                                  subItem.external
-                                    ? "noopener noreferrer"
-                                    : undefined
-                                }
+                                rel={subItem.external ? "noopener noreferrer" : undefined}
                                 className={cn(
                                   buttonVariants({ variant: "ghost" }),
                                   "group h-auto w-full justify-start gap-4 p-1 !pl-0 !pr-3",
                                   "bg-transparent text-muted-foreground cursor-pointer",
                                   "hover:bg-transparent hover:text-foreground",
                                   "focus:bg-transparent focus:text-foreground",
-                                  isSubItemActive &&
-                                    "font-semibold bg-transparent text-foreground",
+                                  isSubItemActive && "font-semibold bg-transparent text-foreground",
                                 )}
                                 onClick={onLinkClicked}
                               >
@@ -273,8 +247,7 @@ function MainMobileMenu({ userLoggedIn, onLinkClicked }: MainMobileMenuProps) {
                                     "bg-transparent text-muted-foreground",
                                     "group-hover:bg-transparent group-hover:text-foreground",
                                     "group-focus:bg-transparent group-focus:text-foreground",
-                                    isSubItemActive &&
-                                      "bg-transparent text-foreground",
+                                    isSubItemActive && "bg-transparent text-foreground",
                                   )}
                                 >
                                   {subItem.icon ? subItem.icon : null}
@@ -312,14 +285,13 @@ function MainMobileMenu({ userLoggedIn, onLinkClicked }: MainMobileMenuProps) {
                                       "size-4 shrink-0 text-muted-foreground items-center",
                                       "group-hover:bg-transparent group-hover:text-foreground",
                                       "group-focus:bg-transparent group-focus:text-foreground",
-                                      isSubItemActive &&
-                                        "bg-transparent text-foreground",
+                                      isSubItemActive && "bg-transparent text-foreground",
                                     )}
                                   />
                                 )}
                               </LocaleLink>
                             </li>
-                          )
+                          );
                         })}
                       </ul>
                     </CollapsibleContent>
@@ -335,8 +307,7 @@ function MainMobileMenu({ userLoggedIn, onLinkClicked }: MainMobileMenuProps) {
                       "bg-transparent text-muted-foreground",
                       "hover:bg-transparent hover:text-foreground",
                       "focus:bg-transparent focus:text-foreground",
-                      isActive &&
-                        "font-semibold bg-transparent text-foreground",
+                      isActive && "font-semibold bg-transparent text-foreground",
                     )}
                     onClick={onLinkClicked}
                   >
@@ -346,7 +317,7 @@ function MainMobileMenu({ userLoggedIn, onLinkClicked }: MainMobileMenuProps) {
                   </LocaleLink>
                 )}
               </li>
-            )
+            );
           })}
         </ul>
 
@@ -357,5 +328,5 @@ function MainMobileMenu({ userLoggedIn, onLinkClicked }: MainMobileMenuProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

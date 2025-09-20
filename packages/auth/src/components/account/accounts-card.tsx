@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import { CardContent } from "@raypx/ui/components/card"
-import type { SettingsCardClassNames } from "@raypx/ui/components/settings"
-import { SettingsCard } from "@raypx/ui/components/settings"
-import { cn } from "@raypx/ui/lib/utils"
-import { useAuth } from "../../core/hooks/use-auth"
-import { AccountCell } from "./account-cell"
+import { CardContent } from "@raypx/ui/components/card";
+import type { SettingsCardClassNames } from "@raypx/ui/components/settings";
+import { SettingsCard } from "@raypx/ui/components/settings";
+import { cn } from "@raypx/ui/lib/utils";
+import { useAuth } from "../../core/hooks/use-auth";
+import { AccountCell } from "./account-cell";
 
 export interface AccountsCardProps {
-  className?: string
-  classNames?: SettingsCardClassNames
+  className?: string;
+  classNames?: SettingsCardClassNames;
 }
 
 export function AccountsCard({ className, classNames }: AccountsCardProps) {
@@ -19,14 +19,14 @@ export function AccountsCard({ className, classNames }: AccountsCardProps) {
     t,
     viewPaths,
     navigate,
-  } = useAuth()
+  } = useAuth();
 
-  const { data: deviceSessions, isPending, refetch } = useListDeviceSessions()
-  const { data: sessionData } = useSession()
+  const { data: deviceSessions, isPending, refetch } = useListDeviceSessions();
+  const { data: sessionData } = useSession();
 
   const otherDeviceSessions = (deviceSessions || []).filter(
     (ds) => ds.session.id !== sessionData?.session.id,
-  )
+  );
 
   return (
     <SettingsCard
@@ -42,11 +42,7 @@ export function AccountsCard({ className, classNames }: AccountsCardProps) {
       {deviceSessions?.length && (
         <CardContent className={cn("grid gap-4", classNames?.content)}>
           {sessionData && (
-            <AccountCell
-              classNames={classNames}
-              deviceSession={sessionData}
-              refetch={refetch}
-            />
+            <AccountCell classNames={classNames} deviceSession={sessionData} refetch={refetch} />
           )}
 
           {otherDeviceSessions.map((deviceSession) => (
@@ -60,5 +56,5 @@ export function AccountsCard({ className, classNames }: AccountsCardProps) {
         </CardContent>
       )}
     </SettingsCard>
-  )
+  );
 }

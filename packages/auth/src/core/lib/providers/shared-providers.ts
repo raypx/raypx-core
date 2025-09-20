@@ -1,10 +1,10 @@
-import type { BetterAuthOptions } from "better-auth"
-import type { Get } from "type-fest"
-import { envs } from "../../../envs"
+import type { BetterAuthOptions } from "better-auth";
+import type { Get } from "type-fest";
+import { envs } from "../../../envs";
 
-const env = envs()
+const env = envs();
 
-type SocialProviders = NonNullable<Get<BetterAuthOptions, "socialProviders">>
+type SocialProviders = NonNullable<Get<BetterAuthOptions, "socialProviders">>;
 
 export const socialProviders: SocialProviders = {
   github: {
@@ -25,8 +25,8 @@ export const socialProviders: SocialProviders = {
     clientId: env.AUTH_GOOGLE_ID ?? "",
     clientSecret: env.AUTH_GOOGLE_SECRET ?? "",
   },
-}
+};
 
 export const supportedSocials = Object.entries(socialProviders)
   .filter(([_, provider]) => provider.enabled)
-  .map(([key]) => key)
+  .map(([key]) => key);

@@ -10,31 +10,31 @@ import {
   organizationClient,
   twoFactorClient,
   usernameClient,
-} from "better-auth/client/plugins"
-import { createAuthClient } from "better-auth/react"
-import type { Get } from "type-fest"
-import { envs } from "./envs"
-import { authFeatures } from "./features"
+} from "better-auth/client/plugins";
+import { createAuthClient } from "better-auth/react";
+import type { Get } from "type-fest";
+import { envs } from "./envs";
+import { authFeatures } from "./features";
 import {
   ac,
   admin as adminRole,
   superadmin as superAdminRole,
   user as userRole,
-} from "./permissions"
+} from "./permissions";
 
 // Environment variables
-const env = envs()
+const env = envs();
 
 // Build plugins array based on enabled features
 const buildClientPlugins = () => {
-  const plugins = []
+  const plugins = [];
 
   // Always include basic plugins
-  plugins.push(anonymousClient(), usernameClient(), lastLoginMethodClient())
+  plugins.push(anonymousClient(), usernameClient(), lastLoginMethodClient());
 
   // Add feature-specific plugins
   if (authFeatures.apiKey) {
-    plugins.push(apiKeyClient())
+    plugins.push(apiKeyClient());
   }
 
   // Organization
@@ -51,27 +51,27 @@ const buildClientPlugins = () => {
           superadmin: superAdminRole,
         },
       }),
-    )
+    );
   }
 
   // Email OTP
   if (authFeatures.emailOTP) {
-    plugins.push(emailOTPClient())
+    plugins.push(emailOTPClient());
   }
 
   // Two Factor
   if (authFeatures.twoFactor) {
-    plugins.push(twoFactorClient())
+    plugins.push(twoFactorClient());
   }
 
   // Social
   if (authFeatures.social) {
-    plugins.push(genericOAuthClient())
+    plugins.push(genericOAuthClient());
   }
 
   // Magic Link
   if (authFeatures.magicLink) {
-    plugins.push(magicLinkClient())
+    plugins.push(magicLinkClient());
   }
 
   // One Tap
@@ -80,17 +80,17 @@ const buildClientPlugins = () => {
       oneTapClient({
         clientId: env.NEXT_PUBLIC_AUTH_GOOGLE_ID,
       }),
-    )
+    );
   }
 
-  return plugins
-}
+  return plugins;
+};
 
 // Create the client
 export const authClient = createAuthClient({
   baseURL: env.NEXT_PUBLIC_AUTH_URL,
   plugins: buildClientPlugins(),
-})
+});
 
 // Export the client
 export const {
@@ -113,14 +113,14 @@ export const {
   $store,
   admin,
   organization,
-} = authClient
+} = authClient;
 
 // Export the types
-export type AuthClient = typeof authClient
+export type AuthClient = typeof authClient;
 
-export type UseSession = ReturnType<typeof useSession>
+export type UseSession = ReturnType<typeof useSession>;
 
-export type Session = Get<AuthClient, "$Infer.Session.session">
-export type User = Get<AuthClient, "$Infer.Session.user">
+export type Session = Get<AuthClient, "$Infer.Session.session">;
+export type User = Get<AuthClient, "$Infer.Session.user">;
 
-export { authClient as client }
+export { authClient as client };

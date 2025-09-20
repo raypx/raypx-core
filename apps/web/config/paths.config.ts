@@ -1,5 +1,5 @@
-import { pathsConfig } from "@raypx/config"
-import { z } from "zod"
+import { pathsConfig } from "@raypx/config";
+import { z } from "zod";
 
 // Extended paths schema for web app specific needs
 const ExtendedPathsSchema = z.object({
@@ -19,7 +19,7 @@ const ExtendedPathsSchema = z.object({
     home: z.string().min(1),
     pricing: z.string().min(1),
   }),
-})
+});
 
 // Merge base config with web-specific paths
 const webPathsConfig = ExtendedPathsSchema.parse({
@@ -34,6 +34,6 @@ const webPathsConfig = ExtendedPathsSchema.parse({
   docs: {
     url: "https://docs.raypx.com",
   },
-} satisfies z.infer<typeof ExtendedPathsSchema>)
+} satisfies z.infer<typeof ExtendedPathsSchema>);
 
-export default webPathsConfig
+export default webPathsConfig;

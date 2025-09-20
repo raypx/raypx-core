@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import type { BetterFetchError } from "@better-fetch/fetch"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button } from "@raypx/ui/components/button"
-import { Checkbox } from "@raypx/ui/components/checkbox"
+import type { BetterFetchError } from "@better-fetch/fetch";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@raypx/ui/components/button";
+import { Checkbox } from "@raypx/ui/components/checkbox";
 import {
   Form,
   FormControl,
@@ -11,32 +11,32 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@raypx/ui/components/form"
-import { Loader2, QrCode, Send } from "@raypx/ui/components/icons"
-import { InputOTP } from "@raypx/ui/components/input-otp"
-import { Label } from "@raypx/ui/components/label"
-import { Link } from "@raypx/ui/components/link"
-import { cn } from "@raypx/ui/lib/utils"
-import { useEffect, useRef, useState } from "react"
-import { useForm } from "react-hook-form"
-import QRCode from "react-qr-code"
-import { z } from "zod/v4"
-import { useAuth } from "../../core/hooks/use-auth"
-import { useIsHydrated } from "../../core/hooks/use-hydrated"
-import { useOnSuccessTransition } from "../../core/hooks/use-success-transition"
-import { buildAuthUrl } from "../../core/lib/url-utils"
-import { getLocalizedError, getSearchParam } from "../../core/lib/utils"
-import type { User } from "../../types"
-import type { AuthFormClassNames } from "./auth-form"
-import { OTPInputGroup } from "./otp-input-group"
+} from "@raypx/ui/components/form";
+import { Loader2, QrCode, Send } from "@raypx/ui/components/icons";
+import { InputOTP } from "@raypx/ui/components/input-otp";
+import { Label } from "@raypx/ui/components/label";
+import { Link } from "@raypx/ui/components/link";
+import { cn } from "@raypx/ui/lib/utils";
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import QRCode from "react-qr-code";
+import { z } from "zod/v4";
+import { useAuth } from "../../core/hooks/use-auth";
+import { useIsHydrated } from "../../core/hooks/use-hydrated";
+import { useOnSuccessTransition } from "../../core/hooks/use-success-transition";
+import { buildAuthUrl } from "../../core/lib/url-utils";
+import { getLocalizedError, getSearchParam } from "../../core/lib/utils";
+import type { User } from "../../types";
+import type { AuthFormClassNames } from "./auth-form";
+import { OTPInputGroup } from "./otp-input-group";
 
 export interface TwoFactorFormProps {
-  className?: string
-  classNames?: AuthFormClassNames
-  isSubmitting?: boolean
-  otpSeparators?: 0 | 1 | 2
-  redirectTo?: string
-  setIsSubmitting?: (value: boolean) => void
+  className?: string;
+  classNames?: AuthFormClassNames;
+  isSubmitting?: boolean;
+  otpSeparators?: 0 | 1 | 2;
+  redirectTo?: string;
+  setIsSubmitting?: (value: boolean) => void;
 }
 
 export function TwoFactorForm({
@@ -47,9 +47,9 @@ export function TwoFactorForm({
   redirectTo,
   setIsSubmitting,
 }: TwoFactorFormProps) {
-  const isHydrated = useIsHydrated()
-  const totpURI = isHydrated ? getSearchParam("totpURI") : null
-  const initialSendRef = useRef(false)
+  const isHydrated = useIsHydrated();
+  const totpURI = isHydrated ? getSearchParam("totpURI") : null;
+  const initialSendRef = useRef(false);
 
   const {
     authClient,
@@ -59,21 +59,21 @@ export function TwoFactorForm({
     twoFactor,
     viewPaths,
     toast,
-  } = useAuth()
+  } = useAuth();
 
   const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({
     redirectTo,
-  })
+  });
 
-  const { data: sessionData } = useSession()
-  const isTwoFactorEnabled = (sessionData?.user as User)?.twoFactorEnabled
+  const { data: sessionData } = useSession();
+  const isTwoFactorEnabled = (sessionData?.user as User)?.twoFactorEnabled;
 
   const [method, setMethod] = useState<"totp" | "otp" | null>(
     twoFactor?.length === 1 ? twoFactor[0] : null,
-  )
+  );
 
-  const [isSendingOtp, setIsSendingOtp] = useState(false)
-  const [cooldownSeconds, setCooldownSeconds] = useState(0)
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
+  const [cooldownSeconds, setCooldownSeconds] = useState(0);
 
   const formSchema = z.object({
     code: z
@@ -85,92 +85,87 @@ export function TwoFactorForm({
         message: `${t("ONE_TIME_PASSWORD")} ${t("IS_INVALID")}`,
       }),
     trustDevice: z.boolean().optional(),
-  })
+  });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       code: "",
     },
-  })
+  });
 
-  isSubmitting =
-    isSubmitting || form.formState.isSubmitting || transitionPending
+  isSubmitting = isSubmitting || form.formState.isSubmitting || transitionPending;
 
   useEffect(() => {
-    setIsSubmitting?.(form.formState.isSubmitting || transitionPending)
-  }, [form.formState.isSubmitting, transitionPending, setIsSubmitting])
+    setIsSubmitting?.(form.formState.isSubmitting || transitionPending);
+  }, [form.formState.isSubmitting, transitionPending, setIsSubmitting]);
 
   useEffect(() => {
     if (method === "otp" && cooldownSeconds <= 0 && !initialSendRef.current) {
-      initialSendRef.current = true
-      sendOtp()
+      initialSendRef.current = true;
+      sendOtp();
     }
-  }, [method])
+  }, [method]);
 
   useEffect(() => {
-    if (cooldownSeconds <= 0) return
+    if (cooldownSeconds <= 0) return;
 
     const timer = setTimeout(() => {
-      setCooldownSeconds((prev) => prev - 1)
-    }, 1000)
-    return () => clearTimeout(timer)
-  }, [cooldownSeconds])
+      setCooldownSeconds((prev) => prev - 1);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [cooldownSeconds]);
 
   const sendOtp = async () => {
-    if (isSendingOtp || cooldownSeconds > 0) return
+    if (isSendingOtp || cooldownSeconds > 0) return;
 
     try {
-      setIsSendingOtp(true)
+      setIsSendingOtp(true);
       await authClient.twoFactor.sendOtp({
         fetchOptions: { throw: true },
-      })
-      setCooldownSeconds(60)
+      });
+      setCooldownSeconds(60);
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
 
-      if (
-        (error as BetterFetchError).error.code === "INVALID_TWO_FACTOR_COOKIE"
-      ) {
-        history.back()
+      if ((error as BetterFetchError).error.code === "INVALID_TWO_FACTOR_COOKIE") {
+        history.back();
       }
     }
 
-    initialSendRef.current = false
-    setIsSendingOtp(false)
-  }
+    initialSendRef.current = false;
+    setIsSendingOtp(false);
+  };
 
   async function verifyCode({ code, trustDevice }: z.infer<typeof formSchema>) {
     try {
       const verifyMethod =
-        method === "totp"
-          ? authClient.twoFactor.verifyTotp
-          : authClient.twoFactor.verifyOtp
+        method === "totp" ? authClient.twoFactor.verifyTotp : authClient.twoFactor.verifyOtp;
 
       await verifyMethod({
         code,
         trustDevice,
         fetchOptions: { throw: true },
-      })
+      });
 
-      await onSuccess()
+      await onSuccess();
 
       if (sessionData && !isTwoFactorEnabled) {
         toast({
           variant: "success",
           message: t("TWO_FACTOR_ENABLED"),
-        })
+        });
       }
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
 
-      form.reset()
+      form.reset();
     }
   }
 
@@ -182,14 +177,9 @@ export function TwoFactorForm({
       >
         {twoFactor?.includes("totp") && totpURI && method === "totp" && (
           <div className="space-y-3">
-            <Label className={classNames?.label}>
-              {t("TWO_FACTOR_TOTP_LABEL")}
-            </Label>
+            <Label className={classNames?.label}>{t("TWO_FACTOR_TOTP_LABEL")}</Label>
 
-            <QRCode
-              className={cn("border shadow-xs", classNames?.qrCode)}
-              value={totpURI}
-            />
+            <QRCode className={cn("border shadow-xs", classNames?.qrCode)} value={totpURI} />
           </div>
         )}
 
@@ -201,20 +191,11 @@ export function TwoFactorForm({
               render={({ field }) => (
                 <FormItem>
                   <div className="flex items-center justify-between">
-                    <FormLabel className={classNames?.label}>
-                      {t("ONE_TIME_PASSWORD")}
-                    </FormLabel>
+                    <FormLabel className={classNames?.label}>{t("ONE_TIME_PASSWORD")}</FormLabel>
 
                     <Link
-                      className={cn(
-                        "text-sm hover:underline",
-                        classNames?.forgotPasswordLink,
-                      )}
-                      href={buildAuthUrl(
-                        basePath,
-                        viewPaths.RECOVER_ACCOUNT,
-                        isHydrated,
-                      )}
+                      className={cn("text-sm hover:underline", classNames?.forgotPasswordLink)}
+                      href={buildAuthUrl(basePath, viewPaths.RECOVER_ACCOUNT, isHydrated)}
                     >
                       {t("FORGOT_AUTHENTICATOR")}
                     </Link>
@@ -225,10 +206,10 @@ export function TwoFactorForm({
                       {...field}
                       maxLength={6}
                       onChange={(value) => {
-                        field.onChange(value)
+                        field.onChange(value);
 
                         if (value.length === 6) {
-                          form.handleSubmit(verifyCode)()
+                          form.handleSubmit(verifyCode)();
                         }
                       }}
                       containerClassName={classNames?.otpInputContainer}
@@ -258,9 +239,7 @@ export function TwoFactorForm({
                     />
                   </FormControl>
 
-                  <FormLabel className={classNames?.label}>
-                    {t("TRUST_DEVICE")}
-                  </FormLabel>
+                  <FormLabel className={classNames?.label}>{t("TRUST_DEVICE")}</FormLabel>
                 </FormItem>
               )}
             />
@@ -326,5 +305,5 @@ export function TwoFactorForm({
         </div>
       </form>
     </Form>
-  )
+  );
 }

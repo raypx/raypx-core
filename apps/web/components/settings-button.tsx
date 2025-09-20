@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import { UserButton } from "@raypx/auth/account"
-import { Button } from "@raypx/ui/components/button"
-import { Settings } from "lucide-react"
+import { UserButton } from "@raypx/auth/account";
+import { Button } from "@raypx/ui/components/button";
+import { Settings } from "lucide-react";
 
 interface SettingsButtonProps {
-  variant?: "default" | "outline" | "ghost" | "secondary"
-  size?: "default" | "sm" | "lg" | "icon"
-  children?: React.ReactNode
-  className?: string
+  variant?: "default" | "outline" | "ghost" | "secondary";
+  size?: "default" | "sm" | "lg" | "icon";
+  children?: React.ReactNode;
+  className?: string;
 }
 
 export function SettingsButton({
@@ -27,5 +27,5 @@ export function SettingsButton({
         </Button>
       }
     />
-  )
+  );
 }

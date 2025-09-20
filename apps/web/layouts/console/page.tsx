@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useSession } from "@raypx/auth/client"
-import { Button } from "@raypx/ui/components/button"
-import { Sheet, SheetContent } from "@raypx/ui/components/sheet"
-import { cn } from "@raypx/ui/lib/utils"
+import { useSession } from "@raypx/auth/client";
+import { Button } from "@raypx/ui/components/button";
+import { Sheet, SheetContent } from "@raypx/ui/components/sheet";
+import { cn } from "@raypx/ui/lib/utils";
 import {
   BarChart3,
   Bell,
@@ -17,19 +17,19 @@ import {
   User,
   Users,
   X,
-} from "lucide-react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import type { ReactNode } from "react"
-import { useState } from "react"
-import { SettingsModal } from "@/components/settings-modal"
+} from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import type { ReactNode } from "react";
+import { useState } from "react";
+import { SettingsModal } from "@/components/settings-modal";
 
 export interface ConsolePageProps {
-  children: ReactNode
-  title: string
-  description?: string
-  className?: string
-  maxWidth?: "4xl" | "6xl" | "full"
+  children: ReactNode;
+  title: string;
+  description?: string;
+  className?: string;
+  maxWidth?: "4xl" | "6xl" | "full";
 }
 
 const navigation = [
@@ -41,7 +41,7 @@ const navigation = [
   { name: "API Keys", href: "/account/api-keys", icon: Key },
   { name: "Security", href: "/account/security", icon: Shield },
   { name: "Settings", href: "/account/settings", icon: Settings },
-]
+];
 
 export function ConsolePage({
   children,
@@ -50,19 +50,19 @@ export function ConsolePage({
   className = "",
   maxWidth = "full",
 }: ConsolePageProps) {
-  const { data: session } = useSession()
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const pathname = usePathname()
+  const { data: session } = useSession();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const pathname = usePathname();
 
   if (!session?.user) {
-    return null
+    return null;
   }
 
   const maxWidthClass = {
     "4xl": "max-w-4xl",
     "6xl": "max-w-6xl",
     full: "max-w-full",
-  }[maxWidth]
+  }[maxWidth];
 
   return (
     <div className="min-h-screen bg-background">
@@ -72,17 +72,13 @@ export function ConsolePage({
           <div className="flex h-full flex-col">
             <div className="flex h-16 items-center justify-between px-6 border-b">
               <h1 className="text-xl font-semibold">Raypx</h1>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setSidebarOpen(false)}
-              >
+              <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
             <nav className="flex-1 space-y-1 px-3 py-4">
               {navigation.map((item) => {
-                const isActive = pathname === item.href
+                const isActive = pathname === item.href;
                 return (
                   <Link
                     key={item.name}
@@ -98,7 +94,7 @@ export function ConsolePage({
                     <item.icon className="mr-3 h-4 w-4" />
                     {item.name}
                   </Link>
-                )
+                );
               })}
             </nav>
           </div>
@@ -116,7 +112,7 @@ export function ConsolePage({
               <li>
                 <ul role="list" className="-mx-2 space-y-1">
                   {navigation.map((item) => {
-                    const isActive = pathname === item.href
+                    const isActive = pathname === item.href;
                     return (
                       <li key={item.name}>
                         <Link
@@ -132,7 +128,7 @@ export function ConsolePage({
                           {item.name}
                         </Link>
                       </li>
-                    )
+                    );
                   })}
                 </ul>
               </li>
@@ -160,13 +156,9 @@ export function ConsolePage({
           <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
             <div className="flex flex-1">
               <div className="flex items-center">
-                <h1 className="text-lg font-semibold text-foreground">
-                  {title}
-                </h1>
+                <h1 className="text-lg font-semibold text-foreground">{title}</h1>
                 {description && (
-                  <span className="ml-2 text-sm text-muted-foreground">
-                    {description}
-                  </span>
+                  <span className="ml-2 text-sm text-muted-foreground">{description}</span>
                 )}
               </div>
             </div>
@@ -199,17 +191,11 @@ export function ConsolePage({
 
         {/* Page content */}
         <main className="py-6">
-          <div
-            className={cn(
-              "mx-auto px-4 sm:px-6 lg:px-8",
-              maxWidthClass,
-              className,
-            )}
-          >
+          <div className={cn("mx-auto px-4 sm:px-6 lg:px-8", maxWidthClass, className)}>
             {children}
           </div>
         </main>
       </div>
     </div>
-  )
+  );
 }

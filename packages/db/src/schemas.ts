@@ -1,3 +1,3 @@
-export * from "./schemas/auth"
-export * from "./schemas/email"
-export * from "./schemas/rag"
+export * from "./schemas/auth";
+export * from "./schemas/email";
+export * from "./schemas/rag";

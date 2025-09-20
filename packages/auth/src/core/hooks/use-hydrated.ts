@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useSyncExternalStore } from "react"
+import { useSyncExternalStore } from "react";
 
 function subscribe() {
-  return () => {}
+  return () => {};
 }
 
 export function useIsHydrated() {
@@ -11,5 +11,5 @@ export function useIsHydrated() {
     subscribe,
     () => true,
     () => false,
-  )
+  );
 }

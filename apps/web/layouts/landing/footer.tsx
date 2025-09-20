@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { cn } from "@raypx/ui/lib/utils"
-import { useTranslations } from "next-intl"
-import type React from "react"
-import Container from "@/components/layout/container"
-import { Logo } from "@/components/layout/logo"
-import { ModeSwitcherHorizontal } from "@/components/layout/mode-switcher-horizontal"
-import { Link as LocaleLink } from "@/components/link"
-import { getFooterLinks } from "@/config/footer.config"
-import { getSocialLinks } from "@/config/social.config"
+import { cn } from "@raypx/ui/lib/utils";
+import { useTranslations } from "next-intl";
+import type React from "react";
+import Container from "@/components/layout/container";
+import { Logo } from "@/components/layout/logo";
+import { ModeSwitcherHorizontal } from "@/components/layout/mode-switcher-horizontal";
+import { Link as LocaleLink } from "@/components/link";
+import { getFooterLinks } from "@/config/footer.config";
+import { getSocialLinks } from "@/config/social.config";
 
 export function Footer({ className }: React.HTMLAttributes<HTMLElement>) {
-  const t = useTranslations("layout")
-  const footerLinks = getFooterLinks()
-  const socialLinks = getSocialLinks()
+  const t = useTranslations("layout");
+  const footerLinks = getFooterLinks();
+  const socialLinks = getSocialLinks();
 
   return (
     <footer className={cn("border-t", className)}>
@@ -28,9 +28,7 @@ export function Footer({ className }: React.HTMLAttributes<HTMLElement>) {
               </div>
 
               {/* tagline */}
-              <p className="text-muted-foreground text-base py-2 md:pr-12">
-                {t("footer.tagline")}
-              </p>
+              <p className="text-muted-foreground text-base py-2 md:pr-12">{t("footer.tagline")}</p>
 
               {/* social links */}
               <div className="flex items-center gap-4 py-2">
@@ -55,13 +53,8 @@ export function Footer({ className }: React.HTMLAttributes<HTMLElement>) {
           </div>
 
           {footerLinks?.map((section) => (
-            <div
-              key={section.title}
-              className="col-span-1 md:col-span-1 items-start"
-            >
-              <span className="text-sm font-semibold uppercase">
-                {section.title}
-              </span>
+            <div key={section.title} className="col-span-1 md:col-span-1 items-start">
+              <span className="text-sm font-semibold uppercase">{section.title}</span>
               <ul className="mt-4 list-inside space-y-3">
                 {section.items?.map(
                   (item) =>
@@ -95,5 +88,5 @@ export function Footer({ className }: React.HTMLAttributes<HTMLElement>) {
         </Container>
       </div>
     </footer>
-  )
+  );
 }

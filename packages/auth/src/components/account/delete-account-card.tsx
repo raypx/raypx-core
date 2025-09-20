@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import type { SettingsCardClassNames } from "@raypx/ui/components/settings"
-import { SettingsCard } from "@raypx/ui/components/settings"
-import { useState } from "react"
-import { useAuth } from "../../core/hooks/use-auth"
-import { DeleteAccountDialog } from "./delete-account-dialog"
+import type { SettingsCardClassNames } from "@raypx/ui/components/settings";
+import { SettingsCard } from "@raypx/ui/components/settings";
+import { useState } from "react";
+import { useAuth } from "../../core/hooks/use-auth";
+import { DeleteAccountDialog } from "./delete-account-dialog";
 
 export interface DeleteAccountCardProps {
-  className?: string
-  classNames?: SettingsCardClassNames
-  accounts?: { provider: string }[] | null
-  isPending?: boolean
-  skipHook?: boolean
+  className?: string;
+  classNames?: SettingsCardClassNames;
+  accounts?: { provider: string }[] | null;
+  isPending?: boolean;
+  skipHook?: boolean;
 }
 
 export function DeleteAccountCard({
@@ -24,14 +24,14 @@ export function DeleteAccountCard({
   const {
     hooks: { useListAccounts },
     t,
-  } = useAuth()
+  } = useAuth();
 
-  const [showDialog, setShowDialog] = useState(false)
+  const [showDialog, setShowDialog] = useState(false);
 
   if (!skipHook) {
-    const result = useListAccounts()
-    accounts = result.data
-    isPending = result.isPending
+    const result = useListAccounts();
+    accounts = result.data;
+    isPending = result.isPending;
   }
 
   return (
@@ -54,5 +54,5 @@ export function DeleteAccountCard({
         onOpenChange={setShowDialog}
       />
     </div>
-  )
+  );
 }

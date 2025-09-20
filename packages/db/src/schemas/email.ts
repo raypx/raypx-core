@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm"
+import { relations } from "drizzle-orm";
 import {
   boolean,
   index,
@@ -8,8 +8,8 @@ import {
   text,
   timestamp,
   varchar,
-} from "drizzle-orm/pg-core"
-import { generateId } from "../utils"
+} from "drizzle-orm/pg-core";
+import { generateId } from "../utils";
 
 export const emailStatusEnum = pgEnum("email_status", [
   "queued",
@@ -21,14 +21,14 @@ export const emailStatusEnum = pgEnum("email_status", [
   "complained",
   "unsubscribed",
   "failed",
-])
+]);
 
 export const emailProviderEnum = pgEnum("email_provider", [
   "resend",
   "nodemailer",
   "ses",
   "sendgrid",
-])
+]);
 
 export const emails = pgTable(
   "emails",
@@ -84,7 +84,7 @@ export const emails = pgTable(
     index("idx_emails_user_id").on(table.userId),
     index("idx_emails_created_at").on(table.createdAt),
   ],
-)
+);
 
 export const emailEvents = pgTable(
   "email_events",
@@ -105,9 +105,9 @@ export const emailEvents = pgTable(
     userAgent: text("user_agent"),
     ipAddress: varchar("ip_address", { length: 45 }),
     location: json("location").$type<{
-      country?: string
-      region?: string
-      city?: string
+      country?: string;
+      region?: string;
+      city?: string;
     }>(),
     clickedUrl: text("clicked_url"),
 
@@ -122,7 +122,7 @@ export const emailEvents = pgTable(
     index("idx_email_events_event_type").on(table.eventType),
     index("idx_email_events_timestamp").on(table.timestamp),
   ],
-)
+);
 
 export const emailTemplates = pgTable(
   "email_templates",
@@ -153,24 +153,24 @@ export const emailTemplates = pgTable(
     index("idx_email_templates_name").on(table.name),
     index("idx_email_templates_is_active").on(table.isActive),
   ],
-)
+);
 
 // Relations
 export const emailsRelations = relations(emails, ({ many }) => ({
   events: many(emailEvents),
-}))
+}));
 
 export const emailEventsRelations = relations(emailEvents, ({ one }) => ({
   email: one(emails, {
     fields: [emailEvents.emailId],
     references: [emails.id],
   }),
-}))
+}));
 
 // Types
-export type Email = typeof emails.$inferSelect
-export type NewEmail = typeof emails.$inferInsert
-export type EmailEvent = typeof emailEvents.$inferSelect
-export type NewEmailEvent = typeof emailEvents.$inferInsert
-export type EmailTemplate = typeof emailTemplates.$inferSelect
-export type NewEmailTemplate = typeof emailTemplates.$inferInsert
+export type Email = typeof emails.$inferSelect;
+export type NewEmail = typeof emails.$inferInsert;
+export type EmailEvent = typeof emailEvents.$inferSelect;
+export type NewEmailEvent = typeof emailEvents.$inferInsert;
+export type EmailTemplate = typeof emailTemplates.$inferSelect;
+export type NewEmailTemplate = typeof emailTemplates.$inferInsert;

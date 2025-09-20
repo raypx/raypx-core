@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "zod";
 
 const providers = z.enum([
   "apple",
@@ -22,7 +22,7 @@ const providers = z.enum([
   "workos",
   "zoom",
   "fly",
-])
+]);
 
 const AuthConfigSchema = z.object({
   captchaTokenSiteKey: z.string().optional(),
@@ -36,19 +36,17 @@ const AuthConfigSchema = z.object({
   }),
   enableMFA: z.boolean(),
   enablePasskeys: z.boolean(),
-})
+});
 
 const authConfig = AuthConfigSchema.parse({
   // NB: This is a public key, so it's safe to expose.
   captchaTokenSiteKey: process.env.NEXT_PUBLIC_CAPTCHA_SITE_KEY,
 
   // whether to display the terms checkbox during sign-up
-  displayTermsCheckbox:
-    process.env.NEXT_PUBLIC_DISPLAY_TERMS_AND_CONDITIONS_CHECKBOX === "true",
+  displayTermsCheckbox: process.env.NEXT_PUBLIC_DISPLAY_TERMS_AND_CONDITIONS_CHECKBOX === "true",
 
   // whether to enable identity linking
-  enableIdentityLinking:
-    process.env.NEXT_PUBLIC_AUTH_IDENTITY_LINKING === "true",
+  enableIdentityLinking: process.env.NEXT_PUBLIC_AUTH_IDENTITY_LINKING === "true",
 
   // Auth providers configuration
   providers: {
@@ -63,6 +61,6 @@ const authConfig = AuthConfigSchema.parse({
 
   enableMFA: process.env.NEXT_PUBLIC_ENABLE_MFA === "true",
   enablePasskeys: process.env.NEXT_PUBLIC_ENABLE_PASSKEYS === "true",
-} satisfies z.infer<typeof AuthConfigSchema>)
+} satisfies z.infer<typeof AuthConfigSchema>);
 
-export default authConfig
+export default authConfig;

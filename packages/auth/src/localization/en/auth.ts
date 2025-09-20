@@ -7,8 +7,7 @@ export const auth = {
   ADD_PASSKEY: "Add Passkey",
   ALREADY_HAVE_AN_ACCOUNT: "Already have an account?",
   AVATAR: "Avatar",
-  AVATAR_DESCRIPTION:
-    "Click on the avatar to upload a custom one from your files.",
+  AVATAR_DESCRIPTION: "Click on the avatar to upload a custom one from your files.",
   AVATAR_INSTRUCTIONS: "An avatar is optional but strongly recommended.",
   BACKUP_CODE_REQUIRED: "Backup code is required",
   BACKUP_CODES: "Backup Codes",
@@ -18,8 +17,7 @@ export const auth = {
   BACKUP_CODE: "Backup Code",
   CANCEL: "Cancel",
   CHANGE_PASSWORD: "Change Password",
-  CHANGE_PASSWORD_DESCRIPTION:
-    "Enter your current password and a new password.",
+  CHANGE_PASSWORD_DESCRIPTION: "Enter your current password and a new password.",
   CHANGE_PASSWORD_INSTRUCTIONS: "Please use 8 characters at minimum.",
   CHANGE_PASSWORD_SUCCESS: "Your password has been changed.",
   CONFIRM_PASSWORD: "Confirm Password",
@@ -40,12 +38,10 @@ export const auth = {
     "Permanently remove your account and all of its contents. This action is not reversible, so please continue with caution.",
   DELETE_ACCOUNT_INSTRUCTIONS:
     "Please confirm the deletion of your account. This action is not reversible, so please continue with caution.",
-  DELETE_ACCOUNT_VERIFY:
-    "Please check your email to verify the deletion of your account.",
+  DELETE_ACCOUNT_VERIFY: "Please check your email to verify the deletion of your account.",
   DELETE_ACCOUNT_SUCCESS: "Your account has been deleted.",
   DISABLE_TWO_FACTOR: "Disable Two-Factor",
-  DISABLED_CREDENTIALS_DESCRIPTION:
-    "Choose a provider to login to your account",
+  DISABLED_CREDENTIALS_DESCRIPTION: "Choose a provider to login to your account",
   DONT_HAVE_AN_ACCOUNT: "Don't have an account?",
   DONE: "Done",
   EMAIL: "Email",
@@ -76,8 +72,7 @@ export const auth = {
   EMAIL_OTP_SEND_ACTION: "Send code",
   EMAIL_OTP_VERIFY_ACTION: "Verify code",
   EMAIL_OTP_DESCRIPTION: "Enter your email to receive a code",
-  EMAIL_OTP_VERIFICATION_SENT:
-    "Please check your email for the verification code.",
+  EMAIL_OTP_VERIFICATION_SENT: "Please check your email for the verification code.",
   NAME: "Name",
   NAME_DESCRIPTION: "Please enter your full name, or a display name.",
   NAME_INSTRUCTIONS: "Please use {maxLength} characters at maximum.",
@@ -100,8 +95,7 @@ export const auth = {
   PROVIDERS_DESCRIPTION: "Connect your account with a third-party service.",
   RECOVER_ACCOUNT: "Recover Account",
   RECOVER_ACCOUNT_ACTION: "Recover account",
-  RECOVER_ACCOUNT_DESCRIPTION:
-    "Please enter a backup code to access your account",
+  RECOVER_ACCOUNT_DESCRIPTION: "Please enter a backup code to access your account",
   REMEMBER_ME: "Remember me",
   RESEND_CODE: "Resend code",
   RESEND_VERIFICATION_EMAIL: "Resend Verification Email",
@@ -114,8 +108,7 @@ export const auth = {
   SIGN_IN: "Sign In",
   SIGN_IN_ACTION: "Login",
   SIGN_IN_DESCRIPTION: "Enter your email below to login to your account",
-  SIGN_IN_USERNAME_DESCRIPTION:
-    "Enter your username or email to login to your account",
+  SIGN_IN_USERNAME_DESCRIPTION: "Enter your username or email to login to your account",
   SIGN_IN_WITH: "Sign in with",
   SIGN_OUT: "Sign Out",
   SIGN_UP: "Sign Up",
@@ -135,8 +128,7 @@ export const auth = {
   TWO_FACTOR: "Two-Factor",
   TWO_FACTOR_ACTION: "Verify code",
   TWO_FACTOR_DESCRIPTION: "Please enter your one-time password to continue",
-  TWO_FACTOR_CARD_DESCRIPTION:
-    "Add an extra layer of security to your account.",
+  TWO_FACTOR_CARD_DESCRIPTION: "Add an extra layer of security to your account.",
   TWO_FACTOR_DISABLE_INSTRUCTIONS: "Please enter your password to disable 2FA.",
   TWO_FACTOR_ENABLE_INSTRUCTIONS: "Please enter your password to enable 2FA.",
   TWO_FACTOR_ENABLED: "Two-factor authentication has been enabled",
@@ -168,4 +160,4 @@ export const auth = {
   PROTECTED_BY_RECAPTCHA: "This site is protected by reCAPTCHA.",
   BY_CONTINUING_YOU_AGREE: "By continuing, you agree to the",
   USER: "User",
-}
+};

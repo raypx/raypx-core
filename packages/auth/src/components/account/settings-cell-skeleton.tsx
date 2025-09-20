@@ -1,19 +1,13 @@
-"use client"
+"use client";
 
-import { Card } from "@raypx/ui/components/card"
-import type { SettingsCardClassNames } from "@raypx/ui/components/settings"
-import { Skeleton } from "@raypx/ui/components/skeleton"
-import { cn } from "@raypx/ui/lib/utils"
+import { Card } from "@raypx/ui/components/card";
+import type { SettingsCardClassNames } from "@raypx/ui/components/settings";
+import { Skeleton } from "@raypx/ui/components/skeleton";
+import { cn } from "@raypx/ui/lib/utils";
 
-export function SettingsCellSkeleton({
-  classNames,
-}: {
-  classNames?: SettingsCardClassNames
-}) {
+export function SettingsCellSkeleton({ classNames }: { classNames?: SettingsCardClassNames }) {
   return (
-    <Card
-      className={cn("flex-row items-center gap-3 px-4 py-3", classNames?.cell)}
-    >
+    <Card className={cn("flex-row items-center gap-3 px-4 py-3", classNames?.cell)}>
       <div className="flex items-center gap-2">
         <Skeleton className={cn("size-5 rounded-full", classNames?.skeleton)} />
 
@@ -24,5 +18,5 @@ export function SettingsCellSkeleton({
 
       <Skeleton className={cn("ms-auto size-8 w-12", classNames?.skeleton)} />
     </Card>
-  )
+  );
 }

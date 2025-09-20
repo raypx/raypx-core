@@ -1,3 +1,3 @@
-export * from "next-themes"
+export * from "next-themes";
 
-export const THEMES = { light: "", dark: ".dark" } as const
+export const THEMES = { light: "", dark: ".dark" } as const;

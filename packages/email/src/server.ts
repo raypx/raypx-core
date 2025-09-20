@@ -1,29 +1,29 @@
-import { db, emailEvents, emails, generateId } from "@raypx/db"
-import { render } from "@react-email/render"
-import { eq } from "drizzle-orm"
-import * as nodemailer from "nodemailer"
-import { Resend } from "resend"
-import { envs } from "./envs"
-import type { EmailEventData, SendEmailOptions, SendEmailResult } from "./types"
-import { EmailEventType, EmailProvider } from "./types"
+import { db, emailEvents, emails, generateId } from "@raypx/db";
+import { render } from "@react-email/render";
+import { eq } from "drizzle-orm";
+import * as nodemailer from "nodemailer";
+import { Resend } from "resend";
+import { envs } from "./envs";
+import type { EmailEventData, SendEmailOptions, SendEmailResult } from "./types";
+import { EmailEventType, EmailProvider } from "./types";
 
-const env = envs()
-const resend = new Resend(env.RESEND_TOKEN)
+const env = envs();
+const resend = new Resend(env.RESEND_TOKEN);
 const transporter = nodemailer.createTransport({
   host: env.MAIL_HOST,
   port: env.MAIL_PORT,
   secure: env.MAIL_SECURE,
   auth: { user: env.MAIL_USER, pass: env.MAIL_PASSWORD },
-})
-const defaultFrom = env.RESEND_FROM || "Raypx <hello@raypx.com>"
+});
+const defaultFrom = env.RESEND_FROM || "Raypx <hello@raypx.com>";
 
 // Email provider handlers
 const emailProviders = {
   [EmailProvider.RESEND]: async (options: {
-    to: string[]
-    subject: string
-    html: string
-    emailId: string
+    to: string[];
+    subject: string;
+    html: string;
+    emailId: string;
   }) => {
     const result = await resend.emails.send({
       from: defaultFrom,
@@ -31,14 +31,14 @@ const emailProviders = {
       subject: options.subject,
       html: options.html,
       headers: { "X-Entity-Ref-ID": options.emailId },
-    })
-    return { providerId: result.data?.id, result }
+    });
+    return { providerId: result.data?.id, result };
   },
   [EmailProvider.NODEMAILER]: async (options: {
-    to: string[]
-    subject: string
-    html: string
-    emailId: string
+    to: string[];
+    subject: string;
+    html: string;
+    emailId: string;
   }) => {
     const result = await transporter.sendMail({
       from: defaultFrom,
@@ -46,14 +46,12 @@ const emailProviders = {
       subject: options.subject,
       html: options.html,
       messageId: `${options.emailId}@raypx.com`,
-    })
-    return { providerId: result.messageId, result }
+    });
+    return { providerId: result.messageId, result };
   },
-}
+};
 
-export const sendEmail = async (
-  options: SendEmailOptions,
-): Promise<SendEmailResult> => {
+export const sendEmail = async (options: SendEmailOptions): Promise<SendEmailResult> => {
   const {
     to,
     subject,
@@ -64,12 +62,12 @@ export const sendEmail = async (
     tags = [],
     metadata = {},
     trackingEnabled = true,
-  } = options
-  const emailId = generateId()
-  const toAddress = Array.isArray(to) ? to[0] : to
+  } = options;
+  const emailId = generateId();
+  const toAddress = Array.isArray(to) ? to[0] : to;
 
   try {
-    const html = await render(template)
+    const html = await render(template);
 
     // Create email record if tracking enabled
     if (trackingEnabled) {
@@ -85,7 +83,7 @@ export const sendEmail = async (
         userId,
         tags,
         metadata,
-      })
+      });
     }
 
     // Send email via provider
@@ -94,7 +92,7 @@ export const sendEmail = async (
       subject,
       html,
       emailId,
-    })
+    });
 
     // Update status if tracking enabled
     if (trackingEnabled) {
@@ -106,7 +104,7 @@ export const sendEmail = async (
           sentAt: new Date(),
           updatedAt: new Date(),
         })
-        .where(eq(emails.id, emailId))
+        .where(eq(emails.id, emailId));
     }
 
     return {
@@ -114,9 +112,9 @@ export const sendEmail = async (
       emailId,
       providerId,
       messageId: `${emailId}@raypx.com`,
-    }
+    };
   } catch (error) {
-    console.error("Error sending email:", error)
+    console.error("Error sending email:", error);
 
     // Update failed status if tracking enabled
     if (trackingEnabled) {
@@ -127,9 +125,9 @@ export const sendEmail = async (
             status: "failed",
             updatedAt: new Date(),
           })
-          .where(eq(emails.id, emailId))
+          .where(eq(emails.id, emailId));
       } catch (dbError) {
-        console.error("Error updating email status:", dbError)
+        console.error("Error updating email status:", dbError);
       }
     }
 
@@ -137,13 +135,11 @@ export const sendEmail = async (
       success: false,
       error: error instanceof Error ? error.message : "Unknown error occurred",
       emailId,
-    }
+    };
   }
-}
+};
 
-export const trackEmailEvent = async (
-  eventData: EmailEventData,
-): Promise<void> => {
+export const trackEmailEvent = async (eventData: EmailEventData): Promise<void> => {
   try {
     await db.insert(emailEvents).values({
       id: generateId(),
@@ -157,7 +153,7 @@ export const trackEmailEvent = async (
       providerEventId: eventData.providerEventId,
       providerData: eventData.providerData,
       createdAt: new Date(),
-    })
+    });
 
     // Update email status
     const statusMap: Record<EmailEventType, string> = {
@@ -169,47 +165,40 @@ export const trackEmailEvent = async (
       [EmailEventType.COMPLAINED]: "complained",
       [EmailEventType.UNSUBSCRIBED]: "unsubscribed",
       [EmailEventType.DELIVERY_DELAYED]: "delivery_delayed",
-    }
+    };
 
-    const newStatus = statusMap[eventData.eventType]
+    const newStatus = statusMap[eventData.eventType];
     if (newStatus) {
       const updateData: Record<string, unknown> = {
         status: newStatus,
         updatedAt: new Date(),
-      }
+      };
 
       // Add specific timestamp fields based on event type
       if (eventData.eventType === EmailEventType.OPENED) {
-        updateData.openedAt = new Date()
+        updateData.openedAt = new Date();
       }
       if (eventData.eventType === EmailEventType.DELIVERED) {
-        updateData.deliveredAt = new Date()
+        updateData.deliveredAt = new Date();
       }
 
-      await db
-        .update(emails)
-        .set(updateData)
-        .where(eq(emails.id, eventData.emailId))
+      await db.update(emails).set(updateData).where(eq(emails.id, eventData.emailId));
     }
   } catch (error) {
-    console.error("Error tracking email event:", error)
-    throw error
+    console.error("Error tracking email event:", error);
+    throw error;
   }
-}
+};
 
 export const getEmailById = async (emailId: string) => {
   try {
-    const results = await db
-      .select()
-      .from(emails)
-      .where(eq(emails.id, emailId))
-      .limit(1)
-    return results[0] || null
+    const results = await db.select().from(emails).where(eq(emails.id, emailId)).limit(1);
+    return results[0] || null;
   } catch (error) {
-    console.error("Error getting email by ID:", error)
-    throw error
+    console.error("Error getting email by ID:", error);
+    throw error;
   }
-}
+};
 
 export const getEmailEvents = async (emailId: string) => {
   try {
@@ -217,9 +206,9 @@ export const getEmailEvents = async (emailId: string) => {
       .select()
       .from(emailEvents)
       .where(eq(emailEvents.emailId, emailId))
-      .orderBy(emailEvents.timestamp)
+      .orderBy(emailEvents.timestamp);
   } catch (error) {
-    console.error("Error getting email events:", error)
-    throw error
+    console.error("Error getting email events:", error);
+    throw error;
   }
-}
+};

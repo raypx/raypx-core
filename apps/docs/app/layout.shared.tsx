@@ -1,9 +1,9 @@
-import { ThemeSwitcher } from "@raypx/ui/components/theme-switcher"
-import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared"
-import { getPathname } from "@/components/link"
-import { Logo } from "@/components/logo"
-import appConfig from "@/config/app.config"
-import { docsI18nConfig } from "@/lib/docs/i18n"
+import { ThemeSwitcher } from "@raypx/ui/components/theme-switcher";
+import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
+import { getPathname } from "@/components/link";
+import { Logo } from "@/components/logo";
+import appConfig from "@/config/app.config";
+import { docsI18nConfig } from "@/lib/docs/i18n";
 
 export function baseOptions(locale: string, t: any): BaseLayoutProps {
   return {
@@ -49,5 +49,5 @@ export function baseOptions(locale: string, t: any): BaseLayoutProps {
       ...docsI18nConfig,
       defaultLanguage: locale,
     },
-  }
+  };
 }

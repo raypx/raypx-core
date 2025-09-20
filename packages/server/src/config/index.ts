@@ -1,1 +1,1 @@
-export { defaultMiddleware } from "./middleware"
+export { defaultMiddleware } from "./middleware";

@@ -1,42 +1,37 @@
-"use client"
+"use client";
 
-import { Button } from "@raypx/ui/components/button"
-import { Card } from "@raypx/ui/components/card"
+import { Button } from "@raypx/ui/components/button";
+import { Card } from "@raypx/ui/components/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@raypx/ui/components/dropdown-menu"
+} from "@raypx/ui/components/dropdown-menu";
 import {
   EllipsisIcon,
   Loader2,
   LogOutIcon,
   RepeatIcon,
   UserX2Icon,
-} from "@raypx/ui/components/icons"
-import type { SettingsCardClassNames } from "@raypx/ui/components/settings"
-import { cn } from "@raypx/ui/lib/utils"
-import type { Session, User } from "better-auth"
-import { useState } from "react"
-import { useAuth } from "../../core/hooks/use-auth"
-import { getLocalizedError } from "../../core/lib/utils"
-import type { Refetch } from "../../types"
-import { UserView } from "./user-view"
+} from "@raypx/ui/components/icons";
+import type { SettingsCardClassNames } from "@raypx/ui/components/settings";
+import { cn } from "@raypx/ui/lib/utils";
+import type { Session, User } from "better-auth";
+import { useState } from "react";
+import { useAuth } from "../../core/hooks/use-auth";
+import { getLocalizedError } from "../../core/lib/utils";
+import type { Refetch } from "../../types";
+import { UserView } from "./user-view";
 
 export interface AccountCellProps {
-  className?: string
-  classNames?: SettingsCardClassNames
-  deviceSession: { user: User; session: Session }
-  refetch?: Refetch
+  className?: string;
+  classNames?: SettingsCardClassNames;
+  deviceSession: { user: User; session: Session };
+  refetch?: Refetch;
 }
 
-export function AccountCell({
-  className,
-  classNames,
-  deviceSession,
-  refetch,
-}: AccountCellProps) {
+export function AccountCell({ className, classNames, deviceSession, refetch }: AccountCellProps) {
   const {
     basePath,
     t,
@@ -45,50 +40,50 @@ export function AccountCell({
     toast,
     viewPaths,
     navigate,
-  } = useAuth()
+  } = useAuth();
 
-  const { data: sessionData } = useSession()
-  const [isLoading, setIsLoading] = useState(false)
+  const { data: sessionData } = useSession();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleRevoke = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
       await revokeDeviceSession({
         sessionToken: deviceSession.session.token,
-      })
+      });
 
-      refetch?.()
+      refetch?.();
     } catch (error) {
-      setIsLoading(false)
+      setIsLoading(false);
 
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
-  }
+  };
 
   const handleSetActiveSession = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
       await setActiveSession({
         sessionToken: deviceSession.session.token,
-      })
+      });
 
-      refetch?.()
+      refetch?.();
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
 
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
-  const isCurrentSession = deviceSession.session.id === sessionData?.session.id
+  const isCurrentSession = deviceSession.session.id === sessionData?.session.id;
 
   return (
     <Card className={cn("flex-row p-4", className, classNames?.cell)}>
@@ -97,11 +92,7 @@ export function AccountCell({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
-            className={cn(
-              "relative ms-auto",
-              classNames?.button,
-              classNames?.outlineButton,
-            )}
+            className={cn("relative ms-auto", classNames?.button, classNames?.outlineButton)}
             disabled={isLoading}
             size="icon"
             type="button"
@@ -127,11 +118,11 @@ export function AccountCell({
           <DropdownMenuItem
             onClick={() => {
               if (isCurrentSession) {
-                navigate(`${basePath}/${viewPaths.SIGN_OUT}`)
-                return
+                navigate(`${basePath}/${viewPaths.SIGN_OUT}`);
+                return;
               }
 
-              handleRevoke()
+              handleRevoke();
             }}
             variant="destructive"
           >
@@ -146,5 +137,5 @@ export function AccountCell({
         </DropdownMenuContent>
       </DropdownMenu>
     </Card>
-  )
+  );
 }

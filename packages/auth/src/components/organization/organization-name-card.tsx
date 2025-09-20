@@ -1,30 +1,21 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { CardContent } from "@raypx/ui/components/card"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@raypx/ui/components/form"
-import { Input } from "@raypx/ui/components/input"
-import {
-  SettingsCard,
-  type SettingsCardProps,
-} from "@raypx/ui/components/settings"
-import { Skeleton } from "@raypx/ui/components/skeleton"
-import { cn } from "@raypx/ui/lib/utils"
-import type { Organization } from "better-auth/plugins/organization"
-import { useForm } from "react-hook-form"
-import { z } from "zod/v4"
-import { useAuth } from "../../core/hooks/use-auth"
-import { useCurrentOrganization } from "../../core/hooks/use-current-organization"
-import { getLocalizedError } from "../../core/lib/utils"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CardContent } from "@raypx/ui/components/card";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@raypx/ui/components/form";
+import { Input } from "@raypx/ui/components/input";
+import { SettingsCard, type SettingsCardProps } from "@raypx/ui/components/settings";
+import { Skeleton } from "@raypx/ui/components/skeleton";
+import { cn } from "@raypx/ui/lib/utils";
+import type { Organization } from "better-auth/plugins/organization";
+import { useForm } from "react-hook-form";
+import { z } from "zod/v4";
+import { useAuth } from "../../core/hooks/use-auth";
+import { useCurrentOrganization } from "../../core/hooks/use-current-organization";
+import { getLocalizedError } from "../../core/lib/utils";
 
 export interface OrganizationNameCardProps extends SettingsCardProps {
-  slug?: string
+  slug?: string;
 }
 
 export function OrganizationNameCard({
@@ -33,9 +24,9 @@ export function OrganizationNameCard({
   slug,
   ...props
 }: OrganizationNameCardProps) {
-  const { t } = useAuth()
+  const { t } = useAuth();
 
-  const { data: organization } = useCurrentOrganization({ slug })
+  const { data: organization } = useCurrentOrganization({ slug });
 
   if (!organization) {
     return (
@@ -53,7 +44,7 @@ export function OrganizationNameCard({
           <Skeleton className={cn("h-9 w-full", classNames?.skeleton)} />
         </CardContent>
       </SettingsCard>
-    )
+    );
   }
 
   return (
@@ -63,7 +54,7 @@ export function OrganizationNameCard({
       organization={organization}
       {...props}
     />
-  )
+  );
 }
 
 function OrganizationNameForm({
@@ -78,66 +69,63 @@ function OrganizationNameForm({
     optimistic,
     toast,
     t,
-  } = useAuth()
+  } = useAuth();
 
-  const { data: hasPermission, isPending: permissionPending } =
-    useHasPermission({
-      organizationId: organization.id,
-      permissions: {
-        organization: ["update"],
-      },
-    })
+  const { data: hasPermission, isPending: permissionPending } = useHasPermission({
+    organizationId: organization.id,
+    permissions: {
+      organization: ["update"],
+    },
+  });
 
   const { refetch: refetchOrganization } = useCurrentOrganization({
     slug: organization.slug,
-  })
+  });
 
-  const isPending = permissionPending
+  const isPending = permissionPending;
 
   const formSchema = z.object({
     name: z.string().min(1, {
       message: t("FIELD_IS_REQUIRED", { field: t("ORGANIZATION_NAME") }),
     }),
-  })
+  });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     values: { name: organization.name || "" },
-  })
+  });
 
-  const { isSubmitting } = form.formState
+  const { isSubmitting } = form.formState;
 
-  const updateOrganizationName = async ({
-    name,
-  }: z.infer<typeof formSchema>) => {
+  const updateOrganizationName = async ({ name }: z.infer<typeof formSchema>) => {
     if (organization.name === name) {
       toast({
         variant: "error",
         message: `${t("ORGANIZATION_NAME")} ${t("IS_THE_SAME")}`,
-      })
+      });
 
-      return
+      return;
     }
 
     try {
       await updateOrganization({
         organizationId: organization.id,
         data: { name },
-      })
+      });
 
-      await refetchOrganization?.()
+      await refetchOrganization?.();
 
       toast({
         variant: "success",
         message: `${t("ORGANIZATION_NAME")} ${t("UPDATED_SUCCESSFULLY")}`,
-      })
+      });
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
-  }
+  };
 
   return (
     <Form {...form}>
@@ -181,5 +169,5 @@ function OrganizationNameForm({
         </SettingsCard>
       </form>
     </Form>
-  )
+  );
 }

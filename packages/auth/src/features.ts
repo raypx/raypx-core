@@ -40,4 +40,4 @@ export const authFeatures = {
     facebook: false,
     linkedin: false,
   },
-} as const
+} as const;

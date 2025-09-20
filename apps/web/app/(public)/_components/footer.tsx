@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { Github, Globe, Twitter } from "lucide-react"
-import Link from "next/link"
+import { Github, Globe, Twitter } from "lucide-react";
+import Link from "next/link";
 
 export function Footer() {
   return (
@@ -41,9 +41,7 @@ export function Footer() {
           </div>
 
           <div className="space-y-4">
-            <h3 className="font-semibold text-gray-900 dark:text-white">
-              Product
-            </h3>
+            <h3 className="font-semibold text-gray-900 dark:text-white">Product</h3>
             <div className="space-y-2">
               <Link
                 href="#"
@@ -73,9 +71,7 @@ export function Footer() {
           </div>
 
           <div className="space-y-4">
-            <h3 className="font-semibold text-gray-900 dark:text-white">
-              Company
-            </h3>
+            <h3 className="font-semibold text-gray-900 dark:text-white">Company</h3>
             <div className="space-y-2">
               <Link
                 href="#"
@@ -105,9 +101,7 @@ export function Footer() {
           </div>
 
           <div className="space-y-4">
-            <h3 className="font-semibold text-gray-900 dark:text-white">
-              Legal
-            </h3>
+            <h3 className="font-semibold text-gray-900 dark:text-white">Legal</h3>
             <div className="space-y-2">
               <Link
                 href="/privacy"
@@ -142,5 +136,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }

@@ -1,1 +1,1 @@
-export * from "@radix-ui/react-portal"
+export * from "@radix-ui/react-portal";

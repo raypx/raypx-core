@@ -8,14 +8,14 @@ import {
   uuid,
   varchar,
   vector,
-} from "drizzle-orm/pg-core"
-import { pgTable } from "./_table"
-import { user } from "./auth"
+} from "drizzle-orm/pg-core";
+import { pgTable } from "./_table";
+import { user } from "./auth";
 
 export const timestamptz = (name: string) =>
   timestamp(name, {
     withTimezone: true,
-  })
+  });
 
 export const knowledges = pgTable(
   "knowledges",
@@ -37,7 +37,7 @@ export const knowledges = pgTable(
     index("idx_knowledges_user_id").on(table.userId),
     index("idx_knowledges_status").on(table.status),
   ],
-)
+);
 
 export const documents = pgTable(
   "documents",
@@ -67,7 +67,7 @@ export const documents = pgTable(
     index("idx_documents_user_id").on(table.userId),
     index("idx_documents_status").on(table.status),
   ],
-)
+);
 
 export const chunks = pgTable(
   "chunks",
@@ -97,12 +97,9 @@ export const chunks = pgTable(
     index("idx_chunks_document_id").on(t.documentId),
     index("idx_chunks_knowledge_base_id").on(t.knowledgeBaseId),
     index("idx_chunks_user_id").on(t.userId),
-    index("idx_chunks_knowledge_base_id_user_id").on(
-      t.knowledgeBaseId,
-      t.userId,
-    ),
+    index("idx_chunks_knowledge_base_id_user_id").on(t.knowledgeBaseId, t.userId),
   ],
-)
+);
 
 export const embeddings = pgTable(
   "embeddings",
@@ -127,4 +124,4 @@ export const embeddings = pgTable(
     index("idx_embeddings_chunk_id").on(t.chunkId),
     index("idx_embeddings_user_id").on(t.userId),
   ],
-)
+);

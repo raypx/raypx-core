@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Button } from "@raypx/ui/components/button"
+import { Button } from "@raypx/ui/components/button";
 import {
   Card,
   CardContent,
@@ -8,40 +8,40 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@raypx/ui/components/card"
-import { ArrowLeft } from "@raypx/ui/components/icons"
-import { Link } from "@raypx/ui/components/link"
-import { Separator } from "@raypx/ui/components/separator"
-import { cn } from "@raypx/ui/lib/utils"
-import { type ReactNode, useEffect, useState } from "react"
-import { useAuth } from "../../core/hooks/use-auth"
-import { useIsHydrated } from "../../core/hooks/use-hydrated"
-import { socialProviders } from "../../core/lib/providers/social-providers"
-import { buildAuthUrl } from "../../core/lib/url-utils"
-import { getViewByPath } from "../../core/lib/utils"
-import type { AuthViewPaths } from "../../core/lib/view-paths"
-import { SignOut } from "../account/sign-out"
-import { ProviderButton } from "../core/provider-button"
-import { AcceptInvitationCard } from "../organization/accept-invitation-card"
-import { AuthCallback } from "./auth-callback"
-import { AuthForm, type AuthFormClassNames } from "./auth-form"
-import { EmailOTPButton } from "./email-otp-button"
-import { MagicLinkButton } from "./magic-link-button"
-import { OneTap } from "./one-tap"
-import { PasskeyButton } from "./passkey-button"
+} from "@raypx/ui/components/card";
+import { ArrowLeft } from "@raypx/ui/components/icons";
+import { Link } from "@raypx/ui/components/link";
+import { Separator } from "@raypx/ui/components/separator";
+import { cn } from "@raypx/ui/lib/utils";
+import { type ReactNode, useEffect, useState } from "react";
+import { useAuth } from "../../core/hooks/use-auth";
+import { useIsHydrated } from "../../core/hooks/use-hydrated";
+import { socialProviders } from "../../core/lib/providers/social-providers";
+import { buildAuthUrl } from "../../core/lib/url-utils";
+import { getViewByPath } from "../../core/lib/utils";
+import type { AuthViewPaths } from "../../core/lib/view-paths";
+import { SignOut } from "../account/sign-out";
+import { ProviderButton } from "../core/provider-button";
+import { AcceptInvitationCard } from "../organization/accept-invitation-card";
+import { AuthCallback } from "./auth-callback";
+import { AuthForm, type AuthFormClassNames } from "./auth-form";
+import { EmailOTPButton } from "./email-otp-button";
+import { MagicLinkButton } from "./magic-link-button";
+import { OneTap } from "./one-tap";
+import { PasskeyButton } from "./passkey-button";
 
 export type AuthViewClassNames = {
-  base?: string
-  content?: string
-  description?: string
-  footer?: string
-  footerLink?: string
-  continueWith?: string
-  form?: AuthFormClassNames
-  header?: string
-  separator?: string
-  title?: string
-}
+  base?: string;
+  content?: string;
+  description?: string;
+  footer?: string;
+  footerLink?: string;
+  continueWith?: string;
+  form?: AuthFormClassNames;
+  header?: string;
+  separator?: string;
+  title?: string;
+};
 
 export function AuthView({
   className,
@@ -55,18 +55,18 @@ export function AuthView({
   otpSeparators = 0,
   path: pathProp,
 }: {
-  className?: string
-  classNames?: AuthViewClassNames
-  callbackURL?: string
-  cardHeader?: ReactNode
-  pathname?: string
-  redirectTo?: string
-  socialLayout?: "auto" | "horizontal" | "grid" | "vertical"
-  view?: keyof AuthViewPaths
-  path?: string
-  otpSeparators?: 0 | 1 | 2
+  className?: string;
+  classNames?: AuthViewClassNames;
+  callbackURL?: string;
+  cardHeader?: ReactNode;
+  pathname?: string;
+  redirectTo?: string;
+  socialLayout?: "auto" | "horizontal" | "grid" | "vertical";
+  view?: keyof AuthViewPaths;
+  path?: string;
+  otpSeparators?: 0 | 1 | 2;
 }) {
-  const isHydrated = useIsHydrated()
+  const isHydrated = useIsHydrated();
   const {
     basePath,
     credentials,
@@ -79,40 +79,40 @@ export function AuthView({
     social,
     genericOAuth,
     viewPaths,
-  } = useAuth()
+  } = useAuth();
 
-  let socialLayout = socialLayoutProp
+  let socialLayout = socialLayoutProp;
   if (socialLayout === "auto") {
     socialLayout = !credentials
       ? "vertical"
       : social?.providers && social.providers.length > 2
         ? "horizontal"
-        : "vertical"
+        : "vertical";
   }
 
-  const path = pathProp ?? pathname?.split("/").pop()
+  const path = pathProp ?? pathname?.split("/").pop();
 
-  const view = viewProp || getViewByPath(viewPaths, path) || "SIGN_IN"
+  const view = viewProp || getViewByPath(viewPaths, path) || "SIGN_IN";
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    const handlePageHide = () => setIsSubmitting(false)
-    window.addEventListener("pagehide", handlePageHide)
+    const handlePageHide = () => setIsSubmitting(false);
+    window.addEventListener("pagehide", handlePageHide);
     return () => {
-      setIsSubmitting(false)
-      window.removeEventListener("pagehide", handlePageHide)
-    }
-  }, [])
+      setIsSubmitting(false);
+      window.removeEventListener("pagehide", handlePageHide);
+    };
+  }, []);
 
-  if (view === "CALLBACK") return <AuthCallback redirectTo={redirectTo} />
-  if (view === "SIGN_OUT") return <SignOut />
-  if (view === "ACCEPT_INVITATION") return <AcceptInvitationCard />
+  if (view === "CALLBACK") return <AuthCallback redirectTo={redirectTo} />;
+  if (view === "SIGN_OUT") return <SignOut />;
+  if (view === "ACCEPT_INVITATION") return <AcceptInvitationCard />;
 
   const description =
     !credentials && !magicLink && !emailOTP
       ? t("DISABLED_CREDENTIALS_DESCRIPTION")
-      : t(`${view}_DESCRIPTION`)
+      : t(`${view}_DESCRIPTION`);
 
   return (
     <Card className={cn("w-full max-w-sm", className, classNames?.base)}>
@@ -121,13 +121,9 @@ export function AuthView({
           cardHeader
         ) : (
           <>
-            <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-              {t(view)}
-            </CardTitle>
+            <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>{t(view)}</CardTitle>
             {description && (
-              <CardDescription
-                className={cn("text-xs md:text-sm", classNames?.description)}
-              >
+              <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
                 {description}
               </CardDescription>
             )}
@@ -136,10 +132,9 @@ export function AuthView({
       </CardHeader>
 
       <CardContent className={cn("grid gap-6", classNames?.content)}>
-        {oneTap &&
-          ["SIGN_IN", "SIGN_UP", "MAGIC_LINK", "EMAIL_OTP"].includes(
-            view as string,
-          ) && <OneTap redirectTo={redirectTo} />}
+        {oneTap && ["SIGN_IN", "SIGN_UP", "MAGIC_LINK", "EMAIL_OTP"].includes(view as string) && (
+          <OneTap redirectTo={redirectTo} />
+        )}
 
         {(credentials || magicLink || emailOTP) && (
           <div className="grid gap-4">
@@ -155,36 +150,20 @@ export function AuthView({
 
             {magicLink &&
               ((credentials &&
-                [
-                  "FORGOT_PASSWORD",
-                  "SIGN_UP",
-                  "SIGN_IN",
-                  "MAGIC_LINK",
-                  "EMAIL_OTP",
-                ].includes(view as string)) ||
+                ["FORGOT_PASSWORD", "SIGN_UP", "SIGN_IN", "MAGIC_LINK", "EMAIL_OTP"].includes(
+                  view as string,
+                )) ||
                 (emailOTP && view === "EMAIL_OTP")) && (
-                <MagicLinkButton
-                  classNames={classNames}
-                  view={view}
-                  isSubmitting={isSubmitting}
-                />
+                <MagicLinkButton classNames={classNames} view={view} isSubmitting={isSubmitting} />
               )}
 
             {emailOTP &&
               ((credentials &&
-                [
-                  "FORGOT_PASSWORD",
-                  "SIGN_UP",
-                  "SIGN_IN",
-                  "MAGIC_LINK",
-                  "EMAIL_OTP",
-                ].includes(view as string)) ||
+                ["FORGOT_PASSWORD", "SIGN_UP", "SIGN_IN", "MAGIC_LINK", "EMAIL_OTP"].includes(
+                  view as string,
+                )) ||
                 (magicLink && ["SIGN_IN", "MAGIC_LINK"].includes(view))) && (
-                <EmailOTPButton
-                  classNames={classNames}
-                  view={view}
-                  isSubmitting={isSubmitting}
-                />
+                <EmailOTPButton classNames={classNames} view={view} isSubmitting={isSubmitting} />
               )}
           </div>
         )}
@@ -195,27 +174,17 @@ export function AuthView({
             (view === "SIGN_IN" && passkey)) && (
             <>
               {(credentials || magicLink || emailOTP) && (
-                <div
-                  className={cn(
-                    "flex items-center gap-2",
-                    classNames?.continueWith,
-                  )}
-                >
-                  <Separator
-                    className={cn("!w-auto grow", classNames?.separator)}
-                  />
+                <div className={cn("flex items-center gap-2", classNames?.continueWith)}>
+                  <Separator className={cn("!w-auto grow", classNames?.separator)} />
                   <span className="flex-shrink-0 text-muted-foreground text-sm">
                     {t("OR_CONTINUE_WITH")}
                   </span>
-                  <Separator
-                    className={cn("!w-auto grow", classNames?.separator)}
-                  />
+                  <Separator className={cn("!w-auto grow", classNames?.separator)} />
                 </div>
               )}
 
               <div className="grid gap-4">
-                {(social?.providers?.length ||
-                  genericOAuth?.providers?.length) && (
+                {(social?.providers?.length || genericOAuth?.providers?.length) && (
                   <div
                     className={cn(
                       "flex w-full items-center justify-between gap-4",
@@ -226,10 +195,9 @@ export function AuthView({
                   >
                     {social?.providers?.map((provider) => {
                       const socialProvider = socialProviders.find(
-                        (socialProvider) =>
-                          socialProvider.provider === provider,
-                      )
-                      if (!socialProvider) return null
+                        (socialProvider) => socialProvider.provider === provider,
+                      );
+                      if (!socialProvider) return null;
                       return (
                         <ProviderButton
                           key={provider}
@@ -241,7 +209,7 @@ export function AuthView({
                           setIsSubmitting={setIsSubmitting}
                           socialLayout={socialLayout}
                         />
-                      )
+                      );
                     })}
                     {genericOAuth?.providers?.map((provider) => (
                       <ProviderButton
@@ -282,14 +250,9 @@ export function AuthView({
 
       {credentials && signUp && (
         <CardFooter
-          className={cn(
-            "justify-center gap-1.5 text-muted-foreground text-sm",
-            classNames?.footer,
-          )}
+          className={cn("justify-center gap-1.5 text-muted-foreground text-sm", classNames?.footer)}
         >
-          {view === "SIGN_IN" ||
-          view === "MAGIC_LINK" ||
-          view === "EMAIL_OTP" ? (
+          {view === "SIGN_IN" || view === "MAGIC_LINK" || view === "EMAIL_OTP" ? (
             t("DONT_HAVE_AN_ACCOUNT")
           ) : view === "SIGN_UP" ? (
             t("ALREADY_HAVE_AN_ACCOUNT")
@@ -302,16 +265,11 @@ export function AuthView({
           view === "EMAIL_OTP" ||
           view === "SIGN_UP" ? (
             <Link
-              className={cn(
-                "text-foreground underline",
-                classNames?.footerLink,
-              )}
+              className={cn("text-foreground underline", classNames?.footerLink)}
               href={buildAuthUrl(
                 basePath,
                 viewPaths[
-                  view === "SIGN_IN" ||
-                  view === "MAGIC_LINK" ||
-                  view === "EMAIL_OTP"
+                  view === "SIGN_IN" || view === "MAGIC_LINK" || view === "EMAIL_OTP"
                     ? "SIGN_UP"
                     : "SIGN_IN"
                 ],
@@ -321,14 +279,9 @@ export function AuthView({
               <Button
                 variant="link"
                 size="sm"
-                className={cn(
-                  "px-0 text-foreground underline",
-                  classNames?.footerLink,
-                )}
+                className={cn("px-0 text-foreground underline", classNames?.footerLink)}
               >
-                {view === "SIGN_IN" ||
-                view === "MAGIC_LINK" ||
-                view === "EMAIL_OTP"
+                {view === "SIGN_IN" || view === "MAGIC_LINK" || view === "EMAIL_OTP"
                   ? t("SIGN_UP")
                   : t("SIGN_IN")}
               </Button>
@@ -337,10 +290,7 @@ export function AuthView({
             <Button
               variant="link"
               size="sm"
-              className={cn(
-                "px-0 text-foreground underline",
-                classNames?.footerLink,
-              )}
+              className={cn("px-0 text-foreground underline", classNames?.footerLink)}
               onClick={() => window.history.back()}
             >
               {t("GO_BACK")}
@@ -349,5 +299,5 @@ export function AuthView({
         </CardFooter>
       )}
     </Card>
-  )
+  );
 }

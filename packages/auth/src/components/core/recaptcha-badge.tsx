@@ -1,25 +1,25 @@
-import { cn } from "@raypx/ui/lib/utils"
-import { useTranslations } from "next-intl"
-import { useAuth } from "../../core/hooks/use-auth"
-import { useIsHydrated } from "../../core/hooks/use-hydrated"
+import { cn } from "@raypx/ui/lib/utils";
+import { useTranslations } from "next-intl";
+import { useAuth } from "../../core/hooks/use-auth";
+import { useIsHydrated } from "../../core/hooks/use-hydrated";
 
 export interface RecaptchaBadgeProps {
-  className?: string
+  className?: string;
 }
 
 export function RecaptchaBadge({ className }: RecaptchaBadgeProps) {
-  const isHydrated = useIsHydrated()
-  const { captcha } = useAuth()
-  const t = useTranslations("auth")
+  const isHydrated = useIsHydrated();
+  const { captcha } = useAuth();
+  const t = useTranslations("auth");
 
-  if (!captcha) return null
+  if (!captcha) return null;
 
   if (!captcha.hideBadge) {
     return isHydrated ? (
       <style>{`
                 .grecaptcha-badge { visibility: visible !important; }
             `}</style>
-    ) : null
+    ) : null;
   }
 
   return (
@@ -50,5 +50,5 @@ export function RecaptchaBadge({ className }: RecaptchaBadgeProps) {
         .
       </p>
     </>
-  )
+  );
 }

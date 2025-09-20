@@ -1,24 +1,19 @@
-"use client"
+"use client";
 
-import { Badge } from "@raypx/ui/components/badge"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@raypx/ui/components/card"
-import type { LucideIcon } from "lucide-react"
-import type { ReactNode } from "react"
+import { Badge } from "@raypx/ui/components/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@raypx/ui/components/card";
+import type { LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 
 export interface DashboardStatCardProps {
-  title: string
-  value: string | number
-  icon: LucideIcon
-  subtitle?: ReactNode
+  title: string;
+  value: string | number;
+  icon: LucideIcon;
+  subtitle?: ReactNode;
   badge?: {
-    text: string
-    variant?: "default" | "secondary" | "destructive" | "outline"
-  }
+    text: string;
+    variant?: "default" | "secondary" | "destructive" | "outline";
+  };
 }
 
 export function DashboardStatCard({
@@ -36,9 +31,7 @@ export function DashboardStatCard({
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">{value}</div>
-        {subtitle && (
-          <p className="text-xs text-muted-foreground">{subtitle}</p>
-        )}
+        {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
         {badge && (
           <Badge variant={badge.variant || "default"} className="mt-2">
             {badge.text}
@@ -46,5 +39,5 @@ export function DashboardStatCard({
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

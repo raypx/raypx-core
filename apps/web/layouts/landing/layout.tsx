@@ -1,9 +1,9 @@
-import type { ReactNode } from "react"
+import type { ReactNode } from "react";
 
 export interface LandingLayoutProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export function LandingLayout({ children }: LandingLayoutProps) {
-  return <div className="bg-background">{children}</div>
+  return <div className="bg-background">{children}</div>;
 }

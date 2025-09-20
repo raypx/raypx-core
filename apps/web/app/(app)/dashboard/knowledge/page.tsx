@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import { Badge } from "@raypx/ui/components/badge"
-import { Button } from "@raypx/ui/components/button"
+import { Badge } from "@raypx/ui/components/badge";
+import { Button } from "@raypx/ui/components/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@raypx/ui/components/card"
-import { Input } from "@raypx/ui/components/input"
+} from "@raypx/ui/components/card";
+import { Input } from "@raypx/ui/components/input";
 import {
   BookOpen,
   Calendar,
@@ -22,15 +22,14 @@ import {
   Tag,
   Trash2,
   User,
-} from "lucide-react"
+} from "lucide-react";
 
 export default function KnowledgePage() {
   const articles = [
     {
       id: 1,
       title: "Getting Started with Raypx",
-      excerpt:
-        "Learn the basics of setting up and using Raypx for your organization.",
+      excerpt: "Learn the basics of setting up and using Raypx for your organization.",
       category: "Tutorials",
       status: "published",
       author: "John Doe",
@@ -41,8 +40,7 @@ export default function KnowledgePage() {
     {
       id: 2,
       title: "Advanced API Configuration",
-      excerpt:
-        "Deep dive into advanced API settings and optimization techniques.",
+      excerpt: "Deep dive into advanced API settings and optimization techniques.",
       category: "Technical",
       status: "published",
       author: "Jane Smith",
@@ -83,7 +81,7 @@ export default function KnowledgePage() {
       views: 2341,
       tags: ["troubleshooting", "support", "faq"],
     },
-  ]
+  ];
 
   const categories = [
     { name: "Tutorials", count: 12, color: "bg-blue-100 text-blue-800" },
@@ -95,27 +93,27 @@ export default function KnowledgePage() {
     },
     { name: "Security", count: 4, color: "bg-red-100 text-red-800" },
     { name: "Support", count: 10, color: "bg-yellow-100 text-yellow-800" },
-  ]
+  ];
 
   const stats = [
     { title: "Total Articles", value: "156", change: "+12.5%", icon: FileText },
     { title: "Published", value: "142", change: "+8.2%", icon: BookOpen },
     { title: "Drafts", value: "14", change: "+5.3%", icon: Edit },
     { title: "Total Views", value: "89.2K", change: "+23.1%", icon: Eye },
-  ]
+  ];
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "published":
-        return "bg-green-100 text-green-800"
+        return "bg-green-100 text-green-800";
       case "draft":
-        return "bg-yellow-100 text-yellow-800"
+        return "bg-yellow-100 text-yellow-800";
       case "archived":
-        return "bg-gray-100 text-gray-800"
+        return "bg-gray-100 text-gray-800";
       default:
-        return "bg-gray-100 text-gray-800"
+        return "bg-gray-100 text-gray-800";
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -138,16 +136,12 @@ export default function KnowledgePage() {
         {stats.map((stat) => (
           <Card key={stat.title}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                {stat.title}
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
               <stat.icon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-muted-foreground">
-                {stat.change} from last month
-              </p>
+              <p className="text-xs text-muted-foreground">{stat.change} from last month</p>
             </CardContent>
           </Card>
         ))}
@@ -157,9 +151,7 @@ export default function KnowledgePage() {
       <Card>
         <CardHeader>
           <CardTitle>Search Articles</CardTitle>
-          <CardDescription>
-            Find articles by title, content, or tags
-          </CardDescription>
+          <CardDescription>Find articles by title, content, or tags</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col gap-4 md:flex-row md:items-center">
@@ -202,9 +194,7 @@ export default function KnowledgePage() {
       <Card>
         <CardHeader>
           <CardTitle>All Articles</CardTitle>
-          <CardDescription>
-            Manage and organize your knowledge base articles
-          </CardDescription>
+          <CardDescription>Manage and organize your knowledge base articles</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -217,13 +207,9 @@ export default function KnowledgePage() {
                   <div className="flex items-start justify-between">
                     <div className="space-y-1">
                       <h3 className="text-lg font-medium">{article.title}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {article.excerpt}
-                      </p>
+                      <p className="text-sm text-muted-foreground">{article.excerpt}</p>
                     </div>
-                    <Badge className={getStatusColor(article.status)}>
-                      {article.status}
-                    </Badge>
+                    <Badge className={getStatusColor(article.status)}>{article.status}</Badge>
                   </div>
 
                   <div className="flex items-center space-x-4 text-xs text-muted-foreground">
@@ -265,11 +251,7 @@ export default function KnowledgePage() {
                     <Eye className="mr-2 h-3 w-3" />
                     View
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-red-600 hover:text-red-700"
-                  >
+                  <Button variant="ghost" size="icon" className="text-red-600 hover:text-red-700">
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
@@ -279,5 +261,5 @@ export default function KnowledgePage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

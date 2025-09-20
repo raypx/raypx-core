@@ -34,10 +34,8 @@ export const auth = {
   DELETE: "删除",
   DELETE_AVATAR: "删除头像",
   DELETE_ACCOUNT: "删除账户",
-  DELETE_ACCOUNT_DESCRIPTION:
-    "永久删除您的账户及其所有内容。此操作不可逆转，请谨慎继续。",
-  DELETE_ACCOUNT_INSTRUCTIONS:
-    "请确认删除您的账户。此操作不可逆转，请谨慎继续。",
+  DELETE_ACCOUNT_DESCRIPTION: "永久删除您的账户及其所有内容。此操作不可逆转，请谨慎继续。",
+  DELETE_ACCOUNT_INSTRUCTIONS: "请确认删除您的账户。此操作不可逆转，请谨慎继续。",
   DELETE_ACCOUNT_VERIFY: "请检查您的邮箱以验证账户删除。",
   DELETE_ACCOUNT_SUCCESS: "您的账户已被删除。",
   DISABLE_TWO_FACTOR: "禁用双因素认证",
@@ -159,4 +157,4 @@ export const auth = {
   PROTECTED_BY_RECAPTCHA: "此网站受 reCAPTCHA 保护。",
   BY_CONTINUING_YOU_AGREE: "继续即表示您同意",
   USER: "用户",
-}
+};

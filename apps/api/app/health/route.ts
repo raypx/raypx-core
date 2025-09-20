@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"
+import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
@@ -11,11 +11,11 @@ export async function GET() {
       services: {
         api: "healthy",
       },
-    }
+    };
 
     return NextResponse.json(health, {
       status: health.status === "ok" ? 200 : 503,
-    })
+    });
   } catch (error) {
     return NextResponse.json(
       {
@@ -24,6 +24,6 @@ export async function GET() {
         error: error || "Health check failed",
       },
       { status: 500 },
-    )
+    );
   }
 }

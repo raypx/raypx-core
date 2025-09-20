@@ -1,1 +1,1 @@
-export * from "./auth-data-cache"
+export * from "./auth-data-cache";

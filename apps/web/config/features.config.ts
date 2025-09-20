@@ -1,3 +1,3 @@
-import { featuresConfig } from "@raypx/config"
+import { featuresConfig } from "@raypx/config";
 
-export default featuresConfig
+export default featuresConfig;

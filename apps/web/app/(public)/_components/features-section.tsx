@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Card,
@@ -6,19 +6,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@raypx/ui/components/card"
-import {
-  BarChart3,
-  Bot,
-  Code2,
-  Database,
-  Globe,
-  Lock,
-  Rocket,
-  Users,
-  Zap,
-} from "lucide-react"
-import { useEffect, useRef, useState } from "react"
+} from "@raypx/ui/components/card";
+import { BarChart3, Bot, Code2, Database, Globe, Lock, Rocket, Users, Zap } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 const features = [
   {
@@ -84,45 +74,42 @@ const features = [
       "One-click deployments with automated CI/CD pipelines, rollback capabilities, and environment management.",
     color: "text-pink-600",
   },
-]
+];
 
 export function FeaturesSection() {
-  const [visibleCards, setVisibleCards] = useState<Set<number>>(new Set())
-  const sectionRef = useRef<HTMLDivElement>(null)
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([])
+  const [visibleCards, setVisibleCards] = useState<Set<number>>(new Set());
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          const index = cardRefs.current.indexOf(entry.target as HTMLDivElement)
+          const index = cardRefs.current.indexOf(entry.target as HTMLDivElement);
           if (entry.isIntersecting && index !== -1) {
-            setVisibleCards((prev) => new Set(prev).add(index))
+            setVisibleCards((prev) => new Set(prev).add(index));
           }
-        })
+        });
       },
       {
         threshold: 0.2,
         rootMargin: "50px",
       },
-    )
+    );
 
     cardRefs.current.forEach((ref) => {
-      if (ref) observer.observe(ref)
-    })
+      if (ref) observer.observe(ref);
+    });
 
     return () => {
       cardRefs.current.forEach((ref) => {
-        if (ref) observer.unobserve(ref)
-      })
-    }
-  }, [])
+        if (ref) observer.unobserve(ref);
+      });
+    };
+  }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      className="py-24 bg-white dark:bg-gray-900 relative overflow-hidden"
-    >
+    <section ref={sectionRef} className="py-24 bg-white dark:bg-gray-900 relative overflow-hidden">
       {/* Tech background elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-20 left-10 w-2 h-2 bg-blue-400/20 rounded-full animate-pulse" />
@@ -148,21 +135,21 @@ export function FeaturesSection() {
             </span>
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto animate-fade-in-up delay-300">
-            From AI integration to global deployment, we provide all the tools
-            and services you need to build, ship, and scale your applications.
+            From AI integration to global deployment, we provide all the tools and services you need
+            to build, ship, and scale your applications.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => {
-            const isVisible = visibleCards.has(index)
-            const delay = `${index * 100}ms`
+            const isVisible = visibleCards.has(index);
+            const delay = `${index * 100}ms`;
 
             return (
               <Card
                 key={index}
                 ref={(el) => {
-                  cardRefs.current[index] = el
+                  cardRefs.current[index] = el;
                 }}
                 className={`border-0 shadow-lg hover:shadow-xl dark:bg-gray-800 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl group relative overflow-hidden ${
                   isVisible
@@ -193,7 +180,7 @@ export function FeaturesSection() {
                 {/* Subtle border glow on hover */}
                 <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-indigo-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
               </Card>
-            )
+            );
           })}
         </div>
 
@@ -222,5 +209,5 @@ export function FeaturesSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

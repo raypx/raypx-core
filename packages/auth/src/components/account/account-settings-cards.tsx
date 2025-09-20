@@ -1,25 +1,25 @@
-"use client"
+"use client";
 
-import type { SettingsCardClassNames } from "@raypx/ui/components/settings"
-import { cn } from "@raypx/ui/lib/utils"
-import { useAuth } from "../../core/hooks/use-auth"
-import type { User } from "../../types"
-import { AccountsCard } from "./accounts-card"
-import { ChangeEmailCard } from "./change-email-card"
-import { UpdateAvatarCard } from "./update-avatar-card"
-import { UpdateFieldCard } from "./update-field-card"
-import { UpdateNameCard } from "./update-name-card"
-import { UpdateUsernameCard } from "./update-username-card"
+import type { SettingsCardClassNames } from "@raypx/ui/components/settings";
+import { cn } from "@raypx/ui/lib/utils";
+import { useAuth } from "../../core/hooks/use-auth";
+import type { User } from "../../types";
+import { AccountsCard } from "./accounts-card";
+import { ChangeEmailCard } from "./change-email-card";
+import { UpdateAvatarCard } from "./update-avatar-card";
+import { UpdateFieldCard } from "./update-field-card";
+import { UpdateNameCard } from "./update-name-card";
+import { UpdateUsernameCard } from "./update-username-card";
 
 export function AccountSettingsCards({
   className,
   classNames,
 }: {
-  className?: string
+  className?: string;
   classNames?: {
-    card?: SettingsCardClassNames
-    cards?: string
-  }
+    card?: SettingsCardClassNames;
+    cards?: string;
+  };
 }) {
   const {
     additionalFields,
@@ -29,37 +29,27 @@ export function AccountSettingsCards({
     hooks: { useSession },
     multiSession,
     account: accountOptions,
-  } = useAuth()
+  } = useAuth();
 
-  const { data: sessionData } = useSession()
+  const { data: sessionData } = useSession();
 
   return (
-    <div
-      className={cn(
-        "flex w-full flex-col gap-4 md:gap-6",
-        className,
-        classNames?.cards,
-      )}
-    >
+    <div className={cn("flex w-full flex-col gap-4 md:gap-6", className, classNames?.cards)}>
       {accountOptions?.fields?.includes("image") && avatar && (
         <UpdateAvatarCard classNames={classNames?.card} />
       )}
 
-      {credentials?.username && (
-        <UpdateUsernameCard classNames={classNames?.card} />
-      )}
+      {credentials?.username && <UpdateUsernameCard classNames={classNames?.card} />}
 
-      {accountOptions?.fields?.includes("name") && (
-        <UpdateNameCard classNames={classNames?.card} />
-      )}
+      {accountOptions?.fields?.includes("name") && <UpdateNameCard classNames={classNames?.card} />}
 
       {changeEmail && <ChangeEmailCard classNames={classNames?.card} />}
 
       {accountOptions?.fields?.map((field) => {
-        if (field === "image") return null
-        if (field === "name") return null
-        const additionalField = additionalFields?.[field]
-        if (!additionalField) return null
+        if (field === "image") return null;
+        if (field === "name") return null;
+        const additionalField = additionalFields?.[field];
+        if (!additionalField) return null;
 
         const {
           label,
@@ -70,11 +60,9 @@ export function AccountSettingsCards({
           type,
           multiline,
           validate,
-        } = additionalField
+        } = additionalField;
 
-        const defaultValue = (sessionData?.user as User)[
-          field as keyof User
-        ] as unknown
+        const defaultValue = (sessionData?.user as User)[field as keyof User] as unknown;
 
         return (
           <UpdateFieldCard
@@ -91,10 +79,10 @@ export function AccountSettingsCards({
             multiline={multiline}
             validate={validate}
           />
-        )
+        );
       })}
 
       {multiSession && <AccountsCard classNames={classNames?.card} />}
     </div>
-  )
+  );
 }

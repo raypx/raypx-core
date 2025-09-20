@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { Button } from "@raypx/ui/components/button"
-import { Loader2 } from "@raypx/ui/components/icons"
-import { cn } from "@raypx/ui/lib/utils"
-import type { ComponentProps, ReactNode } from "react"
-import { useFormState } from "react-hook-form"
-import type { SettingsCardClassNames } from "./settings-card"
+import { Button } from "@raypx/ui/components/button";
+import { Loader2 } from "@raypx/ui/components/icons";
+import { cn } from "@raypx/ui/lib/utils";
+import type { ComponentProps, ReactNode } from "react";
+import { useFormState } from "react-hook-form";
+import type { SettingsCardClassNames } from "./settings-card";
 
 interface SettingsActionButtonProps extends ComponentProps<typeof Button> {
-  classNames?: SettingsCardClassNames
-  actionLabel: ReactNode
-  disabled?: boolean
-  isSubmitting?: boolean
+  classNames?: SettingsCardClassNames;
+  actionLabel: ReactNode;
+  disabled?: boolean;
+  isSubmitting?: boolean;
 }
 
 export function SettingsActionButton({
@@ -24,8 +24,8 @@ export function SettingsActionButton({
   ...props
 }: SettingsActionButtonProps) {
   if (!onClick) {
-    const formState = useFormState()
-    isSubmitting = formState.isSubmitting
+    const formState = useFormState();
+    isSubmitting = formState.isSubmitting;
   }
 
   return (
@@ -46,5 +46,5 @@ export function SettingsActionButton({
       {isSubmitting && <Loader2 className="animate-spin" />}
       {actionLabel}
     </Button>
-  )
+  );
 }

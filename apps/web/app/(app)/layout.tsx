@@ -1,8 +1,8 @@
-import { RedirectToSignIn } from "@raypx/auth/core"
-import type { ReactNode } from "react"
+import { RedirectToSignIn } from "@raypx/auth/core";
+import type { ReactNode } from "react";
 
 interface AppLayoutProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export default async function AppLayout({ children }: AppLayoutProps) {
@@ -11,5 +11,5 @@ export default async function AppLayout({ children }: AppLayoutProps) {
       <RedirectToSignIn />
       {children}
     </>
-  )
+  );
 }

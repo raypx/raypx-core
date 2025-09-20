@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button } from "@raypx/ui/components/button"
-import { Card } from "@raypx/ui/components/card"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@raypx/ui/components/button";
+import { Card } from "@raypx/ui/components/card";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +10,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@raypx/ui/components/dialog"
+} from "@raypx/ui/components/dialog";
 import {
   Form,
   FormControl,
@@ -18,23 +18,22 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@raypx/ui/components/form"
-import { Loader2 } from "@raypx/ui/components/icons"
-import { Input } from "@raypx/ui/components/input"
-import type { SettingsCardClassNames } from "@raypx/ui/components/settings"
-import { cn } from "@raypx/ui/lib/utils"
-import type { Organization } from "better-auth/plugins/organization"
-import type { ComponentProps } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod/v4"
-import { useAuth } from "../../core/hooks/use-auth"
-import { getLocalizedError } from "../../core/lib/utils"
-import { OrganizationCellView } from "./organization-cell-view"
+} from "@raypx/ui/components/form";
+import { Loader2 } from "@raypx/ui/components/icons";
+import { Input } from "@raypx/ui/components/input";
+import type { SettingsCardClassNames } from "@raypx/ui/components/settings";
+import { cn } from "@raypx/ui/lib/utils";
+import type { Organization } from "better-auth/plugins/organization";
+import type { ComponentProps } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod/v4";
+import { useAuth } from "../../core/hooks/use-auth";
+import { getLocalizedError } from "../../core/lib/utils";
+import { OrganizationCellView } from "./organization-cell-view";
 
-export interface DeleteOrganizationDialogProps
-  extends ComponentProps<typeof Dialog> {
-  classNames?: SettingsCardClassNames
-  organization: Organization
+export interface DeleteOrganizationDialogProps extends ComponentProps<typeof Dialog> {
+  classNames?: SettingsCardClassNames;
+  organization: Organization;
 }
 
 export function DeleteOrganizationDialog({
@@ -50,9 +49,9 @@ export function DeleteOrganizationDialog({
     t,
     navigate,
     toast,
-  } = useAuth()
+  } = useAuth();
 
-  const { refetch: refetchOrganizations } = useListOrganizations()
+  const { refetch: refetchOrganizations } = useListOrganizations();
 
   const formSchema = z.object({
     slug: z
@@ -61,43 +60,41 @@ export function DeleteOrganizationDialog({
       .refine((val) => val === organization.slug, {
         message: t("SLUG_DOES_NOT_MATCH"),
       }),
-  })
+  });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       slug: "",
     },
-  })
+  });
 
-  const { isSubmitting } = form.formState
+  const { isSubmitting } = form.formState;
 
   const deleteOrganization = async () => {
     try {
       await authClient.organization.delete({
         organizationId: organization.id,
         fetchOptions: { throw: true },
-      })
+      });
 
-      await refetchOrganizations?.()
+      await refetchOrganizations?.();
 
       toast({
         variant: "success",
         message: t("DELETE_ORGANIZATION_SUCCESS"),
-      })
+      });
 
-      navigate(
-        `${accountOptions?.basePath}/${accountOptions?.viewPaths.ORGANIZATIONS}`,
-      )
+      navigate(`${accountOptions?.basePath}/${accountOptions?.viewPaths.ORGANIZATIONS}`);
 
-      onOpenChange?.(false)
+      onOpenChange?.(false);
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
-  }
+  };
 
   return (
     <Dialog onOpenChange={onOpenChange} {...props}>
@@ -107,9 +104,7 @@ export function DeleteOrganizationDialog({
             {t("DELETE_ORGANIZATION")}
           </DialogTitle>
 
-          <DialogDescription
-            className={cn("text-xs md:text-sm", classNames?.description)}
-          >
+          <DialogDescription className={cn("text-xs md:text-sm", classNames?.description)}>
             {t("DELETE_ORGANIZATION_DESCRIPTION")}
           </DialogDescription>
         </DialogHeader>
@@ -119,10 +114,7 @@ export function DeleteOrganizationDialog({
         </Card>
 
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(deleteOrganization)}
-            className="grid gap-6"
-          >
+          <form onSubmit={form.handleSubmit(deleteOrganization)} className="grid gap-6">
             <FormField
               control={form.control}
               name="slug"
@@ -159,10 +151,7 @@ export function DeleteOrganizationDialog({
               </Button>
 
               <Button
-                className={cn(
-                  classNames?.button,
-                  classNames?.destructiveButton,
-                )}
+                className={cn(classNames?.button, classNames?.destructiveButton)}
                 disabled={isSubmitting}
                 variant="destructive"
                 type="submit"
@@ -176,5 +165,5 @@ export function DeleteOrganizationDialog({
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

@@ -275,7 +275,7 @@ export const env = envSchema.parse(process.env)
 // ✅ Good - Shared linting configuration
 {
   "biome": {
-    "extends": ["../../biome.jsonc"],
+    "extends": ["../../biome.json"],
     "files": {
       "includes": ["src/**/*"]
     }

@@ -1,35 +1,32 @@
-"use client"
+"use client";
 
-import { useAuth } from "@raypx/auth/core"
-import { Button } from "@raypx/ui/components/button"
-import { ArrowRight, CheckCircle } from "lucide-react"
-import Link from "next/link"
+import { useAuth } from "@raypx/auth/core";
+import { Button } from "@raypx/ui/components/button";
+import { ArrowRight, CheckCircle } from "lucide-react";
+import Link from "next/link";
 
 const benefits = [
   "Free tier with generous limits",
   "No setup or maintenance required",
   "Scale from prototype to production",
   "24/7 expert support",
-]
+];
 
 export function CTASection() {
   const {
     viewPaths: pages,
     hooks: { useSession },
-  } = useAuth()
-  const { data: session } = useSession()
+  } = useAuth();
+  const { data: session } = useSession();
 
   return (
     <section className="py-24 bg-gradient-to-r from-blue-600 to-indigo-700">
       <div className="max-w-4xl mx-auto px-6 text-center">
         <div className="space-y-8 text-white">
           <div className="space-y-4">
-            <h2 className="text-3xl md:text-4xl font-bold">
-              Ready to build the future?
-            </h2>
+            <h2 className="text-3xl md:text-4xl font-bold">Ready to build the future?</h2>
             <p className="text-xl text-blue-100">
-              Join thousands of developers already building amazing AI
-              applications with Raypx.
+              Join thousands of developers already building amazing AI applications with Raypx.
             </p>
           </div>
 
@@ -85,5 +82,5 @@ export function CTASection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

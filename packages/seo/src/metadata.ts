@@ -1,48 +1,48 @@
-import { merge } from "@raypx/shared"
-import type { Metadata } from "next"
-import type { NextSeoProps } from "next-seo"
+import { merge } from "@raypx/shared";
+import type { Metadata } from "next";
+import type { NextSeoProps } from "next-seo";
 
 export interface SEOConfig {
-  title?: string
-  description?: string
-  image?: string
-  canonical?: string
-  noindex?: boolean
-  nofollow?: boolean
-  keywords?: string[]
-  additionalMetaTags?: NextSeoProps["additionalMetaTags"]
-  additionalLinkTags?: NextSeoProps["additionalLinkTags"]
+  title?: string;
+  description?: string;
+  image?: string;
+  canonical?: string;
+  noindex?: boolean;
+  nofollow?: boolean;
+  keywords?: string[];
+  additionalMetaTags?: NextSeoProps["additionalMetaTags"];
+  additionalLinkTags?: NextSeoProps["additionalLinkTags"];
   openGraph?: {
-    type?: string
-    locale?: string
+    type?: string;
+    locale?: string;
     images?: Array<{
-      url: string
-      width?: number
-      height?: number
-      alt?: string
-    }>
-  }
+      url: string;
+      width?: number;
+      height?: number;
+      alt?: string;
+    }>;
+  };
   twitter?: {
-    handle?: string
-    site?: string
-    cardType?: "summary" | "summary_large_image" | "app" | "player"
-  }
+    handle?: string;
+    site?: string;
+    cardType?: "summary" | "summary_large_image" | "app" | "player";
+  };
 }
 
-type MetadataGenerator = Omit<Metadata, "description" | "title"> & SEOConfig
+type MetadataGenerator = Omit<Metadata, "description" | "title"> & SEOConfig;
 
-const applicationName = "Raypx"
+const applicationName = "Raypx";
 
 const author: Metadata["authors"] = {
   name: "Raypx",
   url: "https://raypx.com/",
-}
+};
 
-const publisher = "Raypx"
-const twitterHandle = "@raypx_com"
-const protocol = process.env.NODE_ENV === "production" ? "https" : "http"
-const productionUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
-const baseUrl = productionUrl ? `${protocol}://${productionUrl}` : undefined
+const publisher = "Raypx";
+const twitterHandle = "@raypx_com";
+const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+const productionUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+const baseUrl = productionUrl ? `${protocol}://${productionUrl}` : undefined;
 
 export const defaultSEOConfig: NextSeoProps = {
   titleTemplate: `%s | ${applicationName}`,
@@ -94,7 +94,7 @@ export const defaultSEOConfig: NextSeoProps = {
       content: "#000000",
     },
   ],
-}
+};
 
 export const createSEOProps = (config: SEOConfig = {}): NextSeoProps => {
   const {
@@ -109,7 +109,7 @@ export const createSEOProps = (config: SEOConfig = {}): NextSeoProps => {
     additionalLinkTags = [],
     openGraph,
     twitter,
-  } = config
+  } = config;
 
   const seoProps: NextSeoProps = {
     ...defaultSEOConfig,
@@ -131,7 +131,7 @@ export const createSEOProps = (config: SEOConfig = {}): NextSeoProps => {
         : []),
     ],
     additionalLinkTags: [...additionalLinkTags],
-  }
+  };
 
   if (openGraph || image) {
     seoProps.openGraph = {
@@ -147,18 +147,18 @@ export const createSEOProps = (config: SEOConfig = {}): NextSeoProps => {
           },
         ],
       }),
-    }
+    };
   }
 
   if (twitter) {
     seoProps.twitter = {
       ...defaultSEOConfig.twitter,
       ...twitter,
-    }
+    };
   }
 
-  return seoProps
-}
+  return seoProps;
+};
 
 export const createMetadata = ({
   title,
@@ -169,15 +169,13 @@ export const createMetadata = ({
   openGraph,
   ...properties
 }: MetadataGenerator = {}): Metadata => {
-  const parsedTitle = title ? `${title} | ${applicationName}` : applicationName
+  const parsedTitle = title ? `${title} | ${applicationName}` : applicationName;
 
   const defaultMetadata: Metadata = {
     title: parsedTitle,
     description,
     applicationName,
-    metadataBase: productionUrl
-      ? new URL(`${protocol}://${productionUrl}`)
-      : undefined,
+    metadataBase: productionUrl ? new URL(`${protocol}://${productionUrl}`) : undefined,
     authors: [author],
     creator: author.name,
     publisher,
@@ -207,9 +205,9 @@ export const createMetadata = ({
       creator: twitterHandle,
       site: twitterHandle,
     },
-  }
+  };
 
-  const metadata: Metadata = merge(defaultMetadata, properties)
+  const metadata: Metadata = merge(defaultMetadata, properties);
 
   if (image && metadata.openGraph) {
     metadata.openGraph.images = [
@@ -219,8 +217,8 @@ export const createMetadata = ({
         height: 630,
         alt: title || applicationName,
       },
-    ]
+    ];
   }
 
-  return metadata
-}
+  return metadata;
+};

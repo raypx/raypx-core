@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { dayjs } from "@raypx/shared/utils"
-import { Button } from "@raypx/ui/components/button"
-import { Card } from "@raypx/ui/components/card"
+import { dayjs } from "@raypx/shared/utils";
+import { Button } from "@raypx/ui/components/button";
+import { Card } from "@raypx/ui/components/card";
 import {
   Dialog,
   DialogContent,
@@ -10,20 +10,20 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@raypx/ui/components/dialog"
-import { KeyRoundIcon, Loader2 } from "@raypx/ui/components/icons"
-import type { SettingsCardClassNames } from "@raypx/ui/components/settings"
-import { cn } from "@raypx/ui/lib/utils"
-import { type ComponentProps, useState } from "react"
-import { useAuth } from "../../core/hooks/use-auth"
-import { useLang } from "../../core/hooks/use-lang"
-import { getLocalizedError } from "../../core/lib/utils"
-import type { ApiKey, Refetch } from "../../types"
+} from "@raypx/ui/components/dialog";
+import { KeyRoundIcon, Loader2 } from "@raypx/ui/components/icons";
+import type { SettingsCardClassNames } from "@raypx/ui/components/settings";
+import { cn } from "@raypx/ui/lib/utils";
+import { type ComponentProps, useState } from "react";
+import { useAuth } from "../../core/hooks/use-auth";
+import { useLang } from "../../core/hooks/use-lang";
+import { getLocalizedError } from "../../core/lib/utils";
+import type { ApiKey, Refetch } from "../../types";
 
 interface ApiKeyDeleteDialogProps extends ComponentProps<typeof Dialog> {
-  classNames?: SettingsCardClassNames
-  apiKey: ApiKey
-  refetch?: Refetch
+  classNames?: SettingsCardClassNames;
+  apiKey: ApiKey;
+  refetch?: Refetch;
 }
 
 export function ApiKeyDeleteDialog({
@@ -37,35 +37,35 @@ export function ApiKeyDeleteDialog({
     t,
     mutators: { deleteApiKey },
     toast,
-  } = useAuth()
+  } = useAuth();
 
-  const { lang } = useLang()
-  const [isLoading, setIsLoading] = useState(false)
+  const { lang } = useLang();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleDelete = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
-      await deleteApiKey({ keyId: apiKey.id })
-      await refetch?.()
-      onOpenChange?.(false)
+      await deleteApiKey({ keyId: apiKey.id });
+      await refetch?.();
+      onOpenChange?.(false);
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
 
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
   // Format expiration date or show "Never expires"
   const formatExpiration = () => {
-    if (!apiKey.expiresAt) return t("NEVER_EXPIRES")
+    if (!apiKey.expiresAt) return t("NEVER_EXPIRES");
 
-    const expiresDate = dayjs(apiKey.expiresAt)
-    return `${t("EXPIRES")} ${expiresDate.locale(lang ?? "en").format("LL")}`
-  }
+    const expiresDate = dayjs(apiKey.expiresAt);
+    return `${t("EXPIRES")} ${expiresDate.locale(lang ?? "en").format("LL")}`;
+  };
 
   return (
     <Dialog onOpenChange={onOpenChange} {...props}>
@@ -78,19 +78,12 @@ export function ApiKeyDeleteDialog({
             {t("DELETE")} {t("API_KEY")}
           </DialogTitle>
 
-          <DialogDescription
-            className={cn("text-xs md:text-sm", classNames?.description)}
-          >
+          <DialogDescription className={cn("text-xs md:text-sm", classNames?.description)}>
             {t("DELETE_API_KEY_CONFIRM")}
           </DialogDescription>
         </DialogHeader>
 
-        <Card
-          className={cn(
-            "my-2 flex-row items-center gap-3 px-4 py-3",
-            classNames?.cell,
-          )}
-        >
+        <Card className={cn("my-2 flex-row items-center gap-3 px-4 py-3", classNames?.cell)}>
           <KeyRoundIcon className={cn("size-4", classNames?.icon)} />
 
           <div className="flex flex-col">
@@ -103,9 +96,7 @@ export function ApiKeyDeleteDialog({
               </span>
             </div>
 
-            <div className="text-muted-foreground text-xs">
-              {formatExpiration()}
-            </div>
+            <div className="text-muted-foreground text-xs">{formatExpiration()}</div>
           </div>
         </Card>
 
@@ -133,5 +124,5 @@ export function ApiKeyDeleteDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

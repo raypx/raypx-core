@@ -1,19 +1,19 @@
-import { Badge } from "@raypx/ui/components/badge"
-import { Button } from "@raypx/ui/components/button"
+import { Badge } from "@raypx/ui/components/badge";
+import { Button } from "@raypx/ui/components/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@raypx/ui/components/card"
+} from "@raypx/ui/components/card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@raypx/ui/components/select"
+} from "@raypx/ui/components/select";
 import {
   Activity,
   BarChart3,
@@ -24,7 +24,7 @@ import {
   TrendingDown,
   TrendingUp,
   Users,
-} from "lucide-react"
+} from "lucide-react";
 
 export default function AnalyticsPage() {
   const metrics = [
@@ -60,7 +60,7 @@ export default function AnalyticsPage() {
       icon: TrendingDown,
       description: "vs last month",
     },
-  ]
+  ];
 
   const topPages = [
     {
@@ -93,7 +93,7 @@ export default function AnalyticsPage() {
       change: "+5.6%",
       changeType: "positive" as const,
     },
-  ]
+  ];
 
   const deviceStats = [
     { device: "Desktop", percentage: 65, icon: Monitor, color: "bg-blue-500" },
@@ -104,14 +104,14 @@ export default function AnalyticsPage() {
       color: "bg-green-500",
     },
     { device: "Tablet", percentage: 7, icon: Monitor, color: "bg-purple-500" },
-  ]
+  ];
 
   const trafficSources = [
     { source: "Direct", percentage: 45, change: "+12.3%" },
     { source: "Organic Search", percentage: 32, change: "+8.7%" },
     { source: "Social Media", percentage: 15, change: "+23.1%" },
     { source: "Referral", percentage: 8, change: "-2.1%" },
-  ]
+  ];
 
   return (
     <div className="space-y-6">
@@ -147,9 +147,7 @@ export default function AnalyticsPage() {
         {metrics.map((metric) => (
           <Card key={metric.title}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                {metric.title}
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">{metric.title}</CardTitle>
               <metric.icon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -162,16 +160,12 @@ export default function AnalyticsPage() {
                 )}
                 <span
                   className={`text-xs ${
-                    metric.changeType === "positive"
-                      ? "text-green-600"
-                      : "text-red-600"
+                    metric.changeType === "positive" ? "text-green-600" : "text-red-600"
                   }`}
                 >
                   {metric.change}
                 </span>
-                <span className="text-xs text-muted-foreground">
-                  {metric.description}
-                </span>
+                <span className="text-xs text-muted-foreground">{metric.description}</span>
               </div>
             </CardContent>
           </Card>
@@ -184,17 +178,13 @@ export default function AnalyticsPage() {
         <Card className="md:col-span-2">
           <CardHeader>
             <CardTitle>Traffic Overview</CardTitle>
-            <CardDescription>
-              Daily page views and unique visitors
-            </CardDescription>
+            <CardDescription>Daily page views and unique visitors</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-80 flex items-center justify-center bg-muted/50 rounded-lg">
               <div className="text-center">
                 <BarChart3 className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                <p className="text-lg font-medium text-muted-foreground mb-2">
-                  Traffic Chart
-                </p>
+                <p className="text-lg font-medium text-muted-foreground mb-2">Traffic Chart</p>
                 <p className="text-sm text-muted-foreground">
                   Interactive chart showing daily traffic patterns
                 </p>
@@ -215,10 +205,7 @@ export default function AnalyticsPage() {
           <CardContent>
             <div className="space-y-4">
               {deviceStats.map((device) => (
-                <div
-                  key={device.device}
-                  className="flex items-center justify-between"
-                >
+                <div key={device.device} className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <device.icon className="h-5 w-5 text-muted-foreground" />
                     <span className="text-sm font-medium">{device.device}</span>
@@ -249,19 +236,12 @@ export default function AnalyticsPage() {
           <CardContent>
             <div className="space-y-4">
               {trafficSources.map((source) => (
-                <div
-                  key={source.source}
-                  className="flex items-center justify-between"
-                >
+                <div key={source.source} className="flex items-center justify-between">
                   <span className="text-sm font-medium">{source.source}</span>
                   <div className="flex items-center space-x-2">
-                    <span className="text-sm text-muted-foreground">
-                      {source.percentage}%
-                    </span>
+                    <span className="text-sm text-muted-foreground">{source.percentage}%</span>
                     <Badge
-                      variant={
-                        source.change.startsWith("+") ? "default" : "secondary"
-                      }
+                      variant={source.change.startsWith("+") ? "default" : "secondary"}
                       className="text-xs"
                     >
                       {source.change}
@@ -278,9 +258,7 @@ export default function AnalyticsPage() {
       <Card>
         <CardHeader>
           <CardTitle>Top Pages</CardTitle>
-          <CardDescription>
-            Most visited pages in your application
-          </CardDescription>
+          <CardDescription>Most visited pages in your application</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -302,9 +280,7 @@ export default function AnalyticsPage() {
                 </div>
                 <div className="flex items-center space-x-2">
                   <Badge
-                    variant={
-                      page.changeType === "positive" ? "default" : "secondary"
-                    }
+                    variant={page.changeType === "positive" ? "default" : "secondary"}
                     className="text-xs"
                   >
                     {page.change}
@@ -326,16 +302,12 @@ export default function AnalyticsPage() {
           <div className="h-64 flex items-center justify-center bg-muted/50 rounded-lg">
             <div className="text-center">
               <Activity className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
-              <p className="text-sm text-muted-foreground">
-                Real-time activity feed
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Live updates and user actions
-              </p>
+              <p className="text-sm text-muted-foreground">Real-time activity feed</p>
+              <p className="text-xs text-muted-foreground">Live updates and user actions</p>
             </div>
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

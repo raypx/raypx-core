@@ -1,10 +1,10 @@
-import assert from "node:assert/strict"
-import type { Config } from "drizzle-kit"
-import { envs } from "./src/envs"
+import assert from "node:assert/strict";
+import type { Config } from "drizzle-kit";
+import { envs } from "./src/envs";
 
-const env = envs()
+const env = envs();
 
-assert(env.DATABASE_URL, "Missing DATABASE_URL")
+assert(env.DATABASE_URL, "Missing DATABASE_URL");
 
 const config: Config = {
   schema: "./src/schemas/**/*.ts",
@@ -16,6 +16,6 @@ const config: Config = {
   casing: "snake_case",
   verbose: true,
   strict: true,
-}
+};
 
-export default config
+export default config;

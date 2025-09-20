@@ -34,11 +34,11 @@
     "@raypx/shared": "workspace:*",
     "@raypx/ui": "workspace:*",
     "@wojtekmaj/react-recaptcha-v3": "^0.1.4",
-    "better-auth": "^1.3.12",
+    "better-auth": "^1.3.13",
     "next-intl": "catalog:",
     "react": "catalog:react19",
     "react-google-recaptcha": "^3.1.0",
-    "react-hook-form": "^7.62.0",
+    "react-hook-form": "^7.63.0",
     "react-qr-code": "^2.0.18"
   },
   "peerDependencies": {

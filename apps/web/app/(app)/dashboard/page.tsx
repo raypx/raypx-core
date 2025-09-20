@@ -1,12 +1,12 @@
-import { Badge } from "@raypx/ui/components/badge"
-import { Button } from "@raypx/ui/components/button"
+import { Badge } from "@raypx/ui/components/badge";
+import { Button } from "@raypx/ui/components/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@raypx/ui/components/card"
+} from "@raypx/ui/components/card";
 import {
   Activity,
   ArrowDownRight,
@@ -17,8 +17,8 @@ import {
   Plus,
   TrendingUp,
   Users,
-} from "lucide-react"
-import { SettingsButton } from "@/components/settings-button"
+} from "lucide-react";
+import { SettingsButton } from "@/components/settings-button";
 
 export default function ConsolePage() {
   const stats = [
@@ -54,7 +54,7 @@ export default function ConsolePage() {
       icon: Clock,
       description: "Average response time",
     },
-  ]
+  ];
 
   const recentActivity = [
     {
@@ -82,7 +82,7 @@ export default function ConsolePage() {
       time: "3 hours ago",
       type: "security",
     },
-  ]
+  ];
 
   const quickActions = [
     {
@@ -109,7 +109,7 @@ export default function ConsolePage() {
       href: "/account/api-keys",
       variant: "outline" as const,
     },
-  ]
+  ];
 
   const customActions = [
     {
@@ -120,16 +120,14 @@ export default function ConsolePage() {
         </SettingsButton>
       ),
     },
-  ]
+  ];
 
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Welcome Section */}
       <div className="flex flex-col gap-3 sm:gap-4 md:flex-row md:items-center md:justify-between">
         <div className="space-y-1">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-            Welcome back!
-          </h1>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Welcome back!</h1>
           <p className="text-sm sm:text-base text-muted-foreground">
             Here's what's happening with your projects today.
           </p>
@@ -163,9 +161,7 @@ export default function ConsolePage() {
                 )}
                 <span
                   className={`text-xs ${
-                    stat.changeType === "positive"
-                      ? "text-green-600"
-                      : "text-red-600"
+                    stat.changeType === "positive" ? "text-green-600" : "text-red-600"
                   }`}
                 >
                   {stat.change}
@@ -187,9 +183,7 @@ export default function ConsolePage() {
         {/* Quick Actions */}
         <Card className="xl:col-span-1">
           <CardHeader className="pb-3">
-            <CardTitle className="text-base sm:text-lg">
-              Quick Actions
-            </CardTitle>
+            <CardTitle className="text-base sm:text-lg">Quick Actions</CardTitle>
             <CardDescription className="text-xs sm:text-sm">
               Common tasks and shortcuts
             </CardDescription>
@@ -219,9 +213,7 @@ export default function ConsolePage() {
         {/* Recent Activity */}
         <Card className="xl:col-span-1">
           <CardHeader className="pb-3">
-            <CardTitle className="text-base sm:text-lg">
-              Recent Activity
-            </CardTitle>
+            <CardTitle className="text-base sm:text-lg">Recent Activity</CardTitle>
             <CardDescription className="text-xs sm:text-sm">
               Latest updates and changes
             </CardDescription>
@@ -237,9 +229,7 @@ export default function ConsolePage() {
                     <p className="text-xs sm:text-sm font-medium text-foreground line-clamp-2">
                       {activity.action}
                     </p>
-                    <p className="text-xs text-muted-foreground">
-                      {activity.time}
-                    </p>
+                    <p className="text-xs text-muted-foreground">{activity.time}</p>
                   </div>
                   <Badge variant="outline" className="text-xs flex-shrink-0">
                     {activity.type}
@@ -253,9 +243,7 @@ export default function ConsolePage() {
         {/* Analytics Overview */}
         <Card className="xl:col-span-1">
           <CardHeader className="pb-3">
-            <CardTitle className="text-base sm:text-lg">
-              Analytics Overview
-            </CardTitle>
+            <CardTitle className="text-base sm:text-lg">Analytics Overview</CardTitle>
             <CardDescription className="text-xs sm:text-sm">
               Key performance metrics
             </CardDescription>
@@ -264,9 +252,7 @@ export default function ConsolePage() {
             <div className="space-y-4 sm:space-y-5">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs sm:text-sm text-muted-foreground">
-                    User Growth
-                  </span>
+                  <span className="text-xs sm:text-sm text-muted-foreground">User Growth</span>
                   <span className="text-xs sm:text-sm font-medium">+12.5%</span>
                 </div>
                 <div className="w-full bg-muted rounded-full h-1.5 sm:h-2">
@@ -294,9 +280,7 @@ export default function ConsolePage() {
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs sm:text-sm text-muted-foreground">
-                    API Performance
-                  </span>
+                  <span className="text-xs sm:text-sm text-muted-foreground">API Performance</span>
                   <span className="text-xs sm:text-sm font-medium">+23.1%</span>
                 </div>
                 <div className="w-full bg-muted rounded-full h-1.5 sm:h-2">
@@ -314,9 +298,7 @@ export default function ConsolePage() {
       {/* Chart Placeholder */}
       <Card className="overflow-hidden">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base sm:text-lg">
-            Performance Trends
-          </CardTitle>
+          <CardTitle className="text-base sm:text-lg">Performance Trends</CardTitle>
           <CardDescription className="text-xs sm:text-sm">
             Monthly performance overview
           </CardDescription>
@@ -338,5 +320,5 @@ export default function ConsolePage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

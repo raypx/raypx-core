@@ -34,7 +34,7 @@
     "@types/node": "catalog:",
     "@types/react": "catalog:react19",
     "next": "catalog:",
-    "posthog-js": "^1.266.1",
+    "posthog-js": "^1.266.2",
     "typescript": "catalog:"
   }
 }

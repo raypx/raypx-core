@@ -1,22 +1,22 @@
-import { PostHog } from "posthog-node"
-import { envs } from "../envs"
+import { PostHog } from "posthog-node";
+import { envs } from "../envs";
 
 interface AnalyticsEvent {
-  event: string
-  distinctId: string
-  properties?: Record<string, unknown>
+  event: string;
+  distinctId: string;
+  properties?: Record<string, unknown>;
 }
 
 interface AnalyticsIdentify {
-  distinctId: string
-  properties: Record<string, unknown>
+  distinctId: string;
+  properties: Record<string, unknown>;
 }
 
 class ServerAnalyticsService {
-  private posthog: PostHog | null = null
+  private posthog: PostHog | null = null;
 
   constructor() {
-    this.initializePostHog()
+    this.initializePostHog();
   }
 
   private initializePostHog() {
@@ -25,13 +25,13 @@ class ServerAnalyticsService {
         host: envs.NEXT_PUBLIC_POSTHOG_HOST,
         flushAt: 20,
         flushInterval: 10000,
-      })
+      });
     }
   }
 
   async track(params: AnalyticsEvent): Promise<void> {
     if (!this.posthog || process.env.NODE_ENV !== "production") {
-      return
+      return;
     }
 
     try {
@@ -39,35 +39,35 @@ class ServerAnalyticsService {
         distinctId: params.distinctId,
         event: params.event,
         properties: params.properties,
-      })
+      });
     } catch (error) {
-      console.warn("Analytics tracking error:", error)
+      console.warn("Analytics tracking error:", error);
     }
   }
 
   async identify(params: AnalyticsIdentify): Promise<void> {
     if (!this.posthog || process.env.NODE_ENV !== "production") {
-      return
+      return;
     }
 
     try {
       this.posthog.identify({
         distinctId: params.distinctId,
         properties: params.properties,
-      })
+      });
     } catch (error) {
-      console.warn("Analytics identify error:", error)
+      console.warn("Analytics identify error:", error);
     }
   }
 
   async group(params: {
-    distinctId: string
-    groupType: string
-    groupKey: string
-    properties?: Record<string, unknown>
+    distinctId: string;
+    groupType: string;
+    groupKey: string;
+    properties?: Record<string, unknown>;
   }): Promise<void> {
     if (!this.posthog || process.env.NODE_ENV !== "production") {
-      return
+      return;
     }
 
     try {
@@ -75,7 +75,7 @@ class ServerAnalyticsService {
         groupType: params.groupType,
         groupKey: params.groupKey,
         properties: params.properties || {},
-      })
+      });
 
       // Associate user with group
       this.posthog.capture({
@@ -86,30 +86,30 @@ class ServerAnalyticsService {
           $group_key: params.groupKey,
           ...params.properties,
         },
-      })
+      });
     } catch (error) {
-      console.warn("Analytics group error:", error)
+      console.warn("Analytics group error:", error);
     }
   }
 
   async alias(distinctId: string, alias: string): Promise<void> {
     if (!this.posthog || process.env.NODE_ENV !== "production") {
-      return
+      return;
     }
 
     try {
       this.posthog.alias({
         distinctId,
         alias,
-      })
+      });
     } catch (error) {
-      console.warn("Analytics alias error:", error)
+      console.warn("Analytics alias error:", error);
     }
   }
 
   async shutdown(): Promise<void> {
     if (this.posthog) {
-      await this.posthog.shutdown()
+      await this.posthog.shutdown();
     }
   }
 
@@ -118,46 +118,46 @@ class ServerAnalyticsService {
     key: string,
     distinctId: string,
     options?: {
-      groups?: Record<string, string>
-      personProperties?: Record<string, string>
-      groupProperties?: Record<string, Record<string, string>>
+      groups?: Record<string, string>;
+      personProperties?: Record<string, string>;
+      groupProperties?: Record<string, Record<string, string>>;
     },
   ): Promise<boolean | string | undefined> {
     if (!this.posthog || process.env.NODE_ENV !== "production") {
-      return undefined
+      return undefined;
     }
 
     try {
-      return await this.posthog.getFeatureFlag(key, distinctId, options)
+      return await this.posthog.getFeatureFlag(key, distinctId, options);
     } catch (error) {
-      console.warn("Feature flag error:", error)
-      return undefined
+      console.warn("Feature flag error:", error);
+      return undefined;
     }
   }
 
   async getAllFlags(
     distinctId: string,
     options?: {
-      groups?: Record<string, string>
-      personProperties?: Record<string, string>
-      groupProperties?: Record<string, Record<string, string>>
+      groups?: Record<string, string>;
+      personProperties?: Record<string, string>;
+      groupProperties?: Record<string, Record<string, string>>;
     },
   ): Promise<Record<string, boolean | string> | undefined> {
     if (!this.posthog || process.env.NODE_ENV !== "production") {
-      return undefined
+      return undefined;
     }
 
     try {
-      return await this.posthog.getAllFlags(distinctId, options)
+      return await this.posthog.getAllFlags(distinctId, options);
     } catch (error) {
-      console.warn("Get all flags error:", error)
-      return undefined
+      console.warn("Get all flags error:", error);
+      return undefined;
     }
   }
 }
 
 // Singleton instance
-const serverAnalytics = new ServerAnalyticsService()
+const serverAnalytics = new ServerAnalyticsService();
 
-export { serverAnalytics }
-export type { AnalyticsEvent, AnalyticsIdentify }
+export { serverAnalytics };
+export type { AnalyticsEvent, AnalyticsIdentify };

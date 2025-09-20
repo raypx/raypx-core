@@ -20,12 +20,9 @@
   },
   "formatter": {
     "enabled": true,
-    "formatWithErrors": true,
     "indentStyle": "space",
     "indentWidth": 2,
-    "lineEnding": "lf",
-    "lineWidth": 100,
-    "attributePosition": "auto"
+    "lineWidth": 100
   },
   "linter": {
     "enabled": true,
@@ -46,27 +43,18 @@
   },
   "json": {
     "formatter": {
-      "enabled": true,
-      "indentStyle": "space",
-      "lineEnding": "lf",
-      "lineWidth": 80,
       "trailingCommas": "none"
     }
   },
   "javascript": {
     "formatter": {
       "enabled": true,
-      "indentStyle": "space",
-      "lineEnding": "lf",
-      "lineWidth": 80,
-      "semicolons": "asNeeded"
+      "semicolons": "always"
     }
   },
   "css": {
     "formatter": {
-      "indentStyle": "space",
-      "lineEnding": "lf",
-      "lineWidth": 80,
+      "enabled": true,
       "quoteStyle": "double"
     }
   },

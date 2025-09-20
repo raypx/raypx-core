@@ -1,26 +1,26 @@
-"use client"
+"use client";
 
-import { Skeleton } from "@raypx/ui/components/skeleton"
-import { cn } from "@raypx/ui/lib/utils"
-import { useAuth } from "../../core/hooks/use-auth"
-import type { Profile } from "../../types"
-import { UserAvatar, type UserAvatarClassNames } from "./user-avatar"
+import { Skeleton } from "@raypx/ui/components/skeleton";
+import { cn } from "@raypx/ui/lib/utils";
+import { useAuth } from "../../core/hooks/use-auth";
+import type { Profile } from "../../types";
+import { UserAvatar, type UserAvatarClassNames } from "./user-avatar";
 
 export interface UserViewClassNames {
-  base?: string
-  avatar?: UserAvatarClassNames
-  content?: string
-  title?: string
-  subtitle?: string
-  skeleton?: string
+  base?: string;
+  avatar?: UserAvatarClassNames;
+  content?: string;
+  title?: string;
+  subtitle?: string;
+  skeleton?: string;
 }
 
 export interface UserViewProps {
-  className?: string
-  classNames?: UserViewClassNames
-  isPending?: boolean
-  size?: "sm" | "default" | "lg" | null
-  user?: Profile | null
+  className?: string;
+  classNames?: UserViewClassNames;
+  isPending?: boolean;
+  size?: "sm" | "default" | "lg" | null;
+  user?: Profile | null;
 }
 
 /**
@@ -32,14 +32,8 @@ export interface UserViewProps {
  * - Falls back to generic "User" text when neither name nor email is available
  * - Supports customization through classNames prop
  */
-export function UserView({
-  className,
-  classNames,
-  isPending,
-  size,
-  user,
-}: UserViewProps) {
-  const { t } = useAuth()
+export function UserView({ className, classNames, isPending, size, user }: UserViewProps) {
+  const { t } = useAuth();
 
   return (
     <div className={cn("flex items-center gap-2", className, classNames?.base)}>
@@ -51,12 +45,7 @@ export function UserView({
         user={user}
       />
 
-      <div
-        className={cn(
-          "grid flex-1 text-left leading-tight",
-          classNames?.content,
-        )}
-      >
+      <div className={cn("grid flex-1 text-left leading-tight", classNames?.content)}>
         {isPending ? (
           <>
             <Skeleton
@@ -97,22 +86,20 @@ export function UserView({
                 t("USER")}
             </span>
 
-            {!user?.isAnonymous &&
-              size !== "sm" &&
-              (user?.name || user?.username) && (
-                <span
-                  className={cn(
-                    "truncate opacity-70",
-                    size === "lg" ? "text-sm" : "text-xs",
-                    classNames?.subtitle,
-                  )}
-                >
-                  {user?.email}
-                </span>
-              )}
+            {!user?.isAnonymous && size !== "sm" && (user?.name || user?.username) && (
+              <span
+                className={cn(
+                  "truncate opacity-70",
+                  size === "lg" ? "text-sm" : "text-xs",
+                  classNames?.subtitle,
+                )}
+              >
+                {user?.email}
+              </span>
+            )}
           </>
         )}
       </div>
     </div>
-  )
+  );
 }

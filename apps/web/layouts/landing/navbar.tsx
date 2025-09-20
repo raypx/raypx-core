@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useAuth } from "@raypx/auth/core"
-import { OrganizationSwitcher } from "@raypx/auth/organization"
-import { Button, buttonVariants } from "@raypx/ui/components/button"
+import { useAuth } from "@raypx/auth/core";
+import { OrganizationSwitcher } from "@raypx/auth/organization";
+import { Button, buttonVariants } from "@raypx/ui/components/button";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -11,32 +11,29 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from "@raypx/ui/components/navigation-menu"
-import { Skeleton } from "@raypx/ui/components/skeleton"
+} from "@raypx/ui/components/navigation-menu";
+import { Skeleton } from "@raypx/ui/components/skeleton";
 // import { ModeSwitcher } from "@/components/layout/mode-switcher"
-import { ThemeSwitcher } from "@raypx/ui/components/theme-switcher"
-import { cn } from "@raypx/ui/lib/utils"
-import { ArrowUpRightIcon } from "lucide-react"
-import { useTranslations } from "next-intl"
-import { useEffect, useState } from "react"
+import { ThemeSwitcher } from "@raypx/ui/components/theme-switcher";
+import { cn } from "@raypx/ui/lib/utils";
+import { ArrowUpRightIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 // import LocaleSwitcher from './locale-switcher';
-import { LangSwitcher } from "@/components/lang-switcher"
-import Container from "@/components/layout/container"
-import { Logo } from "@/components/layout/logo"
+import { LangSwitcher } from "@/components/lang-switcher";
+import Container from "@/components/layout/container";
+import { Logo } from "@/components/layout/logo";
 // import { UserButton } from "@/components/layout/user-button"
-import {
-  Link as LocaleLink,
-  usePathname as useLocalePathname,
-} from "@/components/link"
-import { getNavbarLinks } from "@/config/navbar.config"
-import { Routes } from "@/config/routes.config"
-import { useScroll } from "@/hooks/use-scroll"
-import { LoginWrapper } from "@/layouts/landing/login-wrapper"
-import appConfig from "../../config/app.config"
-import { NavbarMobile } from "./navbar-mobile"
+import { Link as LocaleLink, usePathname as useLocalePathname } from "@/components/link";
+import { getNavbarLinks } from "@/config/navbar.config";
+import { Routes } from "@/config/routes.config";
+import { useScroll } from "@/hooks/use-scroll";
+import { LoginWrapper } from "@/layouts/landing/login-wrapper";
+import appConfig from "../../config/app.config";
+import { NavbarMobile } from "./navbar-mobile";
 
 interface NavBarProps {
-  scroll?: boolean
+  scroll?: boolean;
 }
 
 const customNavigationMenuTriggerStyle = cn(
@@ -46,26 +43,26 @@ const customNavigationMenuTriggerStyle = cn(
   "focus:bg-accent focus:text-accent-foreground",
   "data-active:font-semibold data-active:bg-transparent data-active:text-accent-foreground",
   "data-[state=open]:bg-transparent data-[state=open]:text-accent-foreground",
-)
+);
 
 export function Navbar({ scroll }: NavBarProps) {
-  const t = useTranslations()
-  const scrolled = useScroll(50)
+  const t = useTranslations();
+  const scrolled = useScroll(50);
 
   const {
     hooks: { useSession },
-  } = useAuth()
-  const { data: session, isPending } = useSession()
-  const menuLinks = getNavbarLinks()
-  const localePathname = useLocalePathname()
-  const [mounted, setMounted] = useState(false)
+  } = useAuth();
+  const { data: session, isPending } = useSession();
+  const menuLinks = getNavbarLinks();
+  const localePathname = useLocalePathname();
+  const [mounted, setMounted] = useState(false);
   // const { data: session, isPending } = authClient.useSession();
-  const currentUser = session?.user
+  const currentUser = session?.user;
   // console.log(`Navbar, user:`, user);
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   return (
     <section
@@ -99,9 +96,7 @@ export function Navbar({ scroll }: NavBarProps) {
                       <NavigationMenuTrigger
                         data-active={
                           item.items.some((subItem) =>
-                            subItem.href
-                              ? localePathname.startsWith(subItem.href)
-                              : false,
+                            subItem.href ? localePathname.startsWith(subItem.href) : false,
                           )
                             ? "true"
                             : undefined
@@ -114,28 +109,20 @@ export function Navbar({ scroll }: NavBarProps) {
                         <ul className="grid w-[400px] gap-4 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                           {item.items?.map((subItem, subIndex) => {
                             const isSubItemActive =
-                              subItem.href &&
-                              localePathname.startsWith(subItem.href)
+                              subItem.href && localePathname.startsWith(subItem.href);
                             return (
                               <li key={subIndex}>
                                 <NavigationMenuLink asChild>
                                   <LocaleLink
                                     href={subItem.href || "#"}
-                                    target={
-                                      subItem.external ? "_blank" : undefined
-                                    }
-                                    rel={
-                                      subItem.external
-                                        ? "noopener noreferrer"
-                                        : undefined
-                                    }
+                                    target={subItem.external ? "_blank" : undefined}
+                                    rel={subItem.external ? "noopener noreferrer" : undefined}
                                     className={cn(
                                       "group flex select-none flex-row items-center gap-4 rounded-md",
                                       "p-2 leading-none no-underline outline-hidden transition-colors",
                                       "hover:bg-accent hover:text-accent-foreground",
                                       "focus:bg-accent focus:text-accent-foreground",
-                                      isSubItemActive &&
-                                        "bg-accent text-accent-foreground",
+                                      isSubItemActive && "bg-accent text-accent-foreground",
                                     )}
                                   >
                                     <div
@@ -144,8 +131,7 @@ export function Navbar({ scroll }: NavBarProps) {
                                         "bg-transparent text-muted-foreground",
                                         "group-hover:bg-transparent group-hover:text-accent-foreground",
                                         "group-focus:bg-transparent group-focus:text-accent-foreground",
-                                        isSubItemActive &&
-                                          "bg-transparent text-accent-foreground",
+                                        isSubItemActive && "bg-transparent text-accent-foreground",
                                       )}
                                     >
                                       {subItem.icon ? subItem.icon : null}
@@ -190,7 +176,7 @@ export function Navbar({ scroll }: NavBarProps) {
                                   </LocaleLink>
                                 </NavigationMenuLink>
                               </li>
-                            )
+                            );
                           })}
                         </ul>
                       </NavigationMenuContent>
@@ -211,9 +197,7 @@ export function Navbar({ scroll }: NavBarProps) {
                         <LocaleLink
                           href={item.href || "#"}
                           target={item.external ? "_blank" : undefined}
-                          rel={
-                            item.external ? "noopener noreferrer" : undefined
-                          }
+                          rel={item.external ? "noopener noreferrer" : undefined}
                         >
                           {item.title}
                         </LocaleLink>
@@ -238,11 +222,7 @@ export function Navbar({ scroll }: NavBarProps) {
             ) : (
               <div className="flex items-center gap-x-4">
                 <LoginWrapper mode="modal" asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="cursor-pointer"
-                  >
+                  <Button variant="outline" size="sm" className="cursor-pointer">
                     {t("common.login")}
                   </Button>
                 </LoginWrapper>
@@ -270,5 +250,5 @@ export function Navbar({ scroll }: NavBarProps) {
         <NavbarMobile className="lg:hidden" />
       </Container>
     </section>
-  )
+  );
 }

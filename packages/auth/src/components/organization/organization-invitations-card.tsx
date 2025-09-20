@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { CardContent } from "@raypx/ui/components/card"
-import type { SettingsCardProps } from "@raypx/ui/components/settings"
-import { SettingsCard } from "@raypx/ui/components/settings"
-import { cn } from "@raypx/ui/lib/utils"
-import type { Organization } from "better-auth/plugins/organization"
-import { useAuth } from "../../core/hooks/use-auth"
-import { useCurrentOrganization } from "../../core/hooks/use-current-organization"
-import { InvitationCell } from "./invitation-cell"
+import { CardContent } from "@raypx/ui/components/card";
+import type { SettingsCardProps } from "@raypx/ui/components/settings";
+import { SettingsCard } from "@raypx/ui/components/settings";
+import { cn } from "@raypx/ui/lib/utils";
+import type { Organization } from "better-auth/plugins/organization";
+import { useAuth } from "../../core/hooks/use-auth";
+import { useCurrentOrganization } from "../../core/hooks/use-current-organization";
+import { InvitationCell } from "./invitation-cell";
 
 export function OrganizationInvitationsCard({
   className,
@@ -15,13 +15,13 @@ export function OrganizationInvitationsCard({
   slug: slugProp,
   ...props
 }: SettingsCardProps & { slug?: string }) {
-  const { organization: organizationOptions } = useAuth()
+  const { organization: organizationOptions } = useAuth();
 
-  const slug = slugProp || organizationOptions?.slug
+  const slug = slugProp || organizationOptions?.slug;
 
-  const { data: organization } = useCurrentOrganization({ slug })
+  const { data: organization } = useCurrentOrganization({ slug });
 
-  if (!organization) return null
+  if (!organization) return null;
 
   return (
     <OrganizationInvitationsContent
@@ -30,7 +30,7 @@ export function OrganizationInvitationsCard({
       organization={organization}
       {...props}
     />
-  )
+  );
 }
 
 function OrganizationInvitationsContent({
@@ -42,16 +42,14 @@ function OrganizationInvitationsContent({
   const {
     hooks: { useListInvitations },
     t,
-  } = useAuth()
+  } = useAuth();
 
   const { data: invitations } = useListInvitations({
     query: { organizationId: organization.id },
-  })
+  });
 
-  const pendingInvitations = invitations?.filter(
-    (invitation) => invitation.status === "pending",
-  )
-  if (!pendingInvitations?.length) return null
+  const pendingInvitations = invitations?.filter((invitation) => invitation.status === "pending");
+  if (!pendingInvitations?.length) return null;
 
   return (
     <SettingsCard
@@ -72,5 +70,5 @@ function OrganizationInvitationsContent({
         ))}
       </CardContent>
     </SettingsCard>
-  )
+  );
 }

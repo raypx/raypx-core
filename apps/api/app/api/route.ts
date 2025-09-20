@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"
+import { NextResponse } from "next/server";
 
 export async function GET() {
   return NextResponse.json({
@@ -18,7 +18,7 @@ export async function GET() {
     isBun: process.env.BUN_ENV === "true",
     isNode: process.env.NODE_ENV === "production",
     isVercel: process.env.VERCEL === "true",
-  })
+  });
 }
 
 // export const runtime = "nodejs"

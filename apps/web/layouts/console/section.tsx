@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Card,
@@ -6,16 +6,16 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@raypx/ui/components/card"
-import type { LucideIcon } from "lucide-react"
-import type { ReactNode } from "react"
+} from "@raypx/ui/components/card";
+import type { LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 
 export interface ConsoleSectionProps {
-  title: string
-  description?: string
-  icon?: LucideIcon
-  children: ReactNode
-  className?: string
+  title: string;
+  description?: string;
+  icon?: LucideIcon;
+  children: ReactNode;
+  className?: string;
 }
 
 export function ConsoleSection({
@@ -36,5 +36,5 @@ export function ConsoleSection({
       </CardHeader>
       <CardContent>{children}</CardContent>
     </Card>
-  )
+  );
 }

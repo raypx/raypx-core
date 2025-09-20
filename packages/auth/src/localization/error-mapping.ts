@@ -3,7 +3,7 @@
  * Maps specific error codes returned from backend to parameterized generic error messages
  */
 
-export type ErrorContext = Record<string, string | number | Date>
+export type ErrorContext = Record<string, string | number | Date>;
 
 /**
  * Permission error mapping table
@@ -113,7 +113,7 @@ export const PERMISSION_ERROR_MAPPING: Record<string, ErrorContext> = {
     action: "register",
     resource: "this passkey",
   },
-}
+};
 
 /**
  * Get parameterized text for permission errors
@@ -122,17 +122,17 @@ export function getPermissionErrorText(
   errorCode: string,
   t: (key: string, params?: Record<string, unknown>) => string,
 ): string {
-  const context = PERMISSION_ERROR_MAPPING[errorCode]
+  const context = PERMISSION_ERROR_MAPPING[errorCode];
 
   if (context) {
     return t("PERMISSION_DENIED_ACTION", {
       action: context.action,
       resource: context.resource,
-    })
+    });
   }
 
   // Fallback: if no mapping found, return original error text
-  return t(errorCode)
+  return t(errorCode);
 }
 
 /**
@@ -155,22 +155,22 @@ export const VALIDATION_ERROR_MAPPING: Record<string, ErrorContext> = {
     field: "Password",
     constraint: "too long",
   },
-}
+};
 
 export function getValidationErrorText(
   errorCode: string,
   t: (key: string, params?: Record<string, unknown>) => string,
 ): string {
-  const context = VALIDATION_ERROR_MAPPING[errorCode]
+  const context = VALIDATION_ERROR_MAPPING[errorCode];
 
   if (context) {
     return t("FIELD_CONSTRAINT_ERROR", {
       field: context.field,
       constraint: context.constraint,
-    })
+    });
   }
 
-  return t(errorCode)
+  return t(errorCode);
 }
 
 /**
@@ -182,14 +182,14 @@ export function getOptimizedErrorText(
 ): string {
   // First try permission error mapping
   if (errorCode.startsWith("YOU_ARE_NOT_ALLOWED_TO_")) {
-    return getPermissionErrorText(errorCode, t)
+    return getPermissionErrorText(errorCode, t);
   }
 
   // Try validation error mapping
   if (VALIDATION_ERROR_MAPPING[errorCode]) {
-    return getValidationErrorText(errorCode, t)
+    return getValidationErrorText(errorCode, t);
   }
 
   // Fallback to original error text
-  return t(errorCode)
+  return t(errorCode);
 }

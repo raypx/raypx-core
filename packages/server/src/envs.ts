@@ -1,5 +1,5 @@
-import { envs as db } from "@raypx/db/envs"
-import { createEnv } from "@raypx/shared"
+import { envs as db } from "@raypx/db/envs";
+import { createEnv } from "@raypx/shared";
 
 export const envs = () =>
   createEnv({
@@ -8,4 +8,4 @@ export const envs = () =>
     shared: {},
     server: {},
     runtimeEnv: {},
-  })
+  });

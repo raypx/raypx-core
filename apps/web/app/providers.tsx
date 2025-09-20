@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
-import { AnalyticsProvider } from "@raypx/analytics"
-import { AuthProvider } from "@raypx/auth"
-import { client } from "@raypx/auth/client"
-import { Provider } from "@raypx/ui/components/provider"
-import { useRouter } from "next/navigation"
-import { useLocale } from "next-intl"
-import { authPages } from "../config/auth.config"
+import { AnalyticsProvider } from "@raypx/analytics";
+import { AuthProvider } from "@raypx/auth";
+import { client } from "@raypx/auth/client";
+import { Provider } from "@raypx/ui/components/provider";
+import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
+import { authPages } from "../config/auth.config";
 
 interface ProvidersProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export function Providers({ children }: ProvidersProps) {
-  const router = useRouter()
-  const locale = useLocale()
+  const router = useRouter();
+  const locale = useLocale();
 
   return (
     <Provider>
@@ -41,12 +41,12 @@ export function Providers({ children }: ProvidersProps) {
             logo: true,
           }}
           onSessionChange={() => {
-            router.refresh()
+            router.refresh();
           }}
         >
           {children}
         </AuthProvider>
       </AnalyticsProvider>
     </Provider>
-  )
+  );
 }

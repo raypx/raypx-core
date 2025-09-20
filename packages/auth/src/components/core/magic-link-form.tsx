@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button } from "@raypx/ui/components/button"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@raypx/ui/components/button";
 import {
   Form,
   FormControl,
@@ -9,29 +9,29 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@raypx/ui/components/form"
-import { Loader2 } from "@raypx/ui/components/icons"
-import { Input } from "@raypx/ui/components/input"
-import { cn } from "@raypx/ui/lib/utils"
-import type { BetterFetchOption } from "better-auth/react"
-import { type RefObject, useCallback, useEffect } from "react"
-import type ReCAPTCHA from "react-google-recaptcha"
-import { useForm } from "react-hook-form"
-import { z } from "zod/v4"
-import { useAuth } from "../../core/hooks/use-auth"
-import { useCaptcha } from "../../core/hooks/use-captcha"
-import { useIsHydrated } from "../../core/hooks/use-hydrated"
-import { getLocalizedError, getSearchParam } from "../../core/lib/utils"
-import type { AuthFormClassNames } from "./auth-form"
-import { Captcha } from "./captcha"
+} from "@raypx/ui/components/form";
+import { Loader2 } from "@raypx/ui/components/icons";
+import { Input } from "@raypx/ui/components/input";
+import { cn } from "@raypx/ui/lib/utils";
+import type { BetterFetchOption } from "better-auth/react";
+import { type RefObject, useCallback, useEffect } from "react";
+import type ReCAPTCHA from "react-google-recaptcha";
+import { useForm } from "react-hook-form";
+import { z } from "zod/v4";
+import { useAuth } from "../../core/hooks/use-auth";
+import { useCaptcha } from "../../core/hooks/use-captcha";
+import { useIsHydrated } from "../../core/hooks/use-hydrated";
+import { getLocalizedError, getSearchParam } from "../../core/lib/utils";
+import type { AuthFormClassNames } from "./auth-form";
+import { Captcha } from "./captcha";
 
 export interface MagicLinkFormProps {
-  className?: string
-  classNames?: AuthFormClassNames
-  callbackURL?: string
-  isSubmitting?: boolean
-  redirectTo?: string
-  setIsSubmitting?: (value: boolean) => void
+  className?: string;
+  classNames?: AuthFormClassNames;
+  callbackURL?: string;
+  isSubmitting?: boolean;
+  redirectTo?: string;
+  setIsSubmitting?: (value: boolean) => void;
 }
 
 export function MagicLinkForm({
@@ -42,8 +42,8 @@ export function MagicLinkForm({
   redirectTo: redirectToProp,
   setIsSubmitting,
 }: MagicLinkFormProps) {
-  const isHydrated = useIsHydrated()
-  const { captchaRef, getCaptchaHeaders, resetCaptcha } = useCaptcha()
+  const isHydrated = useIsHydrated();
+  const { captchaRef, getCaptchaHeaders, resetCaptcha } = useCaptcha();
 
   const {
     authClient,
@@ -54,12 +54,12 @@ export function MagicLinkForm({
     viewPaths,
     toast,
     t,
-  } = useAuth()
+  } = useAuth();
 
   const getRedirectTo = useCallback(
     () => redirectToProp || getSearchParam("redirectTo") || contextRedirectTo,
     [redirectToProp, contextRedirectTo],
-  )
+  );
 
   const getCallbackURL = useCallback(
     () =>
@@ -69,15 +69,8 @@ export function MagicLinkForm({
           ? `${basePath}/${viewPaths.CALLBACK}?redirectTo=${getRedirectTo()}`
           : getRedirectTo())
       }`,
-    [
-      callbackURLProp,
-      persistClient,
-      basePath,
-      viewPaths,
-      baseURL,
-      getRedirectTo,
-    ],
-  )
+    [callbackURLProp, persistClient, basePath, viewPaths, baseURL, getRedirectTo],
+  );
 
   const formSchema = z.object({
     email: z
@@ -87,46 +80,46 @@ export function MagicLinkForm({
       .min(1, {
         message: t("FIELD_IS_REQUIRED", { field: t("EMAIL") }),
       }),
-  })
+  });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
     },
-  })
+  });
 
-  isSubmitting = isSubmitting || form.formState.isSubmitting
+  isSubmitting = isSubmitting || form.formState.isSubmitting;
 
   useEffect(() => {
-    setIsSubmitting?.(form.formState.isSubmitting)
-  }, [form.formState.isSubmitting, setIsSubmitting])
+    setIsSubmitting?.(form.formState.isSubmitting);
+  }, [form.formState.isSubmitting, setIsSubmitting]);
 
   async function sendMagicLink({ email }: z.infer<typeof formSchema>) {
     try {
       const fetchOptions: BetterFetchOption = {
         throw: true,
         headers: await getCaptchaHeaders("/sign-in/magic-link"),
-      }
+      };
 
       await authClient.signIn.magicLink({
         email,
         callbackURL: getCallbackURL(),
         fetchOptions,
-      })
+      });
 
       toast({
         variant: "success",
         message: t("MAGIC_LINK_EMAIL"),
-      })
+      });
 
-      form.reset()
+      form.reset();
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
-      resetCaptcha()
+      });
+      resetCaptcha();
     }
   }
 
@@ -159,27 +152,16 @@ export function MagicLinkForm({
           )}
         />
 
-        <Captcha
-          ref={captchaRef as RefObject<ReCAPTCHA>}
-          action="/sign-in/magic-link"
-        />
+        <Captcha ref={captchaRef as RefObject<ReCAPTCHA>} action="/sign-in/magic-link" />
 
         <Button
           type="submit"
           disabled={isSubmitting}
-          className={cn(
-            "w-full",
-            classNames?.button,
-            classNames?.primaryButton,
-          )}
+          className={cn("w-full", classNames?.button, classNames?.primaryButton)}
         >
-          {isSubmitting ? (
-            <Loader2 className="animate-spin" />
-          ) : (
-            t("MAGIC_LINK_ACTION")
-          )}
+          {isSubmitting ? <Loader2 className="animate-spin" /> : t("MAGIC_LINK_ACTION")}
         </Button>
       </form>
     </Form>
-  )
+  );
 }

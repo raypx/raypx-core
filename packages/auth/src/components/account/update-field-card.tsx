@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { CardContent } from "@raypx/ui/components/card"
-import { Checkbox } from "@raypx/ui/components/checkbox"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CardContent } from "@raypx/ui/components/card";
+import { Checkbox } from "@raypx/ui/components/checkbox";
 import {
   Form,
   FormControl,
@@ -10,37 +10,34 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@raypx/ui/components/form"
-import { Input } from "@raypx/ui/components/input"
-import {
-  SettingsCard,
-  type SettingsCardClassNames,
-} from "@raypx/ui/components/settings"
-import { Skeleton } from "@raypx/ui/components/skeleton"
-import { Textarea } from "@raypx/ui/components/textarea"
-import { cn } from "@raypx/ui/lib/utils"
-import { type ReactNode, useEffect } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod/v4"
-import { useAuth } from "../../core/hooks/use-auth"
-import { useDebouncedValidation } from "../../core/hooks/use-debounce"
-import { getLocalizedError } from "../../core/lib/utils"
-import type { FieldType } from "../../types"
+} from "@raypx/ui/components/form";
+import { Input } from "@raypx/ui/components/input";
+import { SettingsCard, type SettingsCardClassNames } from "@raypx/ui/components/settings";
+import { Skeleton } from "@raypx/ui/components/skeleton";
+import { Textarea } from "@raypx/ui/components/textarea";
+import { cn } from "@raypx/ui/lib/utils";
+import { type ReactNode, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod/v4";
+import { useAuth } from "../../core/hooks/use-auth";
+import { useDebouncedValidation } from "../../core/hooks/use-debounce";
+import { getLocalizedError } from "../../core/lib/utils";
+import type { FieldType } from "../../types";
 
 export interface UpdateFieldCardProps {
-  className?: string
-  classNames?: SettingsCardClassNames
-  description?: ReactNode
-  instructions?: ReactNode
-  name: string
-  placeholder?: string
-  required?: boolean
-  label?: string
-  type?: FieldType
-  multiline?: boolean
-  value?: unknown
-  validate?: (value: string) => boolean | Promise<boolean>
-  validationSchema?: z.ZodType<unknown>
+  className?: string;
+  classNames?: SettingsCardClassNames;
+  description?: ReactNode;
+  instructions?: ReactNode;
+  name: string;
+  placeholder?: string;
+  required?: boolean;
+  label?: string;
+  type?: FieldType;
+  multiline?: boolean;
+  value?: unknown;
+  validate?: (value: string) => boolean | Promise<boolean>;
+  validationSchema?: z.ZodType<unknown>;
 }
 
 export function UpdateFieldCard({
@@ -64,11 +61,11 @@ export function UpdateFieldCard({
     t,
     optimistic,
     toast,
-  } = useAuth()
+  } = useAuth();
 
-  const { isPending } = useSession()
+  const { isPending } = useSession();
 
-  let fieldSchema = z.unknown() as z.ZodType<unknown>
+  let fieldSchema = z.unknown() as z.ZodType<unknown>;
 
   // Create the appropriate schema based on type
   if (type === "number") {
@@ -78,10 +75,10 @@ export function UpdateFieldCard({
           z.number({
             error: (issue) => {
               if (!issue.input) {
-                return t("FIELD_IS_REQUIRED", { field: label || "" })
+                return t("FIELD_IS_REQUIRED", { field: label || "" });
               }
               if (issue.code === "invalid_type") {
-                return `${label} ${t("IS_INVALID")}`
+                return `${label} ${t("IS_INVALID")}`;
               }
             },
           }),
@@ -90,21 +87,21 @@ export function UpdateFieldCard({
           .number({
             error: (issue) => {
               if (issue.code === "invalid_type") {
-                return `${label} ${t("IS_INVALID")}`
+                return `${label} ${t("IS_INVALID")}`;
               }
             },
           })
-          .optional()
+          .optional();
   } else if (type === "boolean") {
     fieldSchema = required
       ? z.coerce
           .boolean({
             error: (issue) => {
               if (!issue.input) {
-                return t("FIELD_IS_REQUIRED", { field: label || "" })
+                return t("FIELD_IS_REQUIRED", { field: label || "" });
               }
               if (issue.code === "invalid_type") {
-                return `${label} ${t("IS_INVALID")}`
+                return `${label} ${t("IS_INVALID")}`;
               }
             },
           })
@@ -114,130 +111,126 @@ export function UpdateFieldCard({
       : z.coerce.boolean({
           error: (issue) => {
             if (issue.code === "invalid_type") {
-              return `${label} ${t("IS_INVALID")}`
+              return `${label} ${t("IS_INVALID")}`;
             }
           },
-        })
+        });
   } else {
     fieldSchema = required
       ? z.string().min(1, t("FIELD_IS_REQUIRED", { field: label || "" }))
-      : z.string().optional()
+      : z.string().optional();
   }
 
   // Apply external validation schema if provided
   if (validationSchema) {
-    fieldSchema = validationSchema
+    fieldSchema = validationSchema;
   }
 
   const form = useForm({
     resolver: zodResolver(z.object({ [name]: fieldSchema })),
     values: { [name]: value || "" },
-  })
+  });
 
-  const { isSubmitting } = form.formState
-  const watchedValue = form.watch(name)
+  const { isSubmitting } = form.formState;
+  const watchedValue = form.watch(name);
 
   // Add debounced validation for real-time feedback
   const { error: validationError, isValidating } = useDebouncedValidation(
     watchedValue,
     async (val) => {
       if (!val || val === value) {
-        return null
+        return null;
       }
 
       // First, run external Zod schema validation if provided
       if (validationSchema) {
         try {
-          validationSchema.parse(val)
+          validationSchema.parse(val);
         } catch (error) {
           if (error instanceof z.ZodError) {
-            return getLocalizedError({ error, t })
+            return getLocalizedError({ error, t });
           }
-          return `${label} ${t("IS_INVALID")}`
+          return `${label} ${t("IS_INVALID")}`;
         }
       }
 
       // Then run custom validation function if provided
       if (validate && typeof val === "string") {
         try {
-          const isValid = await validate(val)
-          return isValid ? null : `${label} ${t("IS_INVALID")}`
+          const isValid = await validate(val);
+          return isValid ? null : `${label} ${t("IS_INVALID")}`;
         } catch {
-          return `${label} ${t("IS_INVALID")}`
+          return `${label} ${t("IS_INVALID")}`;
         }
       }
 
-      return null
+      return null;
     },
     500, // 500ms delay for validation
-  )
+  );
 
   // Update form errors when debounced validation completes
   useEffect(() => {
     if (validationError && watchedValue !== value) {
-      form.setError(name, { message: validationError })
+      form.setError(name, { message: validationError });
     } else if (!validationError && form.formState.errors[name]) {
-      form.clearErrors(name)
+      form.clearErrors(name);
     }
-  }, [validationError, form, name, watchedValue, value])
+  }, [validationError, form, name, watchedValue, value]);
 
   const updateField = async (values: Record<string, unknown>) => {
-    await new Promise((resolve) => setTimeout(resolve))
-    const newValue = values[name]
+    await new Promise((resolve) => setTimeout(resolve));
+    const newValue = values[name];
 
     if (value === newValue) {
       toast({
         variant: "error",
         message: `${label} ${t("IS_THE_SAME")}`,
-      })
-      return
+      });
+      return;
     }
 
     // Validate with external schema first
     if (validationSchema) {
       try {
-        validationSchema.parse(newValue)
+        validationSchema.parse(newValue);
       } catch (error) {
         if (error instanceof z.ZodError) {
           form.setError(name, {
             message: getLocalizedError({ error, t }),
-          })
+          });
         } else {
           form.setError(name, {
             message: `${label} ${t("IS_INVALID")}`,
-          })
+          });
         }
-        return
+        return;
       }
     }
 
     // Then validate with custom function
-    if (
-      validate &&
-      typeof newValue === "string" &&
-      !(await validate(newValue))
-    ) {
+    if (validate && typeof newValue === "string" && !(await validate(newValue))) {
       form.setError(name, {
         message: `${label} ${t("IS_INVALID")}`,
-      })
+      });
 
-      return
+      return;
     }
 
     try {
-      await updateUser({ [name]: newValue })
+      await updateUser({ [name]: newValue });
 
       toast({
         variant: "success",
         message: `${label} ${t("UPDATED_SUCCESSFULLY")}`,
-      })
+      });
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
-  }
+  };
 
   return (
     <Form {...form}>
@@ -291,10 +284,7 @@ export function UpdateFieldCard({
                             validationError && "border-destructive",
                           )}
                           type="number"
-                          placeholder={
-                            placeholder ||
-                            (typeof label === "string" ? label : "")
-                          }
+                          placeholder={placeholder || (typeof label === "string" ? label : "")}
                           disabled={isSubmitting || isValidating}
                           {...field}
                           value={field.value as string}
@@ -306,10 +296,7 @@ export function UpdateFieldCard({
                             isValidating && "opacity-75",
                             validationError && "border-destructive",
                           )}
-                          placeholder={
-                            placeholder ||
-                            (typeof label === "string" ? label : "")
-                          }
+                          placeholder={placeholder || (typeof label === "string" ? label : "")}
                           disabled={isSubmitting || isValidating}
                           {...field}
                           value={field.value as string}
@@ -322,10 +309,7 @@ export function UpdateFieldCard({
                             validationError && "border-destructive",
                           )}
                           type="text"
-                          placeholder={
-                            placeholder ||
-                            (typeof label === "string" ? label : "")
-                          }
+                          placeholder={placeholder || (typeof label === "string" ? label : "")}
                           disabled={isSubmitting || isValidating}
                           {...field}
                           value={field.value as string}
@@ -342,5 +326,5 @@ export function UpdateFieldCard({
         </SettingsCard>
       </form>
     </Form>
-  )
+  );
 }

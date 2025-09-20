@@ -1,18 +1,15 @@
-import { OrganizationSwitcher } from "@raypx/auth/organization"
-import Link from "next/link"
+import { OrganizationSwitcher } from "@raypx/auth/organization";
+import Link from "next/link";
 
 interface HeaderProps {
-  slug?: string
+  slug?: string;
 }
 
 export function Header({ slug }: HeaderProps) {
   return (
     <header className="border-b bg-card">
       <div className="container mx-auto px-6 py-4">
-        <nav
-          className="flex items-center justify-between"
-          aria-label="Console navigation"
-        >
+        <nav className="flex items-center justify-between" aria-label="Console navigation">
           <div className="flex items-center space-x-6">
             <h1 className="text-xl font-semibold">Raypx</h1>
             <div className="hidden md:flex space-x-4">
@@ -31,5 +28,5 @@ export function Header({ slug }: HeaderProps) {
         </nav>
       </div>
     </header>
-  )
+  );
 }

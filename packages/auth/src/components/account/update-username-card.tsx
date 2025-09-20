@@ -1,25 +1,20 @@
-"use client"
+"use client";
 
-import type { SettingsCardProps } from "@raypx/ui/components/settings"
-import { z } from "zod/v4"
-import { useAuth } from "../../core/hooks/use-auth"
-import type { User } from "../../types"
-import { UpdateFieldCard } from "./update-field-card"
+import type { SettingsCardProps } from "@raypx/ui/components/settings";
+import { z } from "zod/v4";
+import { useAuth } from "../../core/hooks/use-auth";
+import type { User } from "../../types";
+import { UpdateFieldCard } from "./update-field-card";
 
-export function UpdateUsernameCard({
-  className,
-  classNames,
-  ...props
-}: SettingsCardProps) {
+export function UpdateUsernameCard({ className, classNames, ...props }: SettingsCardProps) {
   const {
     hooks: { useSession },
     t,
-  } = useAuth()
+  } = useAuth();
 
-  const { data: sessionData } = useSession()
+  const { data: sessionData } = useSession();
   const value =
-    (sessionData?.user as User)?.displayUsername ||
-    (sessionData?.user as User)?.username
+    (sessionData?.user as User)?.displayUsername || (sessionData?.user as User)?.username;
 
   const validationSchema = z
     .string()
@@ -33,7 +28,7 @@ export function UpdateUsernameCard({
         limit: 32,
         field: t("USERNAME"),
       }),
-    })
+    });
 
   return (
     <UpdateFieldCard
@@ -49,5 +44,5 @@ export function UpdateUsernameCard({
       validationSchema={validationSchema}
       {...props}
     />
-  )
+  );
 }

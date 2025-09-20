@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import type { ReactNode } from "react"
-import { useAuth } from "../../core/hooks/use-auth"
+import type { ReactNode } from "react";
+import { useAuth } from "../../core/hooks/use-auth";
 
 /**
  * Conditionally renders content for authenticated users only
@@ -13,8 +13,8 @@ import { useAuth } from "../../core/hooks/use-auth"
 export function SignedIn({ children }: { children: ReactNode }) {
   const {
     hooks: { useSession },
-  } = useAuth()
-  const { data } = useSession()
+  } = useAuth();
+  const { data } = useSession();
 
-  return data ? children : null
+  return data ? children : null;
 }

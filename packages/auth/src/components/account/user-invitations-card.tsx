@@ -1,47 +1,40 @@
-"use client"
+"use client";
 
-import { dayjs } from "@raypx/shared/utils"
-import { Button } from "@raypx/ui/components/button"
-import { Card, CardContent } from "@raypx/ui/components/card"
+import { dayjs } from "@raypx/shared/utils";
+import { Button } from "@raypx/ui/components/button";
+import { Card, CardContent } from "@raypx/ui/components/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@raypx/ui/components/dropdown-menu"
-import { Check, EllipsisIcon, Loader2, X } from "@raypx/ui/components/icons"
-import type { SettingsCardProps } from "@raypx/ui/components/settings"
-import { SettingsCard } from "@raypx/ui/components/settings"
-import { cn } from "@raypx/ui/lib/utils"
-import { useState } from "react"
-import { useAuth } from "../../core/hooks/use-auth"
-import { getLocalizedError } from "../../core/lib/utils"
-import { UserAvatar } from "./user-avatar"
+} from "@raypx/ui/components/dropdown-menu";
+import { Check, EllipsisIcon, Loader2, X } from "@raypx/ui/components/icons";
+import type { SettingsCardProps } from "@raypx/ui/components/settings";
+import { SettingsCard } from "@raypx/ui/components/settings";
+import { cn } from "@raypx/ui/lib/utils";
+import { useState } from "react";
+import { useAuth } from "../../core/hooks/use-auth";
+import { getLocalizedError } from "../../core/lib/utils";
+import { UserAvatar } from "./user-avatar";
 
-export function UserInvitationsCard({
-  className,
-  classNames,
-  ...props
-}: SettingsCardProps) {
+export function UserInvitationsCard({ className, classNames, ...props }: SettingsCardProps) {
   const {
     hooks: { useListUserInvitations, useListOrganizations },
     t,
-  } = useAuth()
+  } = useAuth();
 
-  const { data: invitations, refetch: refetchInvitations } =
-    useListUserInvitations()
-  const { refetch: refetchOrganizations } = useListOrganizations()
+  const { data: invitations, refetch: refetchInvitations } = useListUserInvitations();
+  const { refetch: refetchOrganizations } = useListOrganizations();
 
   const handleRefresh = async () => {
-    await refetchInvitations?.()
-    await refetchOrganizations?.()
-  }
+    await refetchInvitations?.();
+    await refetchOrganizations?.();
+  };
 
-  const pendingInvitations = invitations?.filter(
-    (invitation) => invitation.status === "pending",
-  )
+  const pendingInvitations = invitations?.filter((invitation) => invitation.status === "pending");
 
-  if (!pendingInvitations?.length) return null
+  if (!pendingInvitations?.length) return null;
 
   return (
     <SettingsCard
@@ -68,7 +61,7 @@ export function UserInvitationsCard({
         ))}
       </CardContent>
     </SettingsCard>
-  )
+  );
 }
 
 function UserInvitationRow({
@@ -76,84 +69,78 @@ function UserInvitationRow({
   invitation,
   onChanged,
 }: {
-  classNames?: SettingsCardProps["classNames"]
+  classNames?: SettingsCardProps["classNames"];
   invitation: {
-    id: string
-    email: string
-    role: string
-    status: string
-    expiresAt: Date
-  }
-  onChanged?: () => unknown
+    id: string;
+    email: string;
+    role: string;
+    status: string;
+    expiresAt: Date;
+  };
+  onChanged?: () => unknown;
 }) {
-  const {
-    authClient,
-    organization: organizationOptions,
-    t,
-    toast,
-    locale,
-  } = useAuth()
+  const { authClient, organization: organizationOptions, t, toast, locale } = useAuth();
 
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
   const builtInRoles = [
     { role: "owner", label: t("OWNER") },
     { role: "admin", label: t("ADMIN") },
     { role: "member", label: t("MEMBER") },
-  ]
+  ];
 
-  const roles = [...builtInRoles, ...(organizationOptions?.customRoles || [])]
-  const role = roles.find((r) => r.role === invitation.role)
+  const roles = [...builtInRoles, ...(organizationOptions?.customRoles || [])];
+  const role = roles.find((r) => r.role === invitation.role);
 
   const handleAccept = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
       await authClient.organization.acceptInvitation({
         invitationId: invitation.id,
         fetchOptions: { throw: true },
-      })
+      });
 
-      await onChanged?.()
+      await onChanged?.();
 
       toast({
         variant: "success",
         message: t("INVITATION_ACCEPTED"),
-      })
+      });
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
 
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
   const handleReject = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
       await authClient.organization.rejectInvitation({
         invitationId: invitation.id,
         fetchOptions: { throw: true },
-      })
+      });
 
-      await onChanged?.()
+      await onChanged?.();
 
       toast({
         variant: "success",
         message: t("INVITATION_REJECTED"),
-      })
+      });
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
 
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
   return (
     <Card className={cn("flex-row items-center p-4", classNames?.cell)}>
@@ -161,13 +148,10 @@ function UserInvitationRow({
         <UserAvatar className="my-0.5" user={{ email: invitation.email }} />
 
         <div className="grid flex-1 text-left leading-tight">
-          <span className="truncate font-semibold text-sm">
-            {invitation.email}
-          </span>
+          <span className="truncate font-semibold text-sm">{invitation.email}</span>
 
           <span className="truncate text-muted-foreground text-xs">
-            {t("EXPIRES")}{" "}
-            {dayjs(invitation.expiresAt).locale(locale).format("LL")}
+            {t("EXPIRES")} {dayjs(invitation.expiresAt).locale(locale).format("LL")}
           </span>
         </div>
       </div>
@@ -178,11 +162,7 @@ function UserInvitationRow({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
-              className={cn(
-                "relative ms-auto",
-                classNames?.button,
-                classNames?.outlineButton,
-              )}
+              className={cn("relative ms-auto", classNames?.button, classNames?.outlineButton)}
               disabled={isLoading}
               size="icon"
               type="button"
@@ -203,11 +183,7 @@ function UserInvitationRow({
               {t("ACCEPT")}
             </DropdownMenuItem>
 
-            <DropdownMenuItem
-              onClick={handleReject}
-              disabled={isLoading}
-              variant="destructive"
-            >
+            <DropdownMenuItem onClick={handleReject} disabled={isLoading} variant="destructive">
               <X className={classNames?.icon} />
 
               {t("REJECT")}
@@ -216,5 +192,5 @@ function UserInvitationRow({
         </DropdownMenu>
       </div>
     </Card>
-  )
+  );
 }

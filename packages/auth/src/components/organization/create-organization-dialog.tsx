@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button } from "@raypx/ui/components/button"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@raypx/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -9,13 +9,13 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@raypx/ui/components/dialog"
+} from "@raypx/ui/components/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@raypx/ui/components/dropdown-menu"
+} from "@raypx/ui/components/dropdown-menu";
 import {
   Form,
   FormControl,
@@ -23,22 +23,21 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@raypx/ui/components/form"
-import { Loader2, Trash, UploadCloud } from "@raypx/ui/components/icons"
-import { Input } from "@raypx/ui/components/input"
-import type { SettingsCardClassNames } from "@raypx/ui/components/settings"
-import { type ComponentProps, useRef, useState } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod/v4"
-import { useAuth } from "../../core/hooks/use-auth"
-import { fileToBase64, resizeAndCropImage } from "../../core/lib/image-utils"
-import { cn, getLocalizedError } from "../../core/lib/utils"
-import { OrganizationLogo } from "./organization-logo"
+} from "@raypx/ui/components/form";
+import { Loader2, Trash, UploadCloud } from "@raypx/ui/components/icons";
+import { Input } from "@raypx/ui/components/input";
+import type { SettingsCardClassNames } from "@raypx/ui/components/settings";
+import { type ComponentProps, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod/v4";
+import { useAuth } from "../../core/hooks/use-auth";
+import { fileToBase64, resizeAndCropImage } from "../../core/lib/image-utils";
+import { cn, getLocalizedError } from "../../core/lib/utils";
+import { OrganizationLogo } from "./organization-logo";
 
-export interface CreateOrganizationDialogProps
-  extends ComponentProps<typeof Dialog> {
-  className?: string
-  classNames?: SettingsCardClassNames
+export interface CreateOrganizationDialogProps extends ComponentProps<typeof Dialog> {
+  className?: string;
+  classNames?: SettingsCardClassNames;
 }
 
 export function CreateOrganizationDialog({
@@ -47,19 +46,13 @@ export function CreateOrganizationDialog({
   onOpenChange,
   ...props
 }: CreateOrganizationDialogProps) {
-  const {
-    authClient,
-    t,
-    organization: organizationOptions,
-    navigate,
-    toast,
-  } = useAuth()
+  const { authClient, t, organization: organizationOptions, navigate, toast } = useAuth();
 
-  const [logo, setLogo] = useState<string | null>(null)
-  const [logoPending, setLogoPending] = useState(false)
+  const [logo, setLogo] = useState<string | null>(null);
+  const [logoPending, setLogoPending] = useState(false);
 
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const openFileDialog = () => fileInputRef.current?.click()
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const openFileDialog = () => fileInputRef.current?.click();
 
   const formSchema = z.object({
     logo: z.string().optional(),
@@ -74,7 +67,7 @@ export function CreateOrganizationDialog({
       .regex(/^[a-z0-9-]+$/, {
         message: `${t("ORGANIZATION_SLUG")} ${t("IS_INVALID")}`,
       }),
-  })
+  });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -83,14 +76,14 @@ export function CreateOrganizationDialog({
       name: "",
       slug: "",
     },
-  })
+  });
 
-  const isSubmitting = form.formState.isSubmitting
+  const isSubmitting = form.formState.isSubmitting;
 
   const handleLogoChange = async (file: File) => {
-    if (!organizationOptions?.logo) return
+    if (!organizationOptions?.logo) return;
 
-    setLogoPending(true)
+    setLogoPending(true);
 
     try {
       const resizedFile = await resizeAndCropImage(
@@ -98,40 +91,40 @@ export function CreateOrganizationDialog({
         crypto.randomUUID(),
         organizationOptions.logo.size,
         organizationOptions.logo.extension,
-      )
+      );
 
-      let image: string | undefined | null
+      let image: string | undefined | null;
 
       if (organizationOptions?.logo.upload) {
-        image = await organizationOptions.logo.upload(resizedFile)
+        image = await organizationOptions.logo.upload(resizedFile);
       } else {
-        image = await fileToBase64(resizedFile)
+        image = await fileToBase64(resizedFile);
       }
 
-      setLogo(image || null)
-      form.setValue("logo", image || "")
+      setLogo(image || null);
+      form.setValue("logo", image || "");
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
 
-    setLogoPending(false)
-  }
+    setLogoPending(false);
+  };
 
   const deleteLogo = async () => {
-    setLogoPending(true)
+    setLogoPending(true);
 
-    const currentUrl = logo || undefined
+    const currentUrl = logo || undefined;
     if (currentUrl && organizationOptions?.logo?.delete) {
-      await organizationOptions.logo.delete(currentUrl)
+      await organizationOptions.logo.delete(currentUrl);
     }
 
-    setLogo(null)
-    form.setValue("logo", "")
-    setLogoPending(false)
-  }
+    setLogo(null);
+    form.setValue("logo", "");
+    setLogoPending(false);
+  };
 
   async function onSubmit({ name, slug, logo }: z.infer<typeof formSchema>) {
     try {
@@ -140,30 +133,30 @@ export function CreateOrganizationDialog({
         slug,
         logo,
         fetchOptions: { throw: true },
-      })
+      });
 
       if (organizationOptions?.pathMode === "slug") {
-        navigate(`${organizationOptions.basePath}/${organization.slug}`)
-        return
+        navigate(`${organizationOptions.basePath}/${organization.slug}`);
+        return;
       }
 
       await authClient.organization.setActive({
         organizationId: organization.id,
-      })
+      });
 
-      onOpenChange?.(false)
-      form.reset()
-      setLogo(null)
+      onOpenChange?.(false);
+      form.reset();
+      setLogo(null);
 
       toast({
         variant: "success",
         message: t("CREATE_ORGANIZATION_SUCCESS"),
-      })
+      });
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
   }
 
@@ -175,9 +168,7 @@ export function CreateOrganizationDialog({
             {t("CREATE_ORGANIZATION")}
           </DialogTitle>
 
-          <DialogDescription
-            className={cn("text-xs md:text-sm", classNames?.description)}
-          >
+          <DialogDescription className={cn("text-xs md:text-sm", classNames?.description)}>
             {t("ORGANIZATIONS_INSTRUCTIONS")}
           </DialogDescription>
         </DialogHeader>
@@ -197,9 +188,9 @@ export function CreateOrganizationDialog({
                       hidden
                       type="file"
                       onChange={(e) => {
-                        const file = e.target.files?.item(0)
-                        if (file) handleLogoChange(file)
-                        e.target.value = ""
+                        const file = e.target.files?.item(0);
+                        if (file) handleLogoChange(file);
+                        e.target.value = "";
                       }}
                     />
 
@@ -229,10 +220,7 @@ export function CreateOrganizationDialog({
                           align="start"
                           onCloseAutoFocus={(e) => e.preventDefault()}
                         >
-                          <DropdownMenuItem
-                            onClick={openFileDialog}
-                            disabled={logoPending}
-                          >
+                          <DropdownMenuItem onClick={openFileDialog} disabled={logoPending}>
                             <UploadCloud />
 
                             {t("UPLOAD_LOGO")}
@@ -278,10 +266,7 @@ export function CreateOrganizationDialog({
                   <FormLabel>{t("ORGANIZATION_NAME")}</FormLabel>
 
                   <FormControl>
-                    <Input
-                      placeholder={t("ORGANIZATION_NAME_PLACEHOLDER")}
-                      {...field}
-                    />
+                    <Input placeholder={t("ORGANIZATION_NAME_PLACEHOLDER")} {...field} />
                   </FormControl>
 
                   <FormMessage />
@@ -297,10 +282,7 @@ export function CreateOrganizationDialog({
                   <FormLabel>{t("ORGANIZATION_SLUG")}</FormLabel>
 
                   <FormControl>
-                    <Input
-                      placeholder={t("ORGANIZATION_SLUG_PLACEHOLDER")}
-                      {...field}
-                    />
+                    <Input placeholder={t("ORGANIZATION_SLUG_PLACEHOLDER")} {...field} />
                   </FormControl>
 
                   <FormMessage />
@@ -332,5 +314,5 @@ export function CreateOrganizationDialog({
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

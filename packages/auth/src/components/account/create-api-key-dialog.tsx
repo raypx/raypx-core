@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button } from "@raypx/ui/components/button"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@raypx/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@raypx/ui/components/dialog"
+} from "@raypx/ui/components/dialog";
 import {
   Form,
   FormControl,
@@ -17,34 +17,34 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@raypx/ui/components/form"
-import { Loader2 } from "@raypx/ui/components/icons"
-import { Input } from "@raypx/ui/components/input"
+} from "@raypx/ui/components/form";
+import { Loader2 } from "@raypx/ui/components/icons";
+import { Input } from "@raypx/ui/components/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@raypx/ui/components/select"
-import type { SettingsCardClassNames } from "@raypx/ui/components/settings"
-import { cn } from "@raypx/ui/lib/utils"
-import type { Organization } from "better-auth/plugins/organization"
-import type { ComponentProps } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod/v4"
-import { useAuth } from "../../core/hooks/use-auth"
-import { useLang } from "../../core/hooks/use-lang"
-import { getLocalizedError } from "../../core/lib/utils"
-import type { Refetch } from "../../types"
-import { OrganizationCellView } from "../organization/organization-cell-view"
-import { PersonalAccountView } from "./personal-account-view"
+} from "@raypx/ui/components/select";
+import type { SettingsCardClassNames } from "@raypx/ui/components/settings";
+import { cn } from "@raypx/ui/lib/utils";
+import type { Organization } from "better-auth/plugins/organization";
+import type { ComponentProps } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod/v4";
+import { useAuth } from "../../core/hooks/use-auth";
+import { useLang } from "../../core/hooks/use-lang";
+import { getLocalizedError } from "../../core/lib/utils";
+import type { Refetch } from "../../types";
+import { OrganizationCellView } from "../organization/organization-cell-view";
+import { PersonalAccountView } from "./personal-account-view";
 
 interface CreateApiKeyDialogProps extends ComponentProps<typeof Dialog> {
-  classNames?: SettingsCardClassNames
-  onSuccess: (key: string) => void
-  refetch?: Refetch
-  organizationId?: string
+  classNames?: SettingsCardClassNames;
+  onSuccess: (key: string) => void;
+  refetch?: Refetch;
+  organizationId?: string;
 }
 
 export function CreateApiKeyDialog({
@@ -62,20 +62,20 @@ export function CreateApiKeyDialog({
     t,
     organization: contextOrganization,
     toast,
-  } = useAuth()
+  } = useAuth();
 
-  const { lang } = useLang()
+  const { lang } = useLang();
 
-  let organizations: Organization[] | null | undefined
+  let organizations: Organization[] | null | undefined;
   if (contextOrganization) {
-    const { data } = useListOrganizations()
-    organizations = data
+    const { data } = useListOrganizations();
+    organizations = data;
   }
 
-  const { data: sessionData } = useSession()
-  const user = sessionData?.user
+  const { data: sessionData } = useSession();
+  const user = sessionData?.user;
 
-  const showOrganizationSelect = contextOrganization?.apiKey
+  const showOrganizationSelect = contextOrganization?.apiKey;
 
   const formSchema = z.object({
     name: z.string().min(1, t("FIELD_IS_REQUIRED", { field: t("NAME") })),
@@ -83,7 +83,7 @@ export function CreateApiKeyDialog({
     organizationId: showOrganizationSelect
       ? z.string().min(1, t("FIELD_IS_REQUIRED", { field: t("ORGANIZATION") }))
       : z.string().optional(),
-  })
+  });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -92,26 +92,24 @@ export function CreateApiKeyDialog({
       expiresInDays: "none",
       organizationId: organizationId ?? "personal",
     },
-  })
+  });
 
-  const { isSubmitting } = form.formState
+  const { isSubmitting } = form.formState;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const expiresIn =
         values.expiresInDays && values.expiresInDays !== "none"
           ? Number.parseInt(values.expiresInDays, 10) * 60 * 60 * 24
-          : undefined
+          : undefined;
 
       const selectedOrgId =
-        values.organizationId === "personal" ? undefined : values.organizationId
+        values.organizationId === "personal" ? undefined : values.organizationId;
 
       const metadata = {
         ...(typeof apiKey === "object" ? apiKey.metadata : {}),
-        ...(contextOrganization && selectedOrgId
-          ? { organizationId: selectedOrgId }
-          : {}),
-      }
+        ...(contextOrganization && selectedOrgId ? { organizationId: selectedOrgId } : {}),
+      };
 
       const result = await authClient.apiKey.create({
         name: values.name,
@@ -119,21 +117,21 @@ export function CreateApiKeyDialog({
         prefix: typeof apiKey === "object" ? apiKey.prefix : undefined,
         metadata: Object.keys(metadata).length > 0 ? metadata : undefined,
         fetchOptions: { throw: true },
-      })
+      });
 
-      await refetch?.()
-      onSuccess(result.key)
-      onOpenChange?.(false)
-      form.reset()
+      await refetch?.();
+      onSuccess(result.key);
+      onOpenChange?.(false);
+      form.reset();
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
-  }
+  };
 
-  const rtf = new Intl.RelativeTimeFormat(lang ?? "en")
+  const rtf = new Intl.RelativeTimeFormat(lang ?? "en");
 
   return (
     <Dialog onOpenChange={onOpenChange} {...props}>
@@ -146,9 +144,7 @@ export function CreateApiKeyDialog({
             {t("CREATE_API_KEY")}
           </DialogTitle>
 
-          <DialogDescription
-            className={cn("text-xs md:text-sm", classNames?.description)}
-          >
+          <DialogDescription className={cn("text-xs md:text-sm", classNames?.description)}>
             {t("CREATE_API_KEY_DESCRIPTION")}
           </DialogDescription>
         </DialogHeader>
@@ -161,9 +157,7 @@ export function CreateApiKeyDialog({
                 name="organizationId"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel className={classNames?.label}>
-                      {t("ORGANIZATION")}
-                    </FormLabel>
+                    <FormLabel className={classNames?.label}>{t("ORGANIZATION")}</FormLabel>
 
                     <Select
                       onValueChange={field.onChange}
@@ -171,9 +165,7 @@ export function CreateApiKeyDialog({
                       disabled={isSubmitting}
                     >
                       <FormControl>
-                        <SelectTrigger
-                          className={cn("w-full p-2", classNames?.input)}
-                        >
+                        <SelectTrigger className={cn("w-full p-2", classNames?.input)}>
                           <SelectValue placeholder={t("ORGANIZATION")} />
                         </SelectTrigger>
                       </FormControl>
@@ -184,15 +176,8 @@ export function CreateApiKeyDialog({
                         </SelectItem>
 
                         {organizations?.map((org) => (
-                          <SelectItem
-                            key={org.id}
-                            value={org.id}
-                            className="p-2"
-                          >
-                            <OrganizationCellView
-                              organization={org}
-                              size="sm"
-                            />
+                          <SelectItem key={org.id} value={org.id} className="p-2">
+                            <OrganizationCellView organization={org} size="sm" />
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -210,9 +195,7 @@ export function CreateApiKeyDialog({
                 name="name"
                 render={({ field }) => (
                   <FormItem className="flex-1">
-                    <FormLabel className={classNames?.label}>
-                      {t("NAME")}
-                    </FormLabel>
+                    <FormLabel className={classNames?.label}>{t("NAME")}</FormLabel>
 
                     <FormControl>
                       <Input
@@ -234,9 +217,7 @@ export function CreateApiKeyDialog({
                 name="expiresInDays"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className={classNames?.label}>
-                      {t("EXPIRES")}
-                    </FormLabel>
+                    <FormLabel className={classNames?.label}>{t("EXPIRES")}</FormLabel>
 
                     <Select
                       onValueChange={field.onChange}
@@ -250,15 +231,11 @@ export function CreateApiKeyDialog({
                       </FormControl>
 
                       <SelectContent>
-                        <SelectItem value="none">
-                          {t("NO_EXPIRATION")}
-                        </SelectItem>
+                        <SelectItem value="none">{t("NO_EXPIRATION")}</SelectItem>
 
                         {[1, 7, 30, 60, 90, 180, 365].map((days) => (
                           <SelectItem key={days} value={days.toString()}>
-                            {days === 365
-                              ? rtf.format(1, "year")
-                              : rtf.format(days, "day")}
+                            {days === 365 ? rtf.format(1, "year") : rtf.format(days, "day")}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -296,5 +273,5 @@ export function CreateApiKeyDialog({
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

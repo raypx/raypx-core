@@ -1,19 +1,16 @@
-"use client"
+"use client";
 
-import { Input } from "@raypx/ui/components/input"
-import { cn } from "@raypx/ui/lib/utils"
-import { EyeIcon, EyeOffIcon } from "lucide-react"
-import type * as React from "react"
-import { useId, useState } from "react"
+import { Input } from "@raypx/ui/components/input";
+import { cn } from "@raypx/ui/lib/utils";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import type * as React from "react";
+import { useId, useState } from "react";
 
-function PasswordField({
-  className,
-  ...props
-}: Omit<React.ComponentProps<"input">, "type">) {
-  const id = useId()
-  const [isVisible, setIsVisible] = useState<boolean>(false)
+function PasswordField({ className, ...props }: Omit<React.ComponentProps<"input">, "type">) {
+  const id = useId();
+  const [isVisible, setIsVisible] = useState<boolean>(false);
 
-  const toggleVisibility = () => setIsVisible((prevState) => !prevState)
+  const toggleVisibility = () => setIsVisible((prevState) => !prevState);
 
   return (
     <div className={cn("relative", className)}>
@@ -39,7 +36,7 @@ function PasswordField({
         )}
       </button>
     </div>
-  )
+  );
 }
 
-export { PasswordField }
+export { PasswordField };

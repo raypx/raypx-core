@@ -1,22 +1,22 @@
-"use client"
+"use client";
 
-import { CardContent } from "@raypx/ui/components/card"
-import type { SettingsCardClassNames } from "@raypx/ui/components/settings"
-import { SettingsCard } from "@raypx/ui/components/settings"
-import { cn } from "@raypx/ui/lib/utils"
-import { useAuth } from "../../core/hooks/use-auth"
-import { socialProviders } from "../../core/lib/providers/social-providers"
-import type { Refetch } from "../../types"
-import { ProviderCell } from "./provider-cell"
-import { SettingsCellSkeleton } from "./settings-cell-skeleton"
+import { CardContent } from "@raypx/ui/components/card";
+import type { SettingsCardClassNames } from "@raypx/ui/components/settings";
+import { SettingsCard } from "@raypx/ui/components/settings";
+import { cn } from "@raypx/ui/lib/utils";
+import { useAuth } from "../../core/hooks/use-auth";
+import { socialProviders } from "../../core/lib/providers/social-providers";
+import type { Refetch } from "../../types";
+import { ProviderCell } from "./provider-cell";
+import { SettingsCellSkeleton } from "./settings-cell-skeleton";
 
 export interface ProvidersCardProps {
-  className?: string
-  classNames?: SettingsCardClassNames
-  accounts?: { accountId: string; provider: string }[] | null
-  isPending?: boolean
-  skipHook?: boolean
-  refetch?: Refetch
+  className?: string;
+  classNames?: SettingsCardClassNames;
+  accounts?: { accountId: string; provider: string }[] | null;
+  isPending?: boolean;
+  skipHook?: boolean;
+  refetch?: Refetch;
 }
 
 export function ProvidersCard({
@@ -32,13 +32,13 @@ export function ProvidersCard({
     t,
     social,
     genericOAuth,
-  } = useAuth()
+  } = useAuth();
 
   if (!skipHook) {
-    const result = useListAccounts()
-    accounts = result.data
-    isPending = result.isPending
-    refetch = result.refetch
+    const result = useListAccounts();
+    accounts = result.data;
+    isPending = result.isPending;
+    refetch = result.refetch;
   }
 
   return (
@@ -59,9 +59,9 @@ export function ProvidersCard({
             {social?.providers?.map((provider) => {
               const socialProvider = socialProviders.find(
                 (socialProvider) => socialProvider.provider === provider,
-              )
+              );
 
-              if (!socialProvider) return null
+              if (!socialProvider) return null;
 
               return (
                 <ProviderCell
@@ -71,16 +71,14 @@ export function ProvidersCard({
                   provider={socialProvider}
                   refetch={refetch}
                 />
-              )
+              );
             })}
 
             {genericOAuth?.providers?.map((provider) => (
               <ProviderCell
                 key={provider.provider}
                 classNames={classNames}
-                account={accounts?.find(
-                  (acc) => acc.provider === provider.provider,
-                )}
+                account={accounts?.find((acc) => acc.provider === provider.provider)}
                 provider={provider}
                 refetch={refetch}
                 other
@@ -90,5 +88,5 @@ export function ProvidersCard({
         )}
       </CardContent>
     </SettingsCard>
-  )
+  );
 }

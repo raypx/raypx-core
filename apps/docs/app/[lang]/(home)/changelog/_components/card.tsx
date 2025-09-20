@@ -1,22 +1,22 @@
-"use client"
+"use client";
 
-import { dayjs } from "@raypx/shared/utils"
-import { Badge } from "@raypx/ui/components/badge"
-import { Card, CardContent, CardHeader } from "@raypx/ui/components/card"
-import { Calendar, Tag } from "lucide-react"
-import { useLocale } from "next-intl"
+import { dayjs } from "@raypx/shared/utils";
+import { Badge } from "@raypx/ui/components/badge";
+import { Card, CardContent, CardHeader } from "@raypx/ui/components/card";
+import { Calendar, Tag } from "lucide-react";
+import { useLocale } from "next-intl";
 
 interface ChangelogCardProps {
-  body: React.ReactNode
-  date?: Date
-  version: string
-  title: string
-  description?: string
+  body: React.ReactNode;
+  date?: Date;
+  version: string;
+  title: string;
+  description?: string;
 }
 
 export const ChangelogCard = (props: ChangelogCardProps) => {
-  const lang = useLocale()
-  const formattedDate = dayjs(props.date).locale(lang).format("LL")
+  const lang = useLocale();
+  const formattedDate = dayjs(props.date).locale(lang).format("LL");
 
   return (
     <div className="flex gap-6">
@@ -32,10 +32,7 @@ export const ChangelogCard = (props: ChangelogCardProps) => {
             <div className="flex items-start justify-between gap-4">
               <div className="space-y-2">
                 <div className="flex items-center gap-3">
-                  <Badge
-                    variant="secondary"
-                    className="font-mono text-base px-3 py-1"
-                  >
+                  <Badge variant="secondary" className="font-mono text-base px-3 py-1">
                     {props.version}
                   </Badge>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -44,9 +41,7 @@ export const ChangelogCard = (props: ChangelogCardProps) => {
                   </div>
                 </div>
                 <h2 className="text-2xl font-bold">{props.title}</h2>
-                {props.description && (
-                  <p className="text-muted-foreground">{props.description}</p>
-                )}
+                {props.description && <p className="text-muted-foreground">{props.description}</p>}
               </div>
             </div>
           </CardHeader>
@@ -59,5 +54,5 @@ export const ChangelogCard = (props: ChangelogCardProps) => {
         </Card>
       </div>
     </div>
-  )
-}
+  );
+};

@@ -1,19 +1,19 @@
-import appConfig from "@/config/app.config"
-import { docsI18nConfig } from "@/lib/docs/i18n"
-import "@/styles/globals.css"
-import { AnalyticsProvider } from "@raypx/analytics"
-import { Toaster } from "@raypx/ui/components/toast"
-import { defineI18nUI } from "fumadocs-ui/i18n"
-import { RootProvider } from "fumadocs-ui/provider"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import { NextIntlClientProvider } from "next-intl"
-import { getMessages } from "next-intl/server"
-import type { ReactNode } from "react"
+import appConfig from "@/config/app.config";
+import { docsI18nConfig } from "@/lib/docs/i18n";
+import "@/styles/globals.css";
+import { AnalyticsProvider } from "@raypx/analytics";
+import { Toaster } from "@raypx/ui/components/toast";
+import { defineI18nUI } from "fumadocs-ui/i18n";
+import { RootProvider } from "fumadocs-ui/provider";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
+import type { ReactNode } from "react";
 
 const inter = Inter({
   subsets: ["latin"],
-})
+});
 
 const { provider } = defineI18nUI(docsI18nConfig, {
   translations: {
@@ -26,7 +26,7 @@ const { provider } = defineI18nUI(docsI18nConfig, {
       search: "搜索",
     },
   },
-})
+});
 
 export const metadata: Metadata = {
   title: appConfig.name,
@@ -39,17 +39,17 @@ export const metadata: Metadata = {
     url: appConfig.url,
     siteName: appConfig.name,
   },
-}
+};
 
 export default async function Layout({
   children,
   params,
 }: {
-  children: ReactNode
-  params: Promise<{ lang: string }>
+  children: ReactNode;
+  params: Promise<{ lang: string }>;
 }) {
-  const { lang } = await params
-  const messages = await getMessages({ locale: lang })
+  const { lang } = await params;
+  const messages = await getMessages({ locale: lang });
 
   return (
     <html lang={lang} className={inter.className} suppressHydrationWarning>
@@ -64,5 +64,5 @@ export default async function Layout({
         </NextIntlClientProvider>
       </body>
     </html>
-  )
+  );
 }

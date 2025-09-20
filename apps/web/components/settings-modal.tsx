@@ -1,11 +1,7 @@
-"use client"
+"use client";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@raypx/ui/components/avatar"
-import { Button } from "@raypx/ui/components/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@raypx/ui/components/avatar";
+import { Button } from "@raypx/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -14,52 +10,35 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@raypx/ui/components/dialog"
-import { Input } from "@raypx/ui/components/input"
-import { Label } from "@raypx/ui/components/label"
+} from "@raypx/ui/components/dialog";
+import { Input } from "@raypx/ui/components/input";
+import { Label } from "@raypx/ui/components/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@raypx/ui/components/select"
-import { Switch } from "@raypx/ui/components/switch"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@raypx/ui/components/tabs"
-import { Textarea } from "@raypx/ui/components/textarea"
-import {
-  Bell,
-  Camera,
-  Palette,
-  Save,
-  Settings,
-  Shield,
-  User,
-} from "lucide-react"
-import { useState } from "react"
+} from "@raypx/ui/components/select";
+import { Switch } from "@raypx/ui/components/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@raypx/ui/components/tabs";
+import { Textarea } from "@raypx/ui/components/textarea";
+import { Bell, Camera, Palette, Save, Settings, Shield, User } from "lucide-react";
+import { useState } from "react";
 
 interface SettingsModalProps {
-  trigger?: React.ReactNode
-  open?: boolean
-  onOpenChange?: (open: boolean) => void
+  trigger?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export function SettingsModal({
-  trigger,
-  open,
-  onOpenChange,
-}: SettingsModalProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState("profile")
+export function SettingsModal({ trigger, open, onOpenChange }: SettingsModalProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("profile");
 
-  const controlled = open !== undefined
-  const isOpenState = controlled ? open : isOpen
-  const setIsOpenState = controlled ? onOpenChange : setIsOpen
+  const controlled = open !== undefined;
+  const isOpenState = controlled ? open : isOpen;
+  const setIsOpenState = controlled ? onOpenChange : setIsOpen;
 
   const [formData, setFormData] = useState({
     firstName: "John",
@@ -76,24 +55,24 @@ export function SettingsModal({
     pushNotifications: true,
     marketingEmails: false,
     twoFactorAuth: true,
-  })
+  });
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
-    }))
-  }
+    }));
+  };
 
   const handleSave = () => {
     // 这里可以添加保存逻辑
-    console.log("Saving settings:", formData)
-    setIsOpenState?.(false)
-  }
+    console.log("Saving settings:", formData);
+    setIsOpenState?.(false);
+  };
 
   const handleCancel = () => {
-    setIsOpenState?.(false)
-  }
+    setIsOpenState?.(false);
+  };
 
   return (
     <Dialog open={isOpenState} onOpenChange={setIsOpenState}>
@@ -115,17 +94,11 @@ export function SettingsModal({
               <User className="h-4 w-4" />
               Profile
             </TabsTrigger>
-            <TabsTrigger
-              value="preferences"
-              className="flex items-center gap-2"
-            >
+            <TabsTrigger value="preferences" className="flex items-center gap-2">
               <Palette className="h-4 w-4" />
               Preferences
             </TabsTrigger>
-            <TabsTrigger
-              value="notifications"
-              className="flex items-center gap-2"
-            >
+            <TabsTrigger value="notifications" className="flex items-center gap-2">
               <Bell className="h-4 w-4" />
               Notifications
             </TabsTrigger>
@@ -156,9 +129,7 @@ export function SettingsModal({
                     <Input
                       id="firstName"
                       value={formData.firstName}
-                      onChange={(e) =>
-                        handleInputChange("firstName", e.target.value)
-                      }
+                      onChange={(e) => handleInputChange("firstName", e.target.value)}
                     />
                   </div>
                   <div className="space-y-2">
@@ -166,9 +137,7 @@ export function SettingsModal({
                     <Input
                       id="lastName"
                       value={formData.lastName}
-                      onChange={(e) =>
-                        handleInputChange("lastName", e.target.value)
-                      }
+                      onChange={(e) => handleInputChange("lastName", e.target.value)}
                     />
                   </div>
                 </div>
@@ -200,9 +169,7 @@ export function SettingsModal({
                     <Input
                       id="location"
                       value={formData.location}
-                      onChange={(e) =>
-                        handleInputChange("location", e.target.value)
-                      }
+                      onChange={(e) => handleInputChange("location", e.target.value)}
                     />
                   </div>
                   <div className="space-y-2">
@@ -210,9 +177,7 @@ export function SettingsModal({
                     <Input
                       id="company"
                       value={formData.company}
-                      onChange={(e) =>
-                        handleInputChange("company", e.target.value)
-                      }
+                      onChange={(e) => handleInputChange("company", e.target.value)}
                     />
                   </div>
                 </div>
@@ -223,9 +188,7 @@ export function SettingsModal({
                     id="website"
                     type="url"
                     value={formData.website}
-                    onChange={(e) =>
-                      handleInputChange("website", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange("website", e.target.value)}
                     placeholder="https://example.com"
                   />
                 </div>
@@ -241,23 +204,15 @@ export function SettingsModal({
                   <Label htmlFor="timezone">Timezone</Label>
                   <Select
                     value={formData.timezone}
-                    onValueChange={(value) =>
-                      handleInputChange("timezone", value)
-                    }
+                    onValueChange={(value) => handleInputChange("timezone", value)}
                   >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="America/Los_Angeles">
-                        Pacific Time (PT)
-                      </SelectItem>
-                      <SelectItem value="America/New_York">
-                        Eastern Time (ET)
-                      </SelectItem>
-                      <SelectItem value="Europe/London">
-                        London (GMT)
-                      </SelectItem>
+                      <SelectItem value="America/Los_Angeles">Pacific Time (PT)</SelectItem>
+                      <SelectItem value="America/New_York">Eastern Time (ET)</SelectItem>
+                      <SelectItem value="Europe/London">London (GMT)</SelectItem>
                       <SelectItem value="Asia/Tokyo">Tokyo (JST)</SelectItem>
                     </SelectContent>
                   </Select>
@@ -267,9 +222,7 @@ export function SettingsModal({
                   <Label htmlFor="language">Language</Label>
                   <Select
                     value={formData.language}
-                    onValueChange={(value) =>
-                      handleInputChange("language", value)
-                    }
+                    onValueChange={(value) => handleInputChange("language", value)}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -329,9 +282,7 @@ export function SettingsModal({
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label htmlFor="emailNotifications">
-                        Email Notifications
-                      </Label>
+                      <Label htmlFor="emailNotifications">Email Notifications</Label>
                       <p className="text-sm text-muted-foreground">
                         Receive notifications via email
                       </p>
@@ -354,9 +305,7 @@ export function SettingsModal({
                     <Switch
                       id="marketingEmails"
                       checked={formData.marketingEmails}
-                      onCheckedChange={(checked) =>
-                        handleInputChange("marketingEmails", checked)
-                      }
+                      onCheckedChange={(checked) => handleInputChange("marketingEmails", checked)}
                     />
                   </div>
                 </div>
@@ -367,9 +316,7 @@ export function SettingsModal({
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label htmlFor="pushNotifications">
-                        Push Notifications
-                      </Label>
+                      <Label htmlFor="pushNotifications">Push Notifications</Label>
                       <p className="text-sm text-muted-foreground">
                         Receive push notifications in your browser
                       </p>
@@ -377,9 +324,7 @@ export function SettingsModal({
                     <Switch
                       id="pushNotifications"
                       checked={formData.pushNotifications}
-                      onCheckedChange={(checked) =>
-                        handleInputChange("pushNotifications", checked)
-                      }
+                      onCheckedChange={(checked) => handleInputChange("pushNotifications", checked)}
                     />
                   </div>
                 </div>
@@ -391,9 +336,7 @@ export function SettingsModal({
           <TabsContent value="security" className="space-y-6 mt-6">
             <div className="space-y-6">
               <div className="space-y-4">
-                <h3 className="text-lg font-medium">
-                  Two-Factor Authentication
-                </h3>
+                <h3 className="text-lg font-medium">Two-Factor Authentication</h3>
                 <div className="flex items-center justify-between p-4 border rounded-lg">
                   <div>
                     <Label htmlFor="twoFactorAuth">2FA Status</Label>
@@ -404,9 +347,7 @@ export function SettingsModal({
                   <Switch
                     id="twoFactorAuth"
                     checked={formData.twoFactorAuth}
-                    onCheckedChange={(checked) =>
-                      handleInputChange("twoFactorAuth", checked)
-                    }
+                    onCheckedChange={(checked) => handleInputChange("twoFactorAuth", checked)}
                   />
                 </div>
               </div>
@@ -435,5 +376,5 @@ export function SettingsModal({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

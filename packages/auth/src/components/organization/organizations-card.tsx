@@ -1,33 +1,28 @@
-"use client"
+"use client";
 
-import { CardContent } from "@raypx/ui/components/card"
-import type { SettingsCardProps } from "@raypx/ui/components/settings"
-import { SettingsCard } from "@raypx/ui/components/settings"
-import { cn } from "@raypx/ui/lib/utils"
-import { useState } from "react"
-import { useAuth } from "../../core/hooks/use-auth"
-import { useIsHydrated } from "../../core/hooks/use-hydrated"
-import { SettingsCellSkeleton } from "../account/settings-cell-skeleton"
-import { CreateOrganizationDialog } from "./create-organization-dialog"
-import { OrganizationCell } from "./organization-cell"
+import { CardContent } from "@raypx/ui/components/card";
+import type { SettingsCardProps } from "@raypx/ui/components/settings";
+import { SettingsCard } from "@raypx/ui/components/settings";
+import { cn } from "@raypx/ui/lib/utils";
+import { useState } from "react";
+import { useAuth } from "../../core/hooks/use-auth";
+import { useIsHydrated } from "../../core/hooks/use-hydrated";
+import { SettingsCellSkeleton } from "../account/settings-cell-skeleton";
+import { CreateOrganizationDialog } from "./create-organization-dialog";
+import { OrganizationCell } from "./organization-cell";
 
-export function OrganizationsCard({
-  className,
-  classNames,
-  ...props
-}: SettingsCardProps) {
+export function OrganizationsCard({ className, classNames, ...props }: SettingsCardProps) {
   const {
     hooks: { useListOrganizations },
     t,
-  } = useAuth()
+  } = useAuth();
 
-  const isHydrated = useIsHydrated()
-  const { data: organizations, isPending: organizationsPending } =
-    useListOrganizations()
+  const isHydrated = useIsHydrated();
+  const { data: organizations, isPending: organizationsPending } = useListOrganizations();
 
-  const isPending = !isHydrated || organizationsPending
+  const isPending = !isHydrated || organizationsPending;
 
-  const [createDialogOpen, setCreateDialogOpen] = useState(false)
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
   return (
     <>
@@ -62,5 +57,5 @@ export function OrganizationsCard({
         onOpenChange={setCreateDialogOpen}
       />
     </>
-  )
+  );
 }

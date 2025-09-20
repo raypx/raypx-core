@@ -1,20 +1,20 @@
-import { RedirectToSignIn } from "@raypx/auth/core"
-import { createMetadata } from "@raypx/seo"
-import { ChevronRight, Home } from "lucide-react"
-import type { Metadata } from "next"
-import Link from "next/link"
-import type { ReactNode } from "react"
-import { Header } from "@/layouts/console/header"
+import { RedirectToSignIn } from "@raypx/auth/core";
+import { createMetadata } from "@raypx/seo";
+import { ChevronRight, Home } from "lucide-react";
+import type { Metadata } from "next";
+import Link from "next/link";
+import type { ReactNode } from "react";
+import { Header } from "@/layouts/console/header";
 
 interface AccountLayoutProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return createMetadata({
     title: "Account",
-  })
-}
+  });
+};
 
 export default async function AccountLayout({ children }: AccountLayoutProps) {
   return (
@@ -45,5 +45,5 @@ export default async function AccountLayout({ children }: AccountLayoutProps) {
         <main className="container mx-auto px-6 py-8">{children}</main>
       </div>
     </>
-  )
+  );
 }

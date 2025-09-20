@@ -22,7 +22,7 @@ import {
   VKIcon,
   XIcon,
   ZoomIcon,
-} from "../../../components/core/provider-icons"
+} from "../../../components/core/provider-icons";
 
 export const socialProviders = [
   {
@@ -135,10 +135,10 @@ export const socialProviders = [
     name: "Zoom",
     icon: ZoomIcon,
   },
-] as const
+] as const;
 
 export type Provider = {
-  provider: string
-  name: string
-  icon?: ProviderIcon
-}
+  provider: string;
+  name: string;
+  icon?: ProviderIcon;
+};

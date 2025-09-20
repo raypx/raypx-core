@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader } from "@raypx/ui/components/card"
-import { Skeleton } from "@raypx/ui/components/skeleton"
+import { Card, CardContent, CardHeader } from "@raypx/ui/components/card";
+import { Skeleton } from "@raypx/ui/components/skeleton";
 
 export default function DashboardLoading() {
   return (
@@ -67,5 +67,5 @@ export default function DashboardLoading() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

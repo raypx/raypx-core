@@ -1,4 +1,4 @@
-export * from "@tabler/icons-react"
+export * from "@tabler/icons-react";
 export {
   IconAlertCircle as AlertCircle,
   IconArrowLeft as ArrowLeft,
@@ -13,7 +13,7 @@ export {
   IconTrash as Trash,
   IconUpload as Upload,
   IconUserX as UserX,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
 
 export {
   BuildingIcon,
@@ -38,4 +38,4 @@ export {
   UserRoundIcon,
   UserRoundPlus,
   UserX2Icon,
-} from "lucide-react"
+} from "lucide-react";

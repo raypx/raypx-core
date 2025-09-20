@@ -7,13 +7,13 @@
  */
 interface PathBuilderOptions {
   /** Whether to preserve current query parameters */
-  preserveSearch?: boolean
+  preserveSearch?: boolean;
   /** Additional query parameters */
-  searchParams?: Record<string, string>
+  searchParams?: Record<string, string>;
   /** Path mode (for organization URLs) */
-  pathMode?: "slug" | "id" | "default"
+  pathMode?: "slug" | "id" | "default";
   /** Middleware path segment (e.g., organization slug) */
-  middleware?: string
+  middleware?: string;
 }
 
 /**
@@ -27,55 +27,55 @@ const buildPath = (
   segments: (string | undefined)[],
   options: PathBuilderOptions = {},
 ): string => {
-  const { preserveSearch = false, searchParams, pathMode, middleware } = options
+  const { preserveSearch = false, searchParams, pathMode, middleware } = options;
 
   // Filter valid path segments
-  const validSegments = segments.filter(Boolean) as string[]
+  const validSegments = segments.filter(Boolean) as string[];
 
-  if (!basePath && validSegments.length === 0) return ""
+  if (!basePath && validSegments.length === 0) return "";
 
   // Build path array
-  const pathParts = [basePath]
+  const pathParts = [basePath];
 
   // Add middleware path (e.g., organization slug) only when pathMode is 'slug'
   if (middleware && pathMode === "slug") {
-    pathParts.push(middleware)
+    pathParts.push(middleware);
   }
 
   // Add remaining path segments
-  pathParts.push(...validSegments)
+  pathParts.push(...validSegments);
 
   // Use join and replace to handle paths, avoiding duplicate slashes
   const cleanPath =
     pathParts
       .join("/")
       .replace(/\/+/g, "/") // Remove duplicate slashes
-      .replace(/\/$/, "") || "/" // Remove trailing slash but preserve root path
+      .replace(/\/$/, "") || "/"; // Remove trailing slash but preserve root path
 
   // Handle query parameters
   if (preserveSearch || searchParams) {
-    const url = new URL(cleanPath, "http://localhost") // Use temporary domain to handle relative paths
+    const url = new URL(cleanPath, "http://localhost"); // Use temporary domain to handle relative paths
 
     // Add current query parameters
     if (preserveSearch && typeof window !== "undefined") {
-      const currentParams = new URLSearchParams(window.location.search)
+      const currentParams = new URLSearchParams(window.location.search);
       for (const [key, value] of currentParams.entries()) {
-        url.searchParams.set(key, value)
+        url.searchParams.set(key, value);
       }
     }
 
     // Add additional query parameters
     if (searchParams) {
       for (const [key, value] of Object.entries(searchParams)) {
-        url.searchParams.set(key, value)
+        url.searchParams.set(key, value);
       }
     }
 
-    return `${url.pathname}${url.search}`
+    return `${url.pathname}${url.search}`;
   }
 
-  return cleanPath
-}
+  return cleanPath;
+};
 
 /**
  * Build basic authentication URL
@@ -88,8 +88,8 @@ export const buildAuthUrl = (
   viewPath: string,
   preserveSearch = false,
 ): string => {
-  return buildPath(basePath, [viewPath], { preserveSearch })
-}
+  return buildPath(basePath, [viewPath], { preserveSearch });
+};
 
 /**
  * Build account settings URL
@@ -100,9 +100,9 @@ export const buildAccountUrl = (
   basePath: string | undefined,
   viewPath: string | undefined,
 ): string => {
-  if (!basePath || !viewPath) return ""
-  return buildPath(basePath, [viewPath])
-}
+  if (!basePath || !viewPath) return "";
+  return buildPath(basePath, [viewPath]);
+};
 
 /**
  * Build organization URL
@@ -117,12 +117,12 @@ export const buildOrganizationUrl = (
   slug?: string | undefined,
   pathMode?: "slug" | "id" | "default",
 ): string => {
-  if (!basePath || !viewPath) return ""
+  if (!basePath || !viewPath) return "";
   return buildPath(basePath, [viewPath], {
     middleware: slug,
     pathMode,
-  })
-}
+  });
+};
 
 /**
  * Generic URL builder - handles concatenation of multiple path segments
@@ -135,17 +135,17 @@ export const buildUrl = (
   preserveSearch = false,
   searchParams?: Record<string, string>,
 ): string => {
-  const validSegments = segments.filter(Boolean) as string[]
+  const validSegments = segments.filter(Boolean) as string[];
 
-  if (validSegments.length === 0) return ""
+  if (validSegments.length === 0) return "";
 
-  const [basePath, ...restSegments] = validSegments
+  const [basePath, ...restSegments] = validSegments;
 
   return buildPath(basePath || "", restSegments, {
     preserveSearch,
     searchParams,
-  })
-}
+  });
+};
 
 /**
  * Build URL with custom query parameters
@@ -163,5 +163,5 @@ export const buildUrlWithParams = (
   return buildPath(basePath, [viewPath], {
     searchParams,
     preserveSearch,
-  })
-}
+  });
+};

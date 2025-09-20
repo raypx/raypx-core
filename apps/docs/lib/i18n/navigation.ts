@@ -1,5 +1,5 @@
-import { createNavigation } from "next-intl/navigation"
-import { routing } from "@/config/i18n.config"
+import { createNavigation } from "next-intl/navigation";
+import { routing } from "@/config/i18n.config";
 
 /**
  * Navigation APIs
@@ -13,4 +13,4 @@ export const {
   redirect: localeRedirect,
   usePathname: useLocalePathname,
   useRouter: useLocaleRouter,
-} = createNavigation(routing)
+} = createNavigation(routing);

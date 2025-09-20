@@ -1,18 +1,18 @@
-import { Button, Text } from "@react-email/components"
-import { EmailLayout } from "./layout-email"
+import { Button, Text } from "@react-email/components";
+import { EmailLayout } from "./layout-email";
 
 export interface ApiKeyCreatedEmailProps {
-  username: string
-  keyName: string
-  keyPrefix: string
-  permissions?: string[]
+  username: string;
+  keyName: string;
+  keyPrefix: string;
+  permissions?: string[];
   rateLimitInfo?: {
-    maxRequests: number
-    timeWindow: string
-  }
-  createdAt: string
-  dashboardUrl?: string
-  securityTips?: boolean
+    maxRequests: number;
+    timeWindow: string;
+  };
+  createdAt: string;
+  dashboardUrl?: string;
+  securityTips?: boolean;
 }
 
 const ApiKeyCreatedEmail = ({
@@ -27,9 +27,7 @@ const ApiKeyCreatedEmail = ({
 }: ApiKeyCreatedEmailProps) => {
   return (
     <EmailLayout preview={`New API Key Created: ${keyName}`}>
-      <Text className="font-bold text-2xl text-gray-800">
-        🔑 New API Key Created
-      </Text>
+      <Text className="font-bold text-2xl text-gray-800">🔑 New API Key Created</Text>
 
       <Text className="text-gray-600">Hi {username},</Text>
 
@@ -38,9 +36,7 @@ const ApiKeyCreatedEmail = ({
       </Text>
 
       <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg my-4">
-        <Text className="font-semibold text-gray-800 mb-2">
-          API Key Details:
-        </Text>
+        <Text className="font-semibold text-gray-800 mb-2">API Key Details:</Text>
         <Text className="text-sm text-gray-700 my-1">
           <strong>Name:</strong> {keyName}
         </Text>
@@ -57,17 +53,15 @@ const ApiKeyCreatedEmail = ({
         )}
         {rateLimitInfo && (
           <Text className="text-sm text-gray-700 my-1">
-            <strong>Rate Limit:</strong> {rateLimitInfo.maxRequests} requests
-            per {rateLimitInfo.timeWindow}
+            <strong>Rate Limit:</strong> {rateLimitInfo.maxRequests} requests per{" "}
+            {rateLimitInfo.timeWindow}
           </Text>
         )}
       </div>
 
       {securityTips && (
         <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg my-4">
-          <Text className="font-semibold text-yellow-800 mb-2">
-            🔒 Security Tips:
-          </Text>
+          <Text className="font-semibold text-yellow-800 mb-2">🔒 Security Tips:</Text>
           <Text className="text-sm text-yellow-700 my-1">
             • Store your API key securely and never share it publicly
           </Text>
@@ -99,17 +93,16 @@ const ApiKeyCreatedEmail = ({
       )}
 
       <Text className="text-gray-500 text-sm mt-6">
-        If you didn't create this API key, please contact our support team
-        immediately and review your account security settings.
+        If you didn't create this API key, please contact our support team immediately and review
+        your account security settings.
       </Text>
 
       <Text className="text-gray-500 text-sm">
-        Need help with API integration? Check out our documentation or contact
-        our support team.
+        Need help with API integration? Check out our documentation or contact our support team.
       </Text>
     </EmailLayout>
-  )
-}
+  );
+};
 
 ApiKeyCreatedEmail.PreviewProps = {
   username: "Raypx",
@@ -120,6 +113,6 @@ ApiKeyCreatedEmail.PreviewProps = {
     maxRequests: 1000,
     timeWindow: "1 hour",
   },
-}
+};
 
-export { ApiKeyCreatedEmail }
+export { ApiKeyCreatedEmail };

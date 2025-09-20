@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import type { ReactNode } from "react"
+import type { ReactNode } from "react";
 
 export interface ConsoleGridProps {
-  children: ReactNode
-  cols?: 1 | 2 | 3 | 4
-  lgCols?: 1 | 2 | 3 | 4
-  gap?: 4 | 6 | 8
-  className?: string
+  children: ReactNode;
+  cols?: 1 | 2 | 3 | 4;
+  lgCols?: 1 | 2 | 3 | 4;
+  gap?: 4 | 6 | 8;
+  className?: string;
 }
 
 export function ConsoleGrid({
@@ -22,7 +22,7 @@ export function ConsoleGrid({
     2: "grid-cols-2",
     3: "grid-cols-3",
     4: "grid-cols-4",
-  }[cols]
+  }[cols];
 
   const lgGridCols = lgCols
     ? {
@@ -31,17 +31,15 @@ export function ConsoleGrid({
         3: "lg:grid-cols-3",
         4: "lg:grid-cols-4",
       }[lgCols]
-    : ""
+    : "";
 
   const gapClass = {
     4: "gap-4",
     6: "gap-6",
     8: "gap-8",
-  }[gap]
+  }[gap];
 
   return (
-    <div className={`grid ${gridCols} ${lgGridCols} ${gapClass} ${className}`}>
-      {children}
-    </div>
-  )
+    <div className={`grid ${gridCols} ${lgGridCols} ${gapClass} ${className}`}>{children}</div>
+  );
 }

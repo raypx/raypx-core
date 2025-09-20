@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { Button } from "@raypx/ui/components/button"
-import { Card } from "@raypx/ui/components/card"
+import { Button } from "@raypx/ui/components/button";
+import { Card } from "@raypx/ui/components/card";
 import {
   Dialog,
   DialogContent,
@@ -9,22 +9,21 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@raypx/ui/components/dialog"
-import { Loader2 } from "@raypx/ui/components/icons"
-import type { SettingsCardClassNames } from "@raypx/ui/components/settings"
-import { cn } from "@raypx/ui/lib/utils"
-import type { Organization } from "better-auth/plugins/organization"
-import { type ComponentProps, useState } from "react"
-import { useAuth } from "../../core/hooks/use-auth"
-import { getLocalizedError } from "../../core/lib/utils"
-import { OrganizationCellView } from "./organization-cell-view"
+} from "@raypx/ui/components/dialog";
+import { Loader2 } from "@raypx/ui/components/icons";
+import type { SettingsCardClassNames } from "@raypx/ui/components/settings";
+import { cn } from "@raypx/ui/lib/utils";
+import type { Organization } from "better-auth/plugins/organization";
+import { type ComponentProps, useState } from "react";
+import { useAuth } from "../../core/hooks/use-auth";
+import { getLocalizedError } from "../../core/lib/utils";
+import { OrganizationCellView } from "./organization-cell-view";
 
-export interface LeaveOrganizationDialogProps
-  extends ComponentProps<typeof Dialog> {
-  className?: string
-  classNames?: SettingsCardClassNames
+export interface LeaveOrganizationDialogProps extends ComponentProps<typeof Dialog> {
+  className?: string;
+  classNames?: SettingsCardClassNames;
 
-  organization: Organization
+  organization: Organization;
 }
 
 export function LeaveOrganizationDialog({
@@ -40,38 +39,38 @@ export function LeaveOrganizationDialog({
     hooks: { useListOrganizations },
     t,
     toast,
-  } = useAuth()
+  } = useAuth();
 
-  const { refetch: refetchOrganizations } = useListOrganizations()
+  const { refetch: refetchOrganizations } = useListOrganizations();
 
-  const [isLeaving, setIsLeaving] = useState(false)
+  const [isLeaving, setIsLeaving] = useState(false);
 
   const handleLeaveOrganization = async () => {
-    setIsLeaving(true)
+    setIsLeaving(true);
 
     try {
       await authClient.organization.leave({
         organizationId: organization.id,
         fetchOptions: { throw: true },
-      })
+      });
 
-      await refetchOrganizations?.()
+      await refetchOrganizations?.();
 
       toast({
         variant: "success",
         message: t("LEAVE_ORGANIZATION_SUCCESS"),
-      })
+      });
 
-      onOpenChange?.(false)
+      onOpenChange?.(false);
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
     }
 
-    setIsLeaving(false)
-  }
+    setIsLeaving(false);
+  };
 
   return (
     <Dialog onOpenChange={onOpenChange} {...props}>
@@ -84,9 +83,7 @@ export function LeaveOrganizationDialog({
             {t("LEAVE_ORGANIZATION")}
           </DialogTitle>
 
-          <DialogDescription
-            className={cn("text-xs md:text-sm", classNames?.description)}
-          >
+          <DialogDescription className={cn("text-xs md:text-sm", classNames?.description)}>
             {t("LEAVE_ORGANIZATION_CONFIRM")}
           </DialogDescription>
         </DialogHeader>
@@ -120,5 +117,5 @@ export function LeaveOrganizationDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

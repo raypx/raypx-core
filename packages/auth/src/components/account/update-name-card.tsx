@@ -1,21 +1,17 @@
-"use client"
+"use client";
 
-import type { SettingsCardProps } from "@raypx/ui/components/settings"
-import { useAuth } from "../../core/hooks/use-auth"
-import { UpdateFieldCard } from "./update-field-card"
+import type { SettingsCardProps } from "@raypx/ui/components/settings";
+import { useAuth } from "../../core/hooks/use-auth";
+import { UpdateFieldCard } from "./update-field-card";
 
-export function UpdateNameCard({
-  className,
-  classNames,
-  ...props
-}: SettingsCardProps) {
+export function UpdateNameCard({ className, classNames, ...props }: SettingsCardProps) {
   const {
     hooks: { useSession },
     t,
     nameRequired,
-  } = useAuth()
+  } = useAuth();
 
-  const { data: sessionData } = useSession()
+  const { data: sessionData } = useSession();
 
   return (
     <UpdateFieldCard
@@ -30,5 +26,5 @@ export function UpdateNameCard({
       required={nameRequired}
       {...props}
     />
-  )
+  );
 }

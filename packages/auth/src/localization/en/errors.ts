@@ -31,32 +31,24 @@ export const errors = {
   SESSION_EXPIRED: "Session expired. Re-authenticate to perform this action.",
   FAILED_TO_UNLINK_LAST_ACCOUNT: "You can't unlink your last account",
   ACCOUNT_NOT_FOUND: "Account not found",
-  USER_ALREADY_HAS_PASSWORD:
-    "User already has a password. Provide that to delete the account.",
+  USER_ALREADY_HAS_PASSWORD: "User already has a password. Provide that to delete the account.",
   YOU_CANNOT_BAN_YOURSELF: "You cannot ban yourself",
-  YOU_ARE_NOT_ALLOWED_TO_CHANGE_USERS_ROLE:
-    "You are not allowed to change users role",
+  YOU_ARE_NOT_ALLOWED_TO_CHANGE_USERS_ROLE: "You are not allowed to change users role",
   YOU_ARE_NOT_ALLOWED_TO_CREATE_USERS: "You are not allowed to create users",
   YOU_ARE_NOT_ALLOWED_TO_LIST_USERS: "You are not allowed to list users",
-  YOU_ARE_NOT_ALLOWED_TO_LIST_USERS_SESSIONS:
-    "You are not allowed to list users sessions",
+  YOU_ARE_NOT_ALLOWED_TO_LIST_USERS_SESSIONS: "You are not allowed to list users sessions",
   YOU_ARE_NOT_ALLOWED_TO_BAN_USERS: "You are not allowed to ban users",
-  YOU_ARE_NOT_ALLOWED_TO_IMPERSONATE_USERS:
-    "You are not allowed to impersonate users",
-  YOU_ARE_NOT_ALLOWED_TO_REVOKE_USERS_SESSIONS:
-    "You are not allowed to revoke users sessions",
+  YOU_ARE_NOT_ALLOWED_TO_IMPERSONATE_USERS: "You are not allowed to impersonate users",
+  YOU_ARE_NOT_ALLOWED_TO_REVOKE_USERS_SESSIONS: "You are not allowed to revoke users sessions",
   YOU_ARE_NOT_ALLOWED_TO_DELETE_USERS: "You are not allowed to delete users",
-  YOU_ARE_NOT_ALLOWED_TO_SET_USERS_PASSWORD:
-    "You are not allowed to set users password",
+  YOU_ARE_NOT_ALLOWED_TO_SET_USERS_PASSWORD: "You are not allowed to set users password",
   BANNED_USER: "You have been banned from this application",
   COULD_NOT_CREATE_SESSION: "Could not create session",
   ANONYMOUS_USERS_CANNOT_SIGN_IN_AGAIN_ANONYMOUSLY:
     "Anonymous users cannot sign in again anonymously",
   INVALID_METADATA_TYPE: "metadata must be an object or undefined",
-  REFILL_AMOUNT_AND_INTERVAL_REQUIRED:
-    "refillAmount is required when refillInterval is provided",
-  REFILL_INTERVAL_AND_AMOUNT_REQUIRED:
-    "refillInterval is required when refillAmount is provided",
+  REFILL_AMOUNT_AND_INTERVAL_REQUIRED: "refillAmount is required when refillInterval is provided",
+  REFILL_INTERVAL_AND_AMOUNT_REQUIRED: "refillInterval is required when refillAmount is provided",
   USER_BANNED: "User is banned",
   UNAUTHORIZED_SESSION: "Unauthorized or invalid session",
   KEY_NOT_FOUND: "API Key not found",
@@ -64,10 +56,8 @@ export const errors = {
   KEY_EXPIRED: "API Key has expired",
   USAGE_EXCEEDED: "API Key has reached its usage limit",
   KEY_NOT_RECOVERABLE: "API Key is not recoverable",
-  EXPIRES_IN_IS_TOO_SMALL:
-    "The expiresIn is smaller than the predefined minimum value.",
-  EXPIRES_IN_IS_TOO_LARGE:
-    "The expiresIn is larger than the predefined maximum value.",
+  EXPIRES_IN_IS_TOO_SMALL: "The expiresIn is smaller than the predefined minimum value.",
+  EXPIRES_IN_IS_TOO_LARGE: "The expiresIn is larger than the predefined maximum value.",
   INVALID_REMAINING: "The remaining count is either too large or too small.",
   INVALID_PREFIX_LENGTH: "The prefix length is either too large or too small.",
   INVALID_NAME_LENGTH: "The name length is either too large or too small.",
@@ -99,58 +89,45 @@ export const errors = {
     "You have reached the maximum number of organizations",
   ORGANIZATION_ALREADY_EXISTS: "Organization already exists",
   ORGANIZATION_NOT_FOUND: "Organization not found",
-  USER_IS_NOT_A_MEMBER_OF_THE_ORGANIZATION:
-    "User is not a member of the organization",
+  USER_IS_NOT_A_MEMBER_OF_THE_ORGANIZATION: "User is not a member of the organization",
   YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_ORGANIZATION:
     "You are not allowed to update this organization",
   YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_ORGANIZATION:
     "You are not allowed to delete this organization",
   NO_ACTIVE_ORGANIZATION: "No active organization",
-  USER_IS_ALREADY_A_MEMBER_OF_THIS_ORGANIZATION:
-    "User is already a member of this organization",
+  USER_IS_ALREADY_A_MEMBER_OF_THIS_ORGANIZATION: "User is already a member of this organization",
   MEMBER_NOT_FOUND: "Member not found",
   ROLE_NOT_FOUND: "Role not found",
-  YOU_ARE_NOT_ALLOWED_TO_CREATE_A_NEW_TEAM:
-    "You are not allowed to create a new team",
+  YOU_ARE_NOT_ALLOWED_TO_CREATE_A_NEW_TEAM: "You are not allowed to create a new team",
   TEAM_ALREADY_EXISTS: "Team already exists",
   TEAM_NOT_FOUND: "Team not found",
   YOU_CANNOT_LEAVE_THE_ORGANIZATION_AS_THE_ONLY_OWNER:
     "You cannot leave the organization as the only owner",
-  YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_MEMBER:
-    "You are not allowed to delete this member",
+  YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_MEMBER: "You are not allowed to delete this member",
   YOU_ARE_NOT_ALLOWED_TO_INVITE_USERS_TO_THIS_ORGANIZATION:
     "You are not allowed to invite users to this organization",
-  USER_IS_ALREADY_INVITED_TO_THIS_ORGANIZATION:
-    "User is already invited to this organization",
+  USER_IS_ALREADY_INVITED_TO_THIS_ORGANIZATION: "User is already invited to this organization",
   INVITATION_NOT_FOUND: "Invitation not found",
-  YOU_ARE_NOT_THE_RECIPIENT_OF_THE_INVITATION:
-    "You are not the recipient of the invitation",
-  YOU_ARE_NOT_ALLOWED_TO_CANCEL_THIS_INVITATION:
-    "You are not allowed to cancel this invitation",
+  YOU_ARE_NOT_THE_RECIPIENT_OF_THE_INVITATION: "You are not the recipient of the invitation",
+  YOU_ARE_NOT_ALLOWED_TO_CANCEL_THIS_INVITATION: "You are not allowed to cancel this invitation",
   INVITER_IS_NO_LONGER_A_MEMBER_OF_THE_ORGANIZATION:
     "Inviter is no longer a member of the organization",
   YOU_ARE_NOT_ALLOWED_TO_INVITE_USER_WITH_THIS_ROLE:
     "you are not allowed to invite user with this role",
   FAILED_TO_RETRIEVE_INVITATION: "Failed to retrieve invitation",
-  YOU_HAVE_REACHED_THE_MAXIMUM_NUMBER_OF_TEAMS:
-    "You have reached the maximum number of teams",
+  YOU_HAVE_REACHED_THE_MAXIMUM_NUMBER_OF_TEAMS: "You have reached the maximum number of teams",
   UNABLE_TO_REMOVE_LAST_TEAM: "Unable to remove last team",
-  YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_MEMBER:
-    "You are not allowed to update this member",
-  ORGANIZATION_MEMBERSHIP_LIMIT_REACHED:
-    "Organization membership limit reached",
+  YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_MEMBER: "You are not allowed to update this member",
+  ORGANIZATION_MEMBERSHIP_LIMIT_REACHED: "Organization membership limit reached",
   YOU_ARE_NOT_ALLOWED_TO_CREATE_TEAMS_IN_THIS_ORGANIZATION:
     "You are not allowed to create teams in this organization",
   YOU_ARE_NOT_ALLOWED_TO_DELETE_TEAMS_IN_THIS_ORGANIZATION:
     "You are not allowed to delete teams in this organization",
-  YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_TEAM:
-    "You are not allowed to update this team",
-  YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_TEAM:
-    "You are not allowed to delete this team",
+  YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_TEAM: "You are not allowed to update this team",
+  YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_TEAM: "You are not allowed to delete this team",
   INVITATION_LIMIT_REACHED: "Invitation limit reached",
   CHALLENGE_NOT_FOUND: "Challenge not found",
-  YOU_ARE_NOT_ALLOWED_TO_REGISTER_THIS_PASSKEY:
-    "You are not allowed to register this passkey",
+  YOU_ARE_NOT_ALLOWED_TO_REGISTER_THIS_PASSKEY: "You are not allowed to register this passkey",
   FAILED_TO_VERIFY_REGISTRATION: "Failed to verify registration",
   PASSKEY_NOT_FOUND: "Passkey not found",
   AUTHENTICATION_FAILED: "Authentication failed",
@@ -167,11 +144,9 @@ export const errors = {
   ALREADY_SUBSCRIBED_PLAN: "You're already subscribed to this plan",
   UNABLE_TO_CREATE_CUSTOMER: "Unable to create customer",
   FAILED_TO_FETCH_PLANS: "Failed to fetch plans",
-  EMAIL_VERIFICATION_REQUIRED:
-    "Email verification is required before you can subscribe to a plan",
+  EMAIL_VERIFICATION_REQUIRED: "Email verification is required before you can subscribe to a plan",
   SUBSCRIPTION_NOT_ACTIVE: "Subscription is not active",
-  SUBSCRIPTION_NOT_SCHEDULED_FOR_CANCELLATION:
-    "Subscription is not scheduled for cancellation",
+  SUBSCRIPTION_NOT_SCHEDULED_FOR_CANCELLATION: "Subscription is not scheduled for cancellation",
   OTP_NOT_ENABLED: "OTP not enabled",
   OTP_HAS_EXPIRED: "OTP has expired",
   TOTP_NOT_ENABLED: "TOTP not enabled",
@@ -179,8 +154,7 @@ export const errors = {
   BACKUP_CODES_NOT_ENABLED: "Backup codes aren't enabled",
   INVALID_BACKUP_CODE: "Invalid backup code",
   INVALID_CODE: "Invalid code",
-  TOO_MANY_ATTEMPTS_REQUEST_NEW_CODE:
-    "Too many attempts. Please request a new code.",
+  TOO_MANY_ATTEMPTS_REQUEST_NEW_CODE: "Too many attempts. Please request a new code.",
   INVALID_TWO_FACTOR_COOKIE: "Invalid two factor cookie",
   INVALID_USERNAME_OR_PASSWORD: "invalid username or password",
   USERNAME_IS_ALREADY_TAKEN: "username is already taken. please try another.",
@@ -207,4 +181,4 @@ export const errors = {
     "Provider account provider is GitLab, but it is not configured",
   FIELD_IS_TOO_X: "{field} is too {x}",
   FIELD_IN_CHARACTER_LIMIT: "{field} character count is in {limit} characters",
-}
+};

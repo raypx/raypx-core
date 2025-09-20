@@ -1,5 +1,5 @@
-import { Button, Text } from "@react-email/components"
-import { EmailLayout } from "./layout-email"
+import { Button, Text } from "@react-email/components";
+import { EmailLayout } from "./layout-email";
 
 export type SecurityAlertType =
   | "suspicious_login"
@@ -8,28 +8,27 @@ export type SecurityAlertType =
   | "two_factor_enabled"
   | "two_factor_disabled"
   | "api_key_created"
-  | "api_key_deleted"
+  | "api_key_deleted";
 
 export interface SecurityAlertEmailProps {
-  username: string
-  alertType: SecurityAlertType
+  username: string;
+  alertType: SecurityAlertType;
   details: {
-    timestamp: string
-    location?: string
-    ipAddress?: string
-    userAgent?: string
-    deviceInfo?: string
-  }
-  actionUrl?: string
-  actionText?: string
+    timestamp: string;
+    location?: string;
+    ipAddress?: string;
+    userAgent?: string;
+    deviceInfo?: string;
+  };
+  actionUrl?: string;
+  actionText?: string;
 }
 
 const getAlertContent = (alertType: SecurityAlertType) => {
   const alertConfig = {
     suspicious_login: {
       title: "Suspicious Login Detected",
-      message:
-        "We detected a login to your account from an unrecognized device or location.",
+      message: "We detected a login to your account from an unrecognized device or location.",
       severity: "high" as const,
     },
     password_changed: {
@@ -62,10 +61,10 @@ const getAlertContent = (alertType: SecurityAlertType) => {
       message: "An API key was deleted from your account.",
       severity: "low" as const,
     },
-  }
+  };
 
-  return alertConfig[alertType]
-}
+  return alertConfig[alertType];
+};
 
 const SecurityAlertEmail = ({
   username,
@@ -74,12 +73,12 @@ const SecurityAlertEmail = ({
   actionUrl,
   actionText,
 }: SecurityAlertEmailProps) => {
-  const alert = getAlertContent(alertType)
+  const alert = getAlertContent(alertType);
   const severityColors = {
     high: "text-red-600",
     medium: "text-orange-600",
     low: "text-green-600",
-  }
+  };
 
   return (
     <EmailLayout preview={`Security Alert: ${alert.title}`}>
@@ -87,18 +86,14 @@ const SecurityAlertEmail = ({
         🔒 Security Alert
       </Text>
 
-      <Text className="font-semibold text-xl text-gray-800 mt-4">
-        {alert.title}
-      </Text>
+      <Text className="font-semibold text-xl text-gray-800 mt-4">{alert.title}</Text>
 
       <Text className="text-gray-600">Hi {username},</Text>
 
       <Text className="text-gray-600">{alert.message}</Text>
 
       <div className="bg-gray-50 p-4 rounded-lg my-4">
-        <Text className="font-semibold text-gray-800 mb-2">
-          Activity Details:
-        </Text>
+        <Text className="font-semibold text-gray-800 mb-2">Activity Details:</Text>
         <Text className="text-sm text-gray-600 my-1">
           <strong>Time:</strong> {details.timestamp}
         </Text>
@@ -147,13 +142,12 @@ const SecurityAlertEmail = ({
       )}
 
       <Text className="text-gray-500 text-sm mt-6">
-        This is an automated security notification. If you have any concerns
-        about your account security, please contact our support team
-        immediately.
+        This is an automated security notification. If you have any concerns about your account
+        security, please contact our support team immediately.
       </Text>
     </EmailLayout>
-  )
-}
+  );
+};
 
 SecurityAlertEmail.PreviewProps = {
   username: "Raypx",
@@ -161,6 +155,6 @@ SecurityAlertEmail.PreviewProps = {
   details: {
     timestamp: "2021-01-01 12:00:00",
   },
-}
+};
 
-export { SecurityAlertEmail }
+export { SecurityAlertEmail };

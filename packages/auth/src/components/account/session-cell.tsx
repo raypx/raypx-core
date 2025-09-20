@@ -1,30 +1,25 @@
-"use client"
+"use client";
 
-import { UAParser } from "@raypx/shared"
-import { Button } from "@raypx/ui/components/button"
-import { Card } from "@raypx/ui/components/card"
-import { LaptopIcon, Loader2, SmartphoneIcon } from "@raypx/ui/components/icons"
-import type { SettingsCardClassNames } from "@raypx/ui/components/settings"
-import { cn } from "@raypx/ui/lib/utils"
-import type { Session } from "better-auth"
-import { useState } from "react"
-import { useAuth } from "../../core/hooks/use-auth"
-import { getLocalizedError } from "../../core/lib/utils"
-import type { Refetch } from "../../types"
+import { UAParser } from "@raypx/shared";
+import { Button } from "@raypx/ui/components/button";
+import { Card } from "@raypx/ui/components/card";
+import { LaptopIcon, Loader2, SmartphoneIcon } from "@raypx/ui/components/icons";
+import type { SettingsCardClassNames } from "@raypx/ui/components/settings";
+import { cn } from "@raypx/ui/lib/utils";
+import type { Session } from "better-auth";
+import { useState } from "react";
+import { useAuth } from "../../core/hooks/use-auth";
+import { getLocalizedError } from "../../core/lib/utils";
+import type { Refetch } from "../../types";
 
 export interface SessionCellProps {
-  className?: string
-  classNames?: SettingsCardClassNames
-  session: Session
-  refetch?: Refetch
+  className?: string;
+  classNames?: SettingsCardClassNames;
+  session: Session;
+  refetch?: Refetch;
 }
 
-export function SessionCell({
-  className,
-  classNames,
-  session,
-  refetch,
-}: SessionCellProps) {
+export function SessionCell({ className, classNames, session, refetch }: SessionCellProps) {
   const {
     basePath,
     hooks: { useSession },
@@ -33,45 +28,39 @@ export function SessionCell({
     viewPaths,
     navigate,
     toast,
-  } = useAuth()
+  } = useAuth();
 
-  const { data: sessionData } = useSession()
-  const isCurrentSession = session.id === sessionData?.session?.id
+  const { data: sessionData } = useSession();
+  const isCurrentSession = session.id === sessionData?.session?.id;
 
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleRevoke = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
 
     if (isCurrentSession) {
-      navigate(`${basePath}/${viewPaths.SIGN_OUT}`)
-      return
+      navigate(`${basePath}/${viewPaths.SIGN_OUT}`);
+      return;
     }
 
     try {
-      await revokeSession({ token: session.token })
-      refetch?.()
+      await revokeSession({ token: session.token });
+      refetch?.();
     } catch (error) {
       toast({
         variant: "error",
         message: getLocalizedError({ error, t }),
-      })
+      });
 
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
-  const parser = UAParser(session.userAgent as string)
-  const isMobile = parser.device.type === "mobile"
+  const parser = UAParser(session.userAgent as string);
+  const isMobile = parser.device.type === "mobile";
 
   return (
-    <Card
-      className={cn(
-        "flex-row items-center gap-3 px-4 py-3",
-        className,
-        classNames?.cell,
-      )}
-    >
+    <Card className={cn("flex-row items-center gap-3 px-4 py-3", className, classNames?.cell)}>
       {isMobile ? (
         <SmartphoneIcon className={cn("size-4", classNames?.icon)} />
       ) : (
@@ -89,11 +78,7 @@ export function SessionCell({
       </div>
 
       <Button
-        className={cn(
-          "relative ms-auto",
-          classNames?.button,
-          classNames?.outlineButton,
-        )}
+        className={cn("relative ms-auto", classNames?.button, classNames?.outlineButton)}
         disabled={isLoading}
         size="sm"
         variant="outline"
@@ -103,5 +88,5 @@ export function SessionCell({
         {isCurrentSession ? t("SIGN_OUT") : t("REVOKE")}
       </Button>
     </Card>
-  )
+  );
 }

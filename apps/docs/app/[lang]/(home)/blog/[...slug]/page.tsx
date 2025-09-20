@@ -1,38 +1,36 @@
-import { dayjs } from "@raypx/shared/utils"
-import { ArrowLeft, Calendar } from "lucide-react"
-import type { Metadata } from "next"
-import Link from "next/link"
-import { notFound } from "next/navigation"
-import { getPathname } from "@/components/link"
-import appConfig from "@/config/app.config"
-import { blogSource } from "@/lib/source"
-import { getMDXComponents } from "@/mdx-components"
+import { dayjs } from "@raypx/shared/utils";
+import { ArrowLeft, Calendar } from "lucide-react";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { getPathname } from "@/components/link";
+import appConfig from "@/config/app.config";
+import { blogSource } from "@/lib/source";
+import { getMDXComponents } from "@/mdx-components";
 
 interface BlogPostPageProps {
   params: Promise<{
-    lang: string
-    slug: string[]
-  }>
+    lang: string;
+    slug: string[];
+  }>;
 }
 
 export async function generateStaticParams() {
-  return blogSource.generateParams()
+  return blogSource.generateParams();
 }
 
-export async function generateMetadata({
-  params,
-}: BlogPostPageProps): Promise<Metadata> {
-  const { lang, slug } = await params
-  const page = blogSource.getPage(slug)
+export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
+  const { lang, slug } = await params;
+  const page = blogSource.getPage(slug);
 
   if (!page) {
-    notFound()
+    notFound();
   }
 
-  const title = `${page.data.title} | ${appConfig.name}`
+  const title = `${page.data.title} | ${appConfig.name}`;
   const description =
     page.data.description ||
-    `${lang === "zh" ? "来自" : "From"} ${appConfig.name} ${lang === "zh" ? "的博客文章" : "blog"}`
+    `${lang === "zh" ? "来自" : "From"} ${appConfig.name} ${lang === "zh" ? "的博客文章" : "blog"}`;
 
   return {
     title,
@@ -48,20 +46,20 @@ export async function generateMetadata({
     alternates: {
       canonical: getPathname({ href: page.url, locale: lang }),
     },
-  }
+  };
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const { lang, slug } = await params
-  const page = blogSource.getPage(slug)
+  const { lang, slug } = await params;
+  const page = blogSource.getPage(slug);
 
   if (!page) {
-    notFound()
+    notFound();
   }
 
-  const formattedDate = dayjs(page.data.date).locale(lang).format("LL")
+  const formattedDate = dayjs(page.data.date).locale(lang).format("LL");
 
-  const backText = lang === "zh" ? "返回博客" : "Back to Blog"
+  const backText = lang === "zh" ? "返回博客" : "Back to Blog";
 
   return (
     <div className="container max-w-4xl py-12">
@@ -88,9 +86,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </div>
 
         {page.data.description && (
-          <p className="mt-4 text-lg text-muted-foreground">
-            {page.data.description}
-          </p>
+          <p className="mt-4 text-lg text-muted-foreground">{page.data.description}</p>
         )}
       </header>
 
@@ -116,5 +112,5 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </div>
       </footer>
     </div>
-  )
+  );
 }

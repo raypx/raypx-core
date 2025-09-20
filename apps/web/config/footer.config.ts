@@ -1,24 +1,24 @@
-"use client"
+"use client";
 
-import { useTranslations } from "next-intl"
-import type { ReactNode } from "react"
-import { Routes } from "./routes.config"
+import { useTranslations } from "next-intl";
+import type { ReactNode } from "react";
+import { Routes } from "./routes.config";
 
 export type MenuItem = {
-  title: string // The text to display
-  description?: string // The description of the item
-  icon?: ReactNode // The icon to display
-  href?: string // The url to link to
-  external?: boolean // Whether the link is external
-  authorizeOnly?: string[] // The roles that are authorized to see the item
-}
+  title: string; // The text to display
+  description?: string; // The description of the item
+  icon?: ReactNode; // The icon to display
+  href?: string; // The url to link to
+  external?: boolean; // Whether the link is external
+  authorizeOnly?: string[]; // The roles that are authorized to see the item
+};
 
 export type NestedMenuItem = MenuItem & {
-  items?: MenuItem[] // The items to display in the nested menu
-}
+  items?: MenuItem[]; // The items to display in the nested menu
+};
 
 export function getFooterLinks(): NestedMenuItem[] {
-  const t = useTranslations("layout.footer")
+  const t = useTranslations("layout.footer");
 
   return [
     {
@@ -107,5 +107,5 @@ export function getFooterLinks(): NestedMenuItem[] {
         },
       ],
     },
-  ]
+  ];
 }

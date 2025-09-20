@@ -1,5 +1,5 @@
-import { appConfig } from "@raypx/config"
-import { z } from "zod"
+import { appConfig } from "@raypx/config";
+import { z } from "zod";
 
 // Extended app config schema for web app specific needs
 const ExtendedAppSchema = z.object({
@@ -13,7 +13,7 @@ const ExtendedAppSchema = z.object({
   theme: z.enum(["light", "dark", "system"]),
   production: z.boolean(),
   version: z.string().optional(),
-})
+});
 
 // Merge base config with web-specific config
 const webAppConfig = ExtendedAppSchema.parse({
@@ -29,6 +29,6 @@ const webAppConfig = ExtendedAppSchema.parse({
   // Web-specific
   keywords: ["Raypx", "AI", "Platform", "Framework", "Next.js", "TypeScript"],
   year: 2025,
-} satisfies z.infer<typeof ExtendedAppSchema>)
+} satisfies z.infer<typeof ExtendedAppSchema>);
 
-export default webAppConfig
+export default webAppConfig;

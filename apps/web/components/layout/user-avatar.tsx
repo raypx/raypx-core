@@ -1,14 +1,10 @@
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@raypx/ui/components/avatar"
-import { User2Icon } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@raypx/ui/components/avatar";
+import { User2Icon } from "lucide-react";
 
 interface UserAvatarProps {
-  className?: string
-  name: string
-  image: string | null | undefined
+  className?: string;
+  name: string;
+  image: string | null | undefined;
 }
 
 /**
@@ -28,5 +24,5 @@ export function UserAvatar({ name, image, ...props }: UserAvatarProps) {
         <User2Icon className="size-4" />
       </AvatarFallback>
     </Avatar>
-  )
+  );
 }
