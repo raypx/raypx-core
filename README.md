@@ -1,8 +1,8 @@
 # Raypx
 
-[![Version](https://img.shields.io/github/package-json/v/raypx/raypx-core?style=flat-square)](https://github.com/raypx/raypx-core)
-[![License](https://img.shields.io/github/license/raypx/raypx-core?style=flat-square)](https://opensource.org/licenses/Apache-2.0)
-[![pnpm](https://img.shields.io/badge/pnpm-9.x-orange?style=flat-square&logo=pnpm)](https://pnpm.io/)
+[![Version](https://img.shields.io/github/package-json/v/raypx/raypxjs?style=flat-square)](https://github.com/raypx/raypxjs)
+[![License](https://img.shields.io/github/license/raypx/raypxjs?style=flat-square)](https://opensource.org/licenses/Apache-2.0)
+[![pnpm](https://img.shields.io/badge/pnpm-10.17.0-orange?style=flat-square&logo=pnpm)](https://pnpm.io/)
 [![Turborepo](https://img.shields.io/badge/Turborepo-monorepo-red?style=flat-square&logo=turborepo)](https://turbo.build/)
 [![Biome](https://img.shields.io/badge/Biome-linter%20%26%20formatter-yellow?style=flat-square&logo=biome)](https://biomejs.dev/)
 
@@ -19,7 +19,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/raypx/raypx.git
+git clone https://github.com/raypx/raypxjs.git
 cd raypx
 
 # Install dependencies with pnpm

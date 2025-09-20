@@ -14,7 +14,7 @@ export const app = AppSchema.parse({
     "A modern web application platform built with Next.js and TypeScript for building AI-powered applications.",
   keywords: ["Raypx", "AI", "Platform", "Framework", "Next.js", "TypeScript", "React"],
   url: "https://raypx.com",
-  githubUrl: "https://github.com/raypx/raypx",
+  githubUrl: "https://github.com/raypx/raypxjs",
 } satisfies z.infer<typeof AppSchema>);
 
 export default app;

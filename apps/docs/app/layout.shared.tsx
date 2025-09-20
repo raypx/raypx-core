@@ -31,7 +31,7 @@ export function baseOptions(locale: string, t: any): BaseLayoutProps {
         text: t("changelog.title"),
       },
       {
-        url: "https://github.com/raypx/raypx/discussions",
+        url: "https://github.com/raypx/raypxjs/discussions",
         text: t("community.title"),
         external: true,
       },
