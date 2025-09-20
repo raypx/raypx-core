@@ -36,12 +36,12 @@ const PathsSchema = z.object({
 
 const pathsConfig = PathsSchema.parse({
   auth: {
-    signIn: "/sign-in",
-    signUp: "/sign-up",
-    verifyMfa: "/verify-mfa",
+    signIn: "/auth/sign-in",
+    signUp: "/auth/sign-up",
+    verifyMfa: "/auth/verify-mfa",
     callback: "/auth/callback",
-    passwordReset: "/password-reset",
-    passwordUpdate: "/update-password",
+    passwordReset: "/auth/password-reset",
+    passwordUpdate: "/auth/update-password",
   },
   app: {
     home: "/dashboard",
