@@ -3,16 +3,8 @@
     "biomejs.biome",
     "bradlc.vscode-tailwindcss",
     "ms-vscode.vscode-typescript-next",
-    "formulahendry.auto-rename-tag",
-    "christian-kohler.path-intellisense",
     "eamodio.gitlens",
     "github.vscode-github-actions",
-    "drizzle-team.drizzle-vscode",
-    "usernamehw.errorlens"
-  ],
-  "unwantedRecommendations": [
-    "dbaeumer.vscode-eslint",
-    "ms-vscode.live-server",
-    "ms-playwright.playwright"
+    "drizzle-team.drizzle-vscode"
   ]
 }
